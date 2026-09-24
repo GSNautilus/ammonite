@@ -91,16 +91,7 @@ class AmmoniteUI : public UI
         }
     }
 
-    void uiIdle() override
-    {
-        const uint32_t now = NowMs();
-        if(now - lastFrame_ >= (uint32_t)kFrameMs)
-        {
-            lastFrame_ = now;
-            RenderFrame();
-            repaint();
-        }
-    }
+    void uiIdle() override { MaybeFrame(); }
 
     /* ---------------------------------------------------------- drawing */
     void onNanoDisplay() override
@@ -307,6 +298,7 @@ class AmmoniteUI : public UI
         dragV_          = Clamp01(dragV_ + (dragY_ - my) * per);
         dragY_          = my;
         SetKnob(dragPot_, dragV_, false);
+        MaybeFrame();
         return true;
     }
 
@@ -324,10 +316,25 @@ class AmmoniteUI : public UI
         else
             v = Clamp01(v + dir * ((ev.mod & kModifierShift) ? 0.005f : 0.02f));
         SetKnob(pot, v, true);
+        MaybeFrame();
         return true;
     }
 
   private:
+    /** The next screen frame when one is due (every kFrameMs, the display's
+     *  rate: the engine's fades count frames). Called from the idle timer
+     *  AND from mouse input: Windows holds timer messages back while mouse
+     *  moves keep coming, so a drag alone must keep the screen running. */
+    void MaybeFrame()
+    {
+        const uint32_t now = NowMs();
+        if(now - lastFrame_ < (uint32_t)kFrameMs)
+            return;
+        lastFrame_ = now;
+        RenderFrame();
+        repaint();
+    }
+
     float Scale() const { return (float)getWidth() / kW; }
 
     int PageNow() const
@@ -415,6 +422,11 @@ class AmmoniteUI : public UI
         if(gesture)
             editParameter((uint32_t)idx, true);
         host_[idx] = value;
+        // Straight into the engine too (its parameters are atomics): the
+        // sound and the screen answer now, not after the host has passed
+        // the change to the audio thread at its next buffer.
+        const ammonite::ParamRef& r = ammonite::Params()[idx];
+        engine_->SetParam(r.func, r.osc, ammonite::HostToEngine(r.func, value));
         setParameterValue((uint32_t)idx, value);
         if(gesture)
             editParameter((uint32_t)idx, false);
