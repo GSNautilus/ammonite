@@ -14,7 +14,7 @@
 </p>
 
 <p align="center">
-  <a href="https://gsnautilus.github.io/ammonite/#listen"><b>&#9654; Listen: two minutes of Ammonite</b></a><br>
+  <a href="https://gsnautilus.github.io/ammonite/"><b>&#9654; Listen: two minutes of Ammonite</b></a><br>
   <a href="https://gsnautilus.github.io/ammonite/#video">Watch the screen play (video with sound)</a> &middot;
   <a href="manual/Ammonite_Manual.pdf">Owner's manual (PDF)</a> &middot;
   <a href="#play-it-in-a-daw-vst3--clap-windows">VST3 / CLAP plugin</a>
