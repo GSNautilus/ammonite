@@ -142,6 +142,13 @@ class Engine
     /** False when the last Init could not fit the reverb (above 192 kHz):
      *  the engine then runs without it. */
     bool  ReverbOk();
+    /** The host's clock for the NEXT ProcessAudio call (audio thread, just
+     *  before it): transport playing, tempo, and the position at the call's
+     *  first sample in quarter notes since the song start. With SYNC DAW the
+     *  engine follows it; with FREE, or without a call, it runs on TEMPO. */
+    void  SetHostClock(bool playing, double bpm, double beat);
+    /** The master clock after the last ProcessAudio, in quarter notes. */
+    double GetBeat();
 
   private:
     struct Impl;

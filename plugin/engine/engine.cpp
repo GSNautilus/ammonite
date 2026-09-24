@@ -121,6 +121,9 @@ enum Func
     RPRE,
     VIEW,
     VOLUME,
+    // Plugin only, from here on. New functions go at the END: (func, osc)
+    // is the host parameter ID.
+    SYNC, // the master clock: FREE (TEMPO) or DAW (the host's tempo and position)
     kNumFuncs
 };
 constexpr int kLfoTargets = 5; // PITCH CUTOFF AMP PAN SHAPE, 3 funcs each from LPITCH_R
@@ -170,6 +173,7 @@ static const char* const kChangeNames[] = {"1/2 BAR", "1 BAR", "2 BARS", "4 BARS
 static const char* const kRoman[7] = {"I", "II", "III", "IV", "V", "VI", "VII"};
 static const char* const kRestartNames[] = {"FREE", "BAR", "CHORD"};
 static const char* const kSyncNames[] = {"FREE", "TEMPO"};
+static const char* const kClockNames[] = {"FREE", "DAW"};
 static const char* const kViewNames[] = {"RINGS", "PITCH", "WHEEL", "SCOPE"};
 enum
 {
@@ -273,6 +277,7 @@ static const FuncInfo kFuncs[kNumFuncs] = {
     {"PREDELAY", false, 0, nullptr, 0, false, {0.f}},
     {"VIEW", false, 4, kViewNames, 0, false, {St(1, 4)}}, // PITCH (user 2026-09-24)
     {"VOLUME", false, 0, nullptr, 0, false, {0.5f}},
+    {"SYNC", false, 2, kClockNames, 0, false, {St(1, 2)}}, // DAW (user 2026-09-24)
 }; // names <= 8 chars: the page maps list them at scale 2
 
 /* ----------------------------------------------------------------- pages */
@@ -692,6 +697,11 @@ struct Engine::Impl
 
     // master clock
     double beat_ = 0.0;
+    // the host's clock for the next ProcessAudio (SetHostClock), SYNC DAW
+    bool   hostValid_   = false;
+    bool   hostPlaying_ = false;
+    double hostBpm_     = 120.0;
+    double hostBeat_    = 0.0;
 
     // lfo
     Lfo lfo_[kLfoTargets][kOscs];
@@ -1384,10 +1394,25 @@ void Engine::Impl::ProcessAudio(float* out, int nframes)
         }
     }
 
-    // --- master clock: beats since Init; each osc's grid is derived from it
-    const float  bpm      = 40.f + 200.f * params_[TEMPO][0].load();
-    const double bps      = (double)bpm / 60.0 / (double)samplerate_; // beats per sample
-    const double beat0    = beat_;
+    // --- master clock: beats since Init; each osc's grid is derived from it.
+    // SYNC DAW with a host clock: the host's tempo, and while its transport
+    // plays, its position (quarter notes since the song start), so step 1
+    // and the progression sit on the DAW's bars and follow its playhead. A
+    // jump (loop, relocate) just changes each osc's step index: the step
+    // under the new position starts at once. Stopped: runs on at the host
+    // tempo from where it is.
+    float  bpm = 40.f + 200.f * params_[TEMPO][0].load();
+    double bps = (double)bpm / 60.0 / (double)samplerate_; // beats per sample
+    if(step_[SYNC][0] == 1 && hostValid_)
+    {
+        const double hb = hostBpm_ < 20.0 ? 20.0 : (hostBpm_ > 999.0 ? 999.0 : hostBpm_);
+        bpm             = (float)hb; // the delays' tempo
+        bps             = hb / 60.0 / (double)samplerate_;
+        if(hostPlaying_)
+            beat_ = hostBeat_ > 0.0 ? hostBeat_ : 0.0;
+    }
+    hostValid_         = false; // one call per block
+    const double beat0 = beat_;
     const double lastBeat = beat0 + bps * (double)(nframes - 1);
     beat_ += bps * (double)nframes;
     const double swing = (double)smooth_[SWING][0] / 3.0;
@@ -2568,6 +2593,17 @@ float Engine::GetParam(int func, int osc)
 bool Engine::ReverbOk()
 {
     return impl_->reverbOk_;
+}
+void Engine::SetHostClock(bool playing, double bpm, double beat)
+{
+    impl_->hostValid_   = true;
+    impl_->hostPlaying_ = playing;
+    impl_->hostBpm_     = bpm;
+    impl_->hostBeat_    = beat;
+}
+double Engine::GetBeat()
+{
+    return impl_->beat_;
 }
 
 /* ---------------------------------------------------------------- Engine */

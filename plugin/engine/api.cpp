@@ -88,6 +88,11 @@ API void eng_render(void* h, uint16_t* fb240x240) { E(h).RenderScreen(fb240x240)
 API void eng_set_param(void* h, int func, int osc, float value) { E(h).SetParam(func, osc, value); }
 API float eng_get_param(void* h, int func, int osc) { return E(h).GetParam(func, osc); }
 API int eng_reverb_ok(void* h) { return E(h).ReverbOk() ? 1 : 0; }
+API void eng_set_host_clock(void* h, int playing, double bpm, double beat)
+{
+    E(h).SetHostClock(playing != 0, bpm, beat);
+}
+API double eng_get_beat(void* h) { return E(h).GetBeat(); }
 
 /* ------------------------------------- the simulator API, default instance */
 API void synth_init(float samplerate) { eng_init(Default(), samplerate); }

@@ -165,8 +165,38 @@ A first loadable plugin before the rest of step 2 and the UI of step 3.
   192 kHz, same sound as the tested engine DLL (MSVC vs zig, correlation
   1.0000), automation event, two instances side by side, state save / load.
 - **FL Studio 2025 (user, 2026-09-24): loads, plays, parameter changes,
-  automation and saving the project all work.** Not yet checked: several
-  instances in a host, Ableton Live 12 (VST3 only, Live has no CLAP).
+  automation and saving the project all work.** Several instances work
+  too. Not yet checked: Ableton Live 12 (VST3 only, Live has no CLAP).
+- **FL's channel mute does not silence it** (user): FL mutes a generator
+  by withholding notes, and Ammonite ignores notes. The Mixer insert's mute
+  works. Possible later: an option to play only while a note is held / a
+  pattern plays (a design question for the user).
+
+### DAW sync: DONE (2026-09-24)
+
+- New function **SYNC** (FREE / DAW, default DAW) at the end of enum Func
+  (plugin only; not on a panel page, like VOLUME it is always there): 169
+  parameters now, the old IDs unchanged.
+- `Engine::SetHostClock(playing, bpm, beat)` before each ProcessAudio call.
+  SYNC DAW with a host clock: the host tempo (clamped 20..999 BPM, the
+  delays too); while playing, `beat_` = the host position in quarter notes,
+  so a jump (loop, relocate) just changes each osc's step index and the step
+  under the playhead starts at once; stopped: runs on at the host tempo.
+  FREE, or no host clock (every test of the hardware suite): TEMPO, bit for
+  bit as before.
+- Plugin: `DISTRHO_PLUGIN_WANT_TIMEPOS 1`; the position is rebuilt from
+  DPF's bar / beat / tick (the CLAP wrapper counts bar beats in quarter
+  notes, the VST3 one in time-signature beats: `getPluginFormatName()`).
+  A host that stops reporting bars keeps its last tempo.
+- Limits: Ammonite's bar is 4 quarter notes (bar lines, CHANGE, RESTART
+  BAR), so in 3/4, 6/8 ... its bars drift from the DAW's. DPF's VST3 bar
+  maths uses an integer quarter-notes-per-bar (7/8 comes out wrong).
+- Tests: `plugin/tests/test_sync.py` (engine: host grid within 1 ms, start
+  mid-beat, playhead jump, PROG on the DAW's bars, stopped, FREE, delays on
+  the host tempo) and the CLAP host in `test_clap.py` (a CLAP transport
+  through the built plugin: grid, jump, stop, FREE).
+- To check in FL Studio: tempo changes, play from different bars, loops.
+
 
 
 

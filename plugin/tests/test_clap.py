@@ -1,7 +1,8 @@
 """The built plugin, loaded like a DAW loads it: a minimal CLAP host in
 ctypes drives plugin/build/cmake/bin/Ammonite.clap. Checks what a host
 relies on: the descriptor, the parameter list, playing at several sample
-rates, automation events, two instances side by side, save / load state.
+rates, automation events, two instances side by side, save / load state,
+and SYNC DAW following the host transport (tempo, position, stop).
 
 Needs .\\plugin\\plugin.ps1 build first (skipped otherwise). The VST3 is
 the same DSP code behind DPF's VST3 wrapper; it is checked in the DAWs.
@@ -18,7 +19,7 @@ BUILD = os.path.join(ROOT, "plugin", "build")
 CLAP = os.path.abspath(os.environ.get("CLAP_PATH") or os.path.join(BUILD, "cmake", "bin", "Ammonite.clap"))
 sys.path.insert(0, os.path.join(ROOT, "tests"))
 os.environ.setdefault("SYNTH_DLL", os.path.join(BUILD, "ammonite_engine.dll"))
-from arpsynth import check, done  # noqa: E402
+from arpsynth import check, done, onsets  # noqa: E402
 
 if not os.path.exists(CLAP):
     print(f"skip: {CLAP} not built (.\\plugin\\plugin.ps1 build)")
@@ -63,6 +64,20 @@ class ParamValueEvent(C.Structure):
     _fields_ = [("header", EventHeader), ("param_id", C.c_uint32), ("cookie", C.c_void_p),
                 ("note_id", C.c_int32), ("port_index", C.c_int16), ("channel", C.c_int16),
                 ("key", C.c_int16), ("value", C.c_double)]
+
+
+class Transport(C.Structure):
+    _fields_ = [("header", EventHeader), ("flags", C.c_uint32), ("song_pos_beats", C.c_int64),
+                ("song_pos_seconds", C.c_int64), ("tempo", C.c_double), ("tempo_inc", C.c_double),
+                ("loop_start_beats", C.c_int64), ("loop_end_beats", C.c_int64),
+                ("loop_start_seconds", C.c_int64), ("loop_end_seconds", C.c_int64),
+                ("bar_start", C.c_int64), ("bar_number", C.c_int32), ("tsig_num", C.c_uint16),
+                ("tsig_denom", C.c_uint16)]
+
+
+CLAP_EVENT_TRANSPORT = 9
+HAS_TEMPO, HAS_BEATS, HAS_TSIG, IS_PLAYING = 1, 2, 8, 16
+BEATTIME = 1 << 31
 
 
 class InEvents(C.Structure):
@@ -208,7 +223,9 @@ class Inst:
         """Queued: sent with the next process() call, at its first sample."""
         self.pending.append((pid, value))
 
-    def render(self, sec, sizes=(512, 256, 100, 37, 512)):
+    def render(self, sec, sizes=(512, 256, 100, 37, 512), host=None):
+        """host = (playing, bpm, beat at the start, beats per bar): a CLAP
+        transport on every block, advancing with the audio."""
         n = int(sec * self.sr)
         L = np.zeros(n, dtype=np.float32)
         R = np.zeros(n, dtype=np.float32)
@@ -226,8 +243,17 @@ class Inst:
             self.pending = []
             cb = (IN_SIZE(lambda l: len(evs)), IN_GET(lambda l, i: C.addressof(evs[i])))
             ins = InEvents(None, cb[0], cb[1])
-            proc = Process(self.steady, m, None, None, C.pointer(buf), 0, 1, C.pointer(ins),
-                           C.pointer(out_events))
+            tr = None
+            if host is not None:
+                playing, bpm, b0, num = host
+                beat = b0 + bpm / 60.0 / self.sr * k
+                bar = int(beat // num)
+                tr = Transport(EventHeader(C.sizeof(Transport), 0, 0, CLAP_EVENT_TRANSPORT, 0),
+                               HAS_TEMPO | HAS_BEATS | HAS_TSIG | (IS_PLAYING if playing else 0),
+                               int(round(beat * BEATTIME)), 0, bpm, 0.0, 0, 0, 0, 0,
+                               bar * num * BEATTIME, bar, num, 4)
+            proc = Process(self.steady, m, C.addressof(tr) if tr is not None else None, None,
+                           C.pointer(buf), 0, 1, C.pointer(ins), C.pointer(out_events))
             self.call("process", C.byref(proc))
             L[k:k + m], R[k:k + m] = bl, br
             k += m
@@ -347,6 +373,38 @@ for sr in (96000.0, 192000.0):
     L, R = a.render(1.0)
     check(ok and np.all(np.isfinite(L)) and rms(L) > 0.005,
           f"re-activate at {sr / 1000:.0f} kHz: plays (rms {rms(L):.3f}), finite")
+
+# ---- SYNC DAW (the default) on a CLAP transport, through the plugin
+s = Inst()
+s.activate(48000.0)
+for name, v in [("ARP NOTES MODE 1", 1), ("ARP NOTES MODE 2", 0), ("ARP NOTES MODE 3", 0),
+                ("ARP RHYTHM DIVISION 1", 2), ("ARP NOTES POOL 1", 4), ("OSC OCTAVE 1", 3),
+                ("ENVELOPE AMP ATTACK 1", 0), ("ENVELOPE AMP DECAY 1", 10),
+                ("ENVELOPE AMP SUSTAIN 1", 0), ("MAIN LEVEL 2", 0), ("MAIN LEVEL 3", 0)]:
+    s.set_param(by_name[name].id, v)  # osc 1 alone: a short high note on every quarter
+s.render(0.5)  # settle (no transport: TEMPO)
+L = s.render(3.0, host=(True, 90.0, 0.0, 4))[0]
+t = onsets(L[int(0.2 * 48000):]) + 0.2
+off = float(np.max(np.abs(t - np.round(t / (60 / 90)) * (60 / 90)))) * 1000
+check(len(t) >= 3 and abs(np.median(np.diff(t)) - 60 / 90) < 0.002 and off < 3,
+      f"CLAP transport at 90 BPM from bar 1: a note every {1000 * np.median(np.diff(t)):.1f} ms"
+      f" (666.7), {off:.2f} ms off the host's beats")
+L = s.render(1.2, host=(True, 120.0, 16.25, 4))[0]  # the playhead jumps to bar 5 + 1/4 beat
+t = onsets(L)
+check(abs(t[0]) < 0.006 and abs(t[1] - 0.375) < 0.003,
+      f"playhead jump to beat 16.25: a note at once ({1000 * t[0]:.1f} ms), the next on beat 17"
+      f" ({1000 * t[1]:.1f} ms, want 375)")
+L = s.render(2.0, host=(False, 150.0, 3.0, 4))[0]  # stopped
+t = onsets(L)
+check(abs(np.median(np.diff(t)) - 0.4) < 0.002,
+      f"transport stopped at 150 BPM: plays on, a note every {1000 * np.median(np.diff(t)):.1f} ms (400)")
+s.set_param(by_name["SYNC"].id, 0)  # FREE
+L = s.render(2.0, host=(True, 90.0, 0.0, 4))[0]
+t = onsets(L[int(0.1 * 48000):])
+check(abs(np.median(np.diff(t)) - 60 / 110) < 0.002,
+      f"SYNC FREE: the host is ignored, TEMPO 110 BPM (every {1000 * np.median(np.diff(t)):.1f} ms)")
+s.deactivate()
+s.destroy()
 
 for x in (a, b, c, d):
     x.deactivate() if x is not d else None

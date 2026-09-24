@@ -6,8 +6,12 @@
  *  so an ID never changes meaning (hosts store automation and state by ID).
  *
  *  Values: a continuous function is 0..100 (the engine's 0..1), a stepped
- *  one is its step 0..n-1 with the step names the panel shows. */
+ *  one is its step 0..n-1 with the step names the panel shows.
+ *
+ *  Clock: SYNC (DAW by default) hands the host's tempo and position to the
+ *  engine each block; FREE runs on the TEMPO parameter, like the hardware. */
 #include "DistrhoPlugin.hpp"
+#include "DistrhoPluginUtils.hpp"
 #include "engine.h"
 
 #include <cmath>
@@ -70,6 +74,9 @@ class AmmonitePlugin : public Plugin
         value_.resize(ps.size());
         for(size_t i = 0; i < ps.size(); i++)
             value_[i] = Engine::FuncDefault(ps[i].func, ps[i].osc);
+        // DPF's CLAP wrapper counts bar beats in quarter notes, the VST3 one
+        // in time-signature beats (see HostBeat).
+        clapBeats_ = std::strcmp(getPluginFormatName(), "CLAP") == 0;
         InitEngine(getSampleRate());
     }
 
@@ -190,10 +197,27 @@ class AmmonitePlugin : public Plugin
         ScopedFlushToZero ftz;
         float*            outL = outputs[0];
         float*            outR = outputs[1];
-        uint32_t          done = 0;
+
+        // The host clock. A host that stops reporting bars while stopped
+        // keeps its last tempo; one that never reported any leaves SYNC DAW
+        // on the TEMPO parameter.
+        const TimePosition& t       = getTimePosition();
+        const bool          valid   = t.bbt.valid;
+        const bool          playing = t.playing && valid;
+        if(valid)
+        {
+            hostBpm_  = t.bbt.beatsPerMinute;
+            haveHost_ = true;
+        }
+        const double beat0 = valid ? HostBeat(t.bbt) : 0.0;
+        const double bpf   = hostBpm_ / 60.0 / getSampleRate(); // beats per frame
+
+        uint32_t done = 0;
         while(done < frames)
         {
             const uint32_t n = frames - done < kChunk ? frames - done : kChunk;
+            if(haveHost_)
+                engine_->SetHostClock(playing, hostBpm_, beat0 + bpf * (double)done);
             engine_->ProcessAudio(chunk_, (int)n);
             for(uint32_t i = 0; i < n; i++)
             {
@@ -205,6 +229,16 @@ class AmmonitePlugin : public Plugin
     }
 
   private:
+    /** Quarter notes since the song start, from DPF's bar / beat / tick.
+     *  Exact for x/4 signatures. Ammonite's bars are 4 quarter notes, so in
+     *  other signatures its bars and the DAW's drift apart anyway. */
+    double HostBeat(const TimePosition::BarBeatTick& b) const
+    {
+        const double beats = (double)(b.bar - 1) * b.beatsPerBar + (double)(b.beat - 1)
+                             + b.tick / b.ticksPerBeat;
+        return clapBeats_ || b.beatType <= 0.f ? beats : beats * 4.0 / b.beatType;
+    }
+
     static int StepOf(float v, int steps)
     {
         int s = (int)(v * (float)steps);
@@ -235,6 +269,9 @@ class AmmonitePlugin : public Plugin
     std::unique_ptr<Buffers> bufs_;
     std::unique_ptr<Engine>  engine_;
     std::vector<float>       value_; // engine values (0..1) of every parameter
+    bool                     clapBeats_ = false;
+    bool                     haveHost_  = false; // the host ever sent a clock
+    double                   hostBpm_   = 120.0;
     float                    chunk_[2 * kChunk];
 
     DISTRHO_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(AmmonitePlugin)
