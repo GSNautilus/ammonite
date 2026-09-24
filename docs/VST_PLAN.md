@@ -9,8 +9,28 @@ here. Read this, then `docs/ENGINE_PLAN.md` ("Constraints & landmines" first).
 very same engine as the firmware (`core/`). No AU, no macOS/Linux for now.
 The firmware must keep building from the same core.
 
-**Start by talking, not coding:** confirm the open decisions (last section)
-with the user before step 1.
+**Decided with the user (2026-09-24):**
+
+- **The plugin gets its own copy of the engine** in `plugin/engine/`. `core/`,
+  the firmware, the simulator and the 193 tests stay exactly as they are
+  (tagged `v1.0`, local, not pushed). The copy becomes multi-instance and
+  gains the host features; a fix or sound change in one engine has to be
+  carried to the other by hand. Reuniting them later means proving the two
+  bit-identical first.
+- **DAW sync:** a new SYNC parameter DAW / FREE, default DAW. DAW: BPM and
+  song position come from the host (`beat_` = host PPQ while playing), so
+  pattern step 1 and the progression land on the DAW's bars. FREE: the
+  TEMPO knob and its own clock, like the hardware. With the transport
+  stopped, DAW mode keeps playing at the host BPM; on play it jumps to the
+  host position.
+- **UI:** the hardware panel only (12 knobs, page / section label, the round
+  screen); every parameter is also in the host's generic list.
+- **Sample rates:** native at the host rate up to 192 kHz; the plugin's
+  engine sizes its delay lines for 192 kHz. Tests also run at 96 kHz.
+- **Identity:** "Ammonite" by "GSNautilus", CLAP ID
+  `com.gsnautilus.ammonite`, DPF brand / unique IDs `GSNa` / `Ammo` (the
+  VST3 UID derives from them: never change them after release).
+  Categories Instrument | Synth | Generator.
 
 ---
 
@@ -78,21 +98,46 @@ with the user before step 1.
 
 ## Plan
 
-### Step 1: the engine becomes an instance (no behaviour change)
+### Step 1: DONE (2026-09-24): the plugin's engine is an instance
 
-- Move every mutable file-level variable into one `struct Engine` (or class);
-  constant tables (`kFuncs`, `kPages`, names, masks) stay `static const`.
-- Functions take the instance (methods, or `Engine&` arguments). Keep the
-  static text buffers of `GetValueText` / chord names per instance too.
-- Firmware: one statically allocated instance; its size lands in `.bss`, so
-  check SRAM (38 % today) and flash in the `make` table.
-- C API: add `synth_create / synth_destroy` with a handle, keeping the
-  current handle-less functions working on a default instance so the
-  simulator, tests, manual and media scripts keep running unchanged.
-- Done when: all 193 tests pass; a new test runs two instances side by side
-  (independent params, identical output for identical input, no cross-talk);
-  firmware builds with flash still comfortably below 100 %; the user flashes
-  it and confirms it still sounds and looks the same.
+- `plugin/engine/` = `core/` v1.0 copied, namespace `ammonite`: all 48
+  mutable statics (plus the function-local ones: value / chord text
+  buffers, the WHEEL view's note memory, the unit circle) live in
+  `Engine::Impl`; the 48 functions that touch them are its members;
+  `class Engine` (`engine.h`) forwards the old API one to one. Constant
+  tables and pure helpers are unchanged. `core/` is not touched.
+- `plugin/engine/api.cpp`: the `synth_*` calls on a default instance plus
+  `eng_create / eng_destroy / eng_*(handle, ...)`.
+- `.\plugin\plugin.ps1 test` builds `plugin\build\core_ref.dll` (from
+  `core/`) and `plugin\build\ammonite_engine.dll` with the simulator's
+  compiler and flags, runs the whole hardware suite (`tests\`) against the
+  plugin engine, then `plugin	ests	est_engine_copy.py`:
+  - MATCH: 40 random scenarios (params, pot moves, page changes, block
+    sizes 1..600, 44.1 / 48 kHz, screens interleaved) are bit-identical
+    between core/ and the copy, default and created instance. Checked that
+    it bites: a one-ULP change of a gain fails audio, one color step fails
+    screens.
+  - INSTANCES: same input -> same output; different settings, blocks
+    alternating -> each equals its own solo run on core/; two engines on
+    two threads with a third rendering their screens -> unchanged; a new
+    engine after others were destroyed starts clean.
+
+**Found on the way (for step 2):**
+
+- **core/ crashes above ~52 kHz** (fresh start): `ReverbSc`'s fixed
+  `aux_[DSY_REVERBSC_MAX_SIZE]` (98936 floats, sized for 48 kHz) is too
+  small, `Init` returns early and the first process writes through a null
+  delay-line pointer. Worse, a re-`Init` at a higher rate after a working
+  one leaves the old lines in place (no crash, wrong reverb). The define is
+  unconditional in `reverbsc.h`, so the plugin needs its own copy of
+  ReverbSc (LGPL, keep the notice) with a buffer for 192 kHz, and the
+  engine must treat a failed `Init` as an error. The hardware (48 kHz) is
+  not affected.
+- `Init` does not reset the WHEEL view's note memory (a function-level
+  static in core/): harmless, but one reason two engines only match
+  bit for bit when they have the same history.
+- A fresh worktree has no submodules: `git submodule update --init
+  --recursive lib/DaisySP` (libDaisy is only needed for the firmware).
 
 ### Step 2: what a host needs from the core
 
@@ -136,13 +181,10 @@ with the user before step 1.
 - Then README (tick the to-do item, how to install), and a release, after
   the user's go-ahead. Later: GitHub Actions builds.
 
-## Decisions to take with the user first
+## Decisions (taken 2026-09-24, see the top of this file)
 
-1. **DAW sync:** always follow the DAW's tempo and position, or a switch
-   between DAW and TEMPO knob? Do patterns restart when the transport starts?
-2. **UI:** the hardware panel exactly (12 knobs, pages), or that plus a flat
-   view of every parameter? (Hosts also offer a generic parameter list.)
-3. **Sample rates:** 44.1 / 48 kHz only at first, or up to 96 / 192 kHz?
-4. **Identity:** plugin name "Ammonite", vendor "GSNautilus", plugin IDs.
-5. **Firmware on the refactored core right away** (recommended: one core),
-   with a hardware check by the user after step 1.
+1. DAW sync: SYNC DAW / FREE, default DAW; keeps playing when stopped.
+2. UI: the hardware panel only.
+3. Sample rates: native, up to 192 kHz.
+4. Identity: Ammonite / GSNautilus / `com.gsnautilus.ammonite` / `GSNa` `Ammo`.
+5. Firmware: stays on `core/` untouched; the plugin has its own engine copy.
