@@ -38,12 +38,12 @@ fifths, so a chord has a look as well as a sound).
 
 ## Listen
 
-**[&#9654; Two minutes of Ammonite](https://gsnautilus.github.io/ammonite/#listen)**, and every clip below, play on the
-[listening page](https://gsnautilus.github.io/ammonite/).
+**[&#9654; Two minutes of Ammonite](https://gsnautilus.github.io/ammonite/#listen)**
 
-And the recipes: rendered straight from the synth engine, 40 seconds each. Every one is a
-recipe from the [owner's manual](manual/Ammonite_Manual.pdf), so you can dial it in
-yourself.
+That and every clip below play in your browser on the
+[listening page](https://gsnautilus.github.io/ammonite/). The recipes are rendered
+straight from the synth engine, 40 seconds each; every one is in the
+[owner's manual](manual/Ammonite_Manual.pdf), so you can dial it in yourself.
 
 | | |
 |---|---|
