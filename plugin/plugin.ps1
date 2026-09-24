@@ -14,6 +14,11 @@
   CMake and Ninja from Visual Studio Build Tools 2022.
 
 .EXAMPLE
+  .\plugin\plugin.ps1 package
+  Zip the built plugins with INSTALL.txt and the licenses for a release:
+  plugin\build\release\Ammonite-<version>-win64.zip.
+
+.EXAMPLE
   .\plugin\plugin.ps1 install
   Copy them into C:\Program Files\Common Files\VST3 and ...\CLAP. Needs a
   PowerShell opened with "Run as administrator".
@@ -29,7 +34,7 @@
 #>
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('build', 'install', 'test')]
+    [ValidateSet('build', 'package', 'install', 'test')]
     [string]$Action
 )
 
@@ -105,6 +110,59 @@ switch ($Action) {
         $out = Invoke-MsvcBuild
         Write-Host ''
         Get-ChildItem $out | ForEach-Object { Write-Host "built $($_.FullName)" -ForegroundColor Green }
+    }
+    'package' {
+        # The release zip: both plugins, how to install, and the licenses
+        # of everything linked in.
+        $out = Join-Path $build 'cmake\bin'
+        if (-not (Test-Path (Join-Path $out 'Ammonite.vst3'))) { throw 'not built yet: .\plugin\plugin.ps1 build' }
+        $ver = ([regex]'project\(Ammonite VERSION ([0-9.]+)').Match(
+            (Get-Content (Join-Path $PSScriptRoot 'CMakeLists.txt') -Raw)).Groups[1].Value
+        $name = "Ammonite-$ver-win64"
+        $dir = Join-Path $build "release\$name"
+        Remove-Item -Recurse -Force $dir -ErrorAction SilentlyContinue
+        New-Item -ItemType Directory -Force (Join-Path $dir 'licenses') | Out-Null
+        Copy-Item -Recurse (Join-Path $out 'Ammonite.vst3') $dir
+        Copy-Item (Join-Path $out 'Ammonite.clap') $dir
+        Copy-Item (Join-Path $root 'LICENSE') (Join-Path $dir 'LICENSE.txt')
+        Copy-Item (Join-Path $PSScriptRoot 'lib\DPF\LICENSE') (Join-Path $dir 'licenses\DPF (ISC).txt')
+        Copy-Item (Join-Path $root 'lib\DaisySP\LICENSE') (Join-Path $dir 'licenses\DaisySP (MIT).txt')
+        Copy-Item (Join-Path $PSScriptRoot 'engine\LICENSE-reverbsc.txt') (Join-Path $dir 'licenses\ReverbSc (LGPL-2.1).txt')
+        @(
+            "Ammonite $ver - VST3 and CLAP plugin for Windows (64-bit)",
+            'https://github.com/GSNautilus/ammonite',
+            '',
+            'Install:',
+            '  VST3: copy the Ammonite.vst3 folder into C:\Program Files\Common Files\VST3',
+            '  CLAP: copy Ammonite.clap into C:\Program Files\Common Files\CLAP',
+            'Then rescan plugins in your DAW and load Ammonite on an instrument track.',
+            '',
+            'It plays by itself as soon as it is loaded. SYNC DAW (the default) follows the',
+            "DAW's tempo and bars; SYNC FREE runs on its own TEMPO knob. Every knob is an",
+            'automatable parameter. Drag a knob up or down (Shift: fine), scroll, or',
+            'double-click it for its default. Knob 11 turns the pages, knob 10 the sections.',
+            '',
+            'Good to know: bars are always 4/4, and Ammonite ignores MIDI notes, so a',
+            "DAW's channel mute does not silence it: mute its mixer track instead.",
+            '',
+            'Licenses: Ammonite is MIT (LICENSE.txt). It is built with DPF (ISC) and',
+            'DaisySP (MIT); its reverb, ReverbSc, is LGPL-2.1: the complete source of',
+            'this plugin, the reverb included, is at the address above (licenses\).'
+        ) | Set-Content -Encoding utf8 (Join-Path $dir 'INSTALL.txt')
+        $zip = Join-Path $build "release\$name.zip"
+        Remove-Item -Force $zip -ErrorAction SilentlyContinue
+        # Entry by entry with "/" in the names: PowerShell 5.1's zip writers
+        # (Compress-Archive, ZipFile) store "\", which some unzippers mangle.
+        Add-Type -AssemblyName System.IO.Compression, System.IO.Compression.FileSystem
+        $fs = [IO.File]::Open($zip, 'Create')
+        $za = New-Object IO.Compression.ZipArchive($fs, [IO.Compression.ZipArchiveMode]::Create)
+        try {
+            Get-ChildItem -Recurse -File $dir | ForEach-Object {
+                $rel = $name + '/' + $_.FullName.Substring($dir.Length + 1).Replace('\', '/')
+                [IO.Compression.ZipFileExtensions]::CreateEntryFromFile($za, $_.FullName, $rel, 'Optimal') | Out-Null
+            }
+        } finally { $za.Dispose(); $fs.Dispose() }
+        Write-Host "packaged $zip" -ForegroundColor Green
     }
     'install' {
         # The standard system folders every host scans. Writing there needs

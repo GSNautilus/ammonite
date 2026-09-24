@@ -16,7 +16,8 @@
 <p align="center">
   <a href="https://gsnautilus.github.io/ammonite/#listen"><b>&#9654; Listen: two minutes of Ammonite</b></a><br>
   <a href="https://gsnautilus.github.io/ammonite/#video">Watch the screen play (video with sound)</a> &middot;
-  <a href="manual/Ammonite_Manual.pdf">Owner's manual (PDF)</a>
+  <a href="manual/Ammonite_Manual.pdf">Owner's manual (PDF)</a> &middot;
+  <a href="#play-it-in-a-daw-vst3--clap-windows">VST3 / CLAP plugin</a>
 </p>
 
 ---
@@ -125,9 +126,37 @@ pip install -r requirements.txt
 (If the right `python` is not on your PATH, set `AMMONITE_PYTHON` to its `python.exe`.)
 `.\ammonite.ps1 test` runs the engine's 193 headless checks.
 
-### A plugin?
+### Play it in a DAW (VST3 / CLAP, Windows)
 
-A VST3 / CLAP version for Windows is planned (see the to-do list).
+<p align="center"><img src="media/plugin.png" width="720" alt="The Ammonite plugin: the panel with its twelve knobs and the round screen"></p>
+
+Ammonite is also a plugin for Windows DAWs, with the same engine, panel and screen as
+the hardware (its copy of the engine is checked bit for bit against the firmware's).
+
+1. Download `Ammonite-0.2.0-win64.zip` from the [latest release](../../releases/latest)
+   and unzip it.
+2. Copy the `Ammonite.vst3` folder into `C:\Program Files\Common Files\VST3`, and/or
+   `Ammonite.clap` into `C:\Program Files\Common Files\CLAP`.
+3. Rescan plugins in your DAW and load Ammonite on an instrument track.
+
+It plays by itself as soon as it is loaded. **SYNC DAW** (the default) follows the
+DAW's tempo and bars: patterns and chord progressions line up with the song and follow
+the playhead; **SYNC FREE** runs on its own TEMPO knob like the hardware. Every knob of
+every page is an automatable parameter, saved with the project; turning a knob on the
+panel records automation. Any sample rate from 44.1 to 192 kHz.
+
+Tested in FL Studio 2025. Good to know: Ammonite's bars are always 4/4, and it ignores
+MIDI notes, so a DAW's channel mute (which mutes by holding back notes) does not
+silence it: mute or turn down its mixer track instead.
+
+To build it yourself you need the Visual Studio 2022 Build Tools (the C++ workload, with
+CMake). In PowerShell, from the repository:
+
+```powershell
+.\plugin\plugin.ps1 build     # plugin\build\cmake\bin\Ammonite.vst3 and Ammonite.clap
+.\plugin\plugin.ps1 install   # copies both into the system plugin folders (run as administrator)
+.\plugin\plugin.ps1 test      # the engine and plugin tests
+```
 
 ## To do
 
@@ -135,7 +164,7 @@ A VST3 / CLAP version for Windows is planned (see the to-do list).
       of the build
 - [ ] **Enclosure v2**: back and side panels with room for the jack and USB
 - [ ] **Measure CPU load on the Seed** with every effect running
-- [ ] **VST3 / CLAP plugin** for Windows, synced to the DAW's tempo
+- [x] **VST3 / CLAP plugin** for Windows, synced to the DAW's tempo (0.2.0)
 
 ## Repository
 
@@ -145,11 +174,13 @@ A VST3 / CLAP version for Windows is planned (see the to-do list).
 | `firmware/` | the thin Daisy shell: knobs in, audio and screen out |
 | `sim/` | the PC simulator (Python + the engine as a DLL) |
 | `tests/` | headless tests that play the engine and measure what comes out |
+| `plugin/` | the VST3 / CLAP plugin (DPF): its copy of the engine, the panel UI, its tests |
 | `manual/` | the owner's manual: its screen captures are made by driving the engine |
 | `hardware/` | enclosure STLs and wiring diagrams |
 | `media/` | everything on this page, rendered by `media/make_media.py` |
 | `docs/ENGINE_PLAN.md` | the design and build notes |
-| `lib/` | libDaisy and DaisySP (git submodules) |
+| `docs/VST_PLAN.md` | how the plugin was built, decisions and limits |
+| `lib/` | libDaisy and DaisySP (git submodules; `plugin/lib/DPF` for the plugin) |
 
 ## License
 
@@ -159,4 +190,6 @@ It builds on Electrosmith's [libDaisy](https://github.com/electro-smith/libDaisy
 [DaisySP](https://github.com/electro-smith/DaisySP) (MIT). The reverb, `ReverbSc`, comes from
 [DaisySP-LGPL](https://github.com/electro-smith/DaisySP-LGPL) and is licensed under the
 **LGPL-2.1**; it is linked into the firmware and the simulator, and its full source is
-included here as a submodule.
+included here as a submodule. The plugin links its own copy of it (`plugin/engine`, with
+a larger buffer for high sample rates, source included) and is built with the
+[DISTRHO Plugin Framework](https://github.com/DISTRHO/DPF) (ISC).

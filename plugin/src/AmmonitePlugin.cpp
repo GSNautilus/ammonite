@@ -77,7 +77,7 @@ class AmmonitePlugin : public Plugin
     const char* getMaker() const override { return "GSNautilus"; }
     const char* getHomePage() const override { return "https://github.com/GSNautilus/ammonite"; }
     const char* getLicense() const override { return "MIT (ReverbSc: LGPL-2.1)"; }
-    uint32_t    getVersion() const override { return d_version(0, 1, 0); }
+    uint32_t    getVersion() const override { return d_version(0, 2, 0); }
     int64_t     getUniqueId() const override { return d_cconst('A', 'm', 'm', 'o'); }
 
     /* ---------------------------------------------------- parameters */

@@ -230,6 +230,30 @@ A first loadable plugin before the rest of step 2 and the UI of step 3.
   DPF's native audio fallback on Windows needs MinGW, not MSVC.
 - Page and section are not saved with the project (the engine keeps them
   while the plugin lives).
+- **FL Studio (user): the UI works.** The screen lagged behind the knobs at
+  first: Windows starves the idle timer while mouse moves keep coming, and a
+  knob change reached the engine only after FL's round trip. Fixed: mouse
+  input also advances the screen, and a knob writes the engine directly
+  (as well as the host). The user: "works perfectly".
+
+### Release 0.2.0 (2026-09-24)
+
+- Version 0.2.0 (the repo's numbering: 0.1.0 = the hardware release), in
+  `plugin/CMakeLists.txt` and `getVersion`. The local safety tag `v1.0`
+  was deleted (v0.1.0 on GitHub marks the published hardware version).
+- `.\plugin\plugin.ps1 package` -> `plugin\build\release\Ammonite-0.2.0-win64.zip`:
+  `Ammonite.vst3`, `Ammonite.clap`, `INSTALL.txt`, `LICENSE.txt` and
+  `licenses\` (DPF ISC, DaisySP MIT, ReverbSc LGPL-2.1). Zip entries are
+  written one by one with "/" (PowerShell 5.1's writers store "\").
+- The binaries depend only on Windows system DLLs (static CRT; checked with
+  `dumpbin /dependents`: KERNEL32, USER32, GDI32, OPENGL32, dwmapi).
+- README: "Play it in a DAW" section with `media/plugin.png` (captured from
+  the real UI by the ui_check host), to-do ticked, `plugin/` in the table,
+  DPF and the plugin's ReverbSc copy under License.
+- Later, when wanted: other meters (3/4, 6/8), an option to play only while
+  the DAW sends notes (so a channel mute works), saving page / section with
+  the project, a 60 fps screen with time-based fades, GitHub Actions builds,
+  Ableton Live 12 check.
 
 
 
