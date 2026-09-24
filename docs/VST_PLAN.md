@@ -164,8 +164,9 @@ A first loadable plugin before the rest of step 2 and the UI of step 3.
   `Ammonite.clap`: descriptor, 168 unique parameters, plays at 48 / 96 /
   192 kHz, same sound as the tested engine DLL (MSVC vs zig, correlation
   1.0000), automation event, two instances side by side, state save / load.
-- Not verified yet: the VST3 in a real host (the user: Ableton Live 12,
-  FL Studio 2025; Live has no CLAP).
+- **FL Studio 2025 (user, 2026-09-24): loads, plays, parameter changes,
+  automation and saving the project all work.** Not yet checked: several
+  instances in a host, Ableton Live 12 (VST3 only, Live has no CLAP).
 
 
 
