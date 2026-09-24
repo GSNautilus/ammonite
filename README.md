@@ -43,7 +43,7 @@ fifths, so a chord has a look as well as a sound).
 
 ## Listen
 
-**[&#9654; Two minutes of Ammonite](https://gsnautilus.github.io/ammonite/#listen)**
+**[&#9654; Two minutes of Ammonite](https://gsnautilus.github.io/ammonite/)**
 
 That and every clip below play in your browser on the
 [listening page](https://gsnautilus.github.io/ammonite/). The recipes are rendered
