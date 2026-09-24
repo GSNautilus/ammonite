@@ -4,3 +4,6 @@
 [submodule "lib/DaisySP"]
 	path = lib/DaisySP
 	url = https://github.com/electro-smith/DaisySP
+[submodule "plugin/lib/DPF"]
+	path = plugin/lib/DPF
+	url = https://github.com/DISTRHO/DPF.git

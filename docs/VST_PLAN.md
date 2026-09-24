@@ -139,7 +139,35 @@ The firmware must keep building from the same core.
 - A fresh worktree has no submodules: `git submodule update --init
   --recursive lib/DaisySP` (libDaisy is only needed for the firmware).
 
-### Step 2: what a host needs from the core
+### Plugin shell: DONE (2026-09-24), pulled forward (user: "into a DAW first")
+
+A first loadable plugin before the rest of step 2 and the UI of step 3.
+
+- Engine: 44.1-192 kHz (own ReverbSc copy, lines sized for 192 kHz; above
+  it no reverb instead of a crash), host API (`FuncName / FuncPerOsc /
+  FuncSteps / FuncDefault / FuncPlace / FuncStepText`, smoothed `SetParam`,
+  `GetParam`, `ReverbOk`). Still bit-identical to core/ at 48 kHz.
+- `plugin/lib/DPF` (submodule), `plugin/src/DistrhoPluginInfo.h` (IDs as
+  decided), `plugin/src/AmmonitePlugin.cpp`: one engine per instance, no
+  UI (the host's generic parameter list), a MIDI input it ignores, the
+  engine's own TEMPO (no DAW sync yet). Flush-to-zero in `run`.
+- **168 parameters**, ID = index over (func, osc) in enum Func order, named
+  "PAGE SECTION NAME osc" ("ENVELOPE AMP ATTACK 1", "VOLUME"). Continuous:
+  0..100; stepped: the step with the panel's names. The host saves them
+  with the project (DPF's own state: parameter values only).
+- `.\plugin\plugin.ps1 build` (MSVC 14.39 + CMake + Ninja; `cl` forced,
+  the Daisy ARM g++ is on PATH; static CRT) ->
+  `plugin\build\cmake\bin\Ammonite.vst3` and `Ammonite.clap`.
+  `.\plugin\plugin.ps1 install` (admin PowerShell) copies them to
+  `C:\Program Files\Common Files\VST3` and `...\CLAP`.
+- `plugin/tests/test_clap.py`: a ctypes CLAP host loads the built
+  `Ammonite.clap`: descriptor, 168 unique parameters, plays at 48 / 96 /
+  192 kHz, same sound as the tested engine DLL (MSVC vs zig, correlation
+  1.0000), automation event, two instances side by side, state save / load.
+- Not verified yet: the VST3 in a real host (the user: Ableton Live 12,
+  FL Studio 2025; Live has no CLAP).
+
+
 
 - **Tempo / transport:** an API the plugin calls each block with the host's
   BPM, song position (PPQ) and playing flag; `beat_` follows the host. Decide

@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Build and test the Ammonite plugin's engine (plugin\engine).
+  Build, install and test the Ammonite plugin (VST3 + CLAP, Windows x64).
 
 .DESCRIPTION
   Everything here stays inside plugin\: the hardware project (core\,
@@ -9,16 +9,27 @@
   "python".
 
 .EXAMPLE
+  .\plugin\plugin.ps1 build
+  Build plugin\build\cmake\bin\Ammonite.vst3 and Ammonite.clap with MSVC,
+  CMake and Ninja from Visual Studio Build Tools 2022.
+
+.EXAMPLE
+  .\plugin\plugin.ps1 install
+  Copy them into C:\Program Files\Common Files\VST3 and ...\CLAP. Needs a
+  PowerShell opened with "Run as administrator".
+
+.EXAMPLE
   .\plugin\plugin.ps1 test
   Build two DLLs with the same compiler and flags as the simulator:
   plugin\build\core_ref.dll from core\ (the hardware engine) and
   plugin\build\ammonite_engine.dll from plugin\engine. Then run the whole
   hardware test suite (tests\) against the plugin engine, and
-  plugin\tests\ (bit-identical to core\, several instances side by side).
+  plugin\tests\ (bit-identical to core\, several instances side by side,
+  sample rates, and the built Ammonite.clap in a small CLAP host).
 #>
 param(
     [Parameter(Mandatory = $true)]
-    [ValidateSet('test')]
+    [ValidateSet('build', 'install', 'test')]
     [string]$Action
 )
 
@@ -62,9 +73,56 @@ function Build-EngineDll([string]$srcDir, [string[]]$files, [string]$out, [strin
     if ($r.Code -ne 0) { throw "build of $out failed" }
 }
 
+# MSVC + CMake + Ninja from Visual Studio Build Tools 2022. vcvars64 sets up
+# the environment inside a batch file (one command per line: cmd expands
+# %PATH% when it reads a line, so it cannot be chained after vcvars).
+function Invoke-MsvcBuild {
+    $vs = 'C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools'
+    $cm = "$vs\Common7\IDE\CommonExtensions\Microsoft\CMake"
+    if (-not (Test-Path "$vs\VC\Auxiliary\Build\vcvars64.bat")) {
+        throw "Visual Studio Build Tools 2022 not found at $vs"
+    }
+    $bat = Join-Path $build 'build_plugin.bat'
+    $src = $PSScriptRoot
+    $bin = Join-Path $build 'cmake'
+    @(
+        '@echo off',
+        "call `"$vs\VC\Auxiliary\Build\vcvars64.bat`" >nul || exit /b 1",
+        "set `"PATH=$cm\CMake\bin;$cm\Ninja;%PATH%`"",
+        # cl explicitly: another g++ on PATH (the Daisy ARM toolchain) would win
+        "cmake -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_COMPILER=cl -DCMAKE_CXX_COMPILER=cl -S `"$src`" -B `"$bin`" || exit /b 1",
+        "cmake --build `"$bin`" || exit /b 1"
+    ) | Set-Content -Encoding ascii $bat
+    & cmd /c $bat | Out-Host
+    if ($LASTEXITCODE -ne 0) { throw 'plugin build failed' }
+    return Join-Path $bin 'bin'
+}
+
 New-Item -ItemType Directory -Force $build | Out-Null
 
 switch ($Action) {
+    'build' {
+        $out = Invoke-MsvcBuild
+        Write-Host ''
+        Get-ChildItem $out | ForEach-Object { Write-Host "built $($_.FullName)" -ForegroundColor Green }
+    }
+    'install' {
+        # The standard system folders every host scans. Writing there needs
+        # an administrator PowerShell.
+        $out = Join-Path $build 'cmake\bin'
+        if (-not (Test-Path (Join-Path $out 'Ammonite.vst3'))) { throw 'not built yet: .\plugin\plugin.ps1 build' }
+        $admin = ([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole(
+            [Security.Principal.WindowsBuiltInRole]::Administrator)
+        if (-not $admin) { throw 'run this in a PowerShell opened with "Run as administrator"' }
+        $vst3 = 'C:\Program Files\Common Files\VST3'
+        $clap = 'C:\Program Files\Common Files\CLAP'
+        New-Item -ItemType Directory -Force $vst3, $clap | Out-Null
+        Remove-Item -Recurse -Force (Join-Path $vst3 'Ammonite.vst3') -ErrorAction SilentlyContinue
+        Copy-Item -Recurse (Join-Path $out 'Ammonite.vst3') $vst3
+        Copy-Item -Force (Join-Path $out 'Ammonite.clap') $clap
+        Write-Host "installed $vst3\Ammonite.vst3" -ForegroundColor Green
+        Write-Host "installed $clap\Ammonite.clap" -ForegroundColor Green
+    }
     'test' {
         $ref = Join-Path $build 'core_ref.dll'
         $eng = Join-Path $build 'ammonite_engine.dll'

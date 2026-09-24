@@ -12,7 +12,12 @@
 
 // The drawing helpers are called from many places; inlining each call
 // costs flash (the Seed has 128 KB) and buys nothing next to the SPI push.
+// (Plugin copy: MSVC spells it differently.)
+#if defined(_MSC_VER)
+#define SYNTHUI_NOINLINE __declspec(noinline)
+#else
 #define SYNTHUI_NOINLINE __attribute__((noinline))
+#endif
 
 namespace synthui
 {
