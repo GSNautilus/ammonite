@@ -12,6 +12,8 @@
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     color: #ece9e3; font: 400 17px/1.55 "Barlow", system-ui, sans-serif; text-align: center;
   }
+  /* the listening page's header, scaled as one to fill the card's height */
+  .content { zoom: 1.46; display: flex; flex-direction: column; align-items: center; }
   .logo { width: 56px; height: 56px; }
   h1 {
     font: 300 72px/1 "Barlow Condensed", sans-serif;
@@ -22,9 +24,11 @@
 </head>
 <body>
   <div class="card">
-    <img class="logo" src="../manual/img/ammonite.svg" alt="">
-    <h1>AMMONITE</h1>
-    <p>A three-voice arpeggiator synthesizer on the Daisy Seed</p>
+    <div class="content">
+      <img class="logo" src="../manual/img/ammonite.svg" alt="">
+      <h1>AMMONITE</h1>
+      <p>A three-voice arpeggiator synthesizer on the Daisy Seed</p>
+    </div>
   </div>
 </body>
 </html>
