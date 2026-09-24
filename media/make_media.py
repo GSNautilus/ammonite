@@ -8,6 +8,7 @@ README media, all rendered from the engine itself (sim\\synthcore.dll).
   views.png       the four VIEWs side by side
   pages.png       the nine page maps
   panel.png       the simulator panel
+  banner.png      the README header, banner.html screenshot by headless Edge
   enclosure.png   a render of the printed enclosure (hardware\\stl)
 
 Needs ffmpeg on PATH. Run:  python media\\make_media.py [demo] [audio] [images]
@@ -332,7 +333,29 @@ def enclosure_render(out):
     render_stl(ENCLOSURE_PARTS, out)
 
 
+def banner(out):
+    """The README header: banner.html (the listening page's header) screenshot
+    by headless Edge at 2x, transparent outside its rounded card."""
+    import time
+    edge = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"
+    src = os.path.join(HERE, "banner.html")
+    if os.path.exists(out):
+        os.remove(out)
+    subprocess.run([edge, "--headless", "--disable-gpu", "--hide-scrollbars",
+                    "--force-device-scale-factor=2", "--window-size=1200,300",
+                    "--default-background-color=00000000", "--virtual-time-budget=5000",
+                    f"--screenshot={out}", "file:///" + src.replace("\\", "/")],
+                   check=True, capture_output=True)
+    for _ in range(120):   # msedge.exe returns before the file is written
+        if os.path.exists(out) and os.path.getsize(out) > 0:
+            time.sleep(0.5)
+            break
+        time.sleep(0.5)
+    print("image:", out)
+
+
 def images():
+    banner(os.path.join(HERE, "banner.png"))
     montage(["view_pitch", "view_rings", "view_wheel", "view_scope"],
             ["PITCH", "RINGS", "WHEEL", "SCOPE"], 4, os.path.join(HERE, "views.png"))
     names = ["main", "osc", "arp", "envelope", "filter", "lfo", "delay", "mix", "key"]

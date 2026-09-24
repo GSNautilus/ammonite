@@ -1,11 +1,12 @@
 <p align="center">
+  <a href="https://gsnautilus.github.io/ammonite/"><img src="media/banner.png" width="100%" alt="Ammonite: a three-voice arpeggiator synthesizer on the Daisy Seed"></a>
+</p>
+
+<p align="center">
   <img src="media/screen.gif" width="400" alt="The Ammonite screen playing">
 </p>
 
-<h1 align="center">Ammonite</h1>
-
 <p align="center">
-  <b>A three-voice arpeggiator synthesizer on the Daisy Seed</b><br>
   12 knobs &middot; a round screen that draws the music &middot; chords, polyrhythms and echoes in one small box
 </p>
 
