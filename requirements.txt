@@ -1,0 +1,9 @@
+# simulator + tests
+numpy
+pygame
+sounddevice
+ziglang        # builds sim\synthcore.dll (zig c++)
+# manual + media
+pillow
+pymupdf
+trimesh

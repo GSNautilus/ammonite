@@ -1,0 +1,13 @@
+# builds
+firmware/build/
+sim/synthcore.dll
+sim/*.pdb
+sim/*.lib
+__pycache__/
+
+# manual / media build scratch
+manual/_print.html
+manual/_pass1.pdf
+media/_video.mp4
+media/_audio.wav
+media/audio/*.wav

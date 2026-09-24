@@ -1,0 +1,265 @@
+/* Ammonite manual: print-first, A4 portrait. Edge prints it (build.py). */
+:root {
+  --ink: #1c1d1f;
+  --muted: #62666d;
+  --faint: #9a9ea5;
+  --rule: #dcd8d0;
+  --wash: #f4f1ec;
+  --accent: #a4501d;       /* ammonite rust */
+  --accent-wash: #f7ede5;
+  --screen: #0b0b0c;
+  --display: "Bahnschrift", "Segoe UI", sans-serif;
+  --body: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+}
+
+@page {
+  size: A4;
+  margin: 17mm 18mm 19mm 18mm;
+  @bottom-left {
+    content: "Ammonite  \00B7  Owner's manual";
+    font: 7.5pt var(--display); color: #9a9ea5; letter-spacing: .06em;
+  }
+  @bottom-right {
+    content: counter(page);
+    font: 600 8pt var(--display); color: #62666d;
+  }
+}
+@page cover { margin: 0; @bottom-left { content: none } @bottom-right { content: none } }
+
+* { box-sizing: border-box; }
+html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body {
+  margin: 0; color: var(--ink); background: #fff;
+  font: 9.4pt/1.5 var(--body);
+}
+
+/* ---------------------------------------------------------------- cover */
+.cover {
+  page: cover; break-after: page;
+  width: 210mm; height: 297mm; position: relative; overflow: hidden;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20mm 20mm 18mm;
+}
+.cover .kicker {
+  font: 400 8.5pt var(--display); letter-spacing: .42em; color: var(--muted);
+  text-transform: uppercase;
+}
+.cover h1 {
+  font: 300 50pt/1 var(--display); letter-spacing: .28em; margin: 7mm 0 0 .28em;
+}
+.cover .sub { font: 400 12pt var(--display); color: var(--muted); margin-top: 4mm; letter-spacing: .04em; }
+.cover .hero {
+  position: relative; margin-top: 16mm; width: 128mm; height: 128mm;
+}
+.cover .hero .disc { width: 100%; height: 100%; }
+.cover .logo { width: 17mm; height: 17mm; margin-bottom: 7mm; }
+.cover .foot {
+  margin-top: auto; width: 100%; display: flex; align-items: flex-end; justify-content: space-between;
+  border-top: .6pt solid var(--rule); padding-top: 4mm;
+  font: 8pt/1.5 var(--display); color: var(--muted); letter-spacing: .03em;
+}
+
+/* the round screen, with a thin bezel like the real one */
+/* bezel inside the box: a shadow outside it leaks onto the previous page */
+.disc { border-radius: 50%; padding: 1.2mm; background: #26282c; border: .3mm solid #8d9199; }
+img.disc { display: block; }
+
+/* ------------------------------------------------------------- chapters */
+.chapter { break-before: page; }
+.cover + .chapter { break-before: auto; }
+
+.sec-head {
+  display: grid; grid-template-columns: 22mm 1fr; gap: 5mm; align-items: center;
+  padding-bottom: 5mm; margin-bottom: 6mm; border-bottom: 1.2pt solid var(--ink);
+}
+.sec-head .badge {
+  width: 20mm; height: 20mm; border-radius: 50%; border: 1.6pt solid var(--accent);
+  display: grid; place-items: center; font: 300 25pt var(--display); color: var(--accent);
+}
+.sec-head .badge.plain { border-color: var(--ink); color: var(--ink); }
+.sec-head .kicker {
+  font: 400 7.8pt var(--display); letter-spacing: .3em; text-transform: uppercase; color: var(--muted);
+}
+.sec-head h1 { font: 600 26pt/1.05 var(--display); letter-spacing: .06em; margin: 1mm 0 1.5mm; }
+.sec-head .lede { margin: 0; font-size: 10.5pt; color: #3b3d41; max-width: 148mm; }
+
+h2 {
+  font: 600 12.5pt var(--display); letter-spacing: .05em; margin: 7mm 0 2mm;
+  break-after: avoid;
+}
+h2 .tag { font-weight: 400; color: var(--muted); letter-spacing: .02em; margin-left: 2mm; font-size: 9.5pt; }
+h3 { font: 600 9.5pt var(--display); letter-spacing: .08em; text-transform: uppercase; margin: 5mm 0 1.5mm; color: var(--accent); break-after: avoid; }
+p { margin: 0 0 2.4mm; }
+
+/* device words: function names, values, knob numbers */
+.fn {
+  font: 600 .92em var(--display); letter-spacing: .05em;
+  background: var(--wash); border-radius: 1.2pt; padding: 0 .3em; white-space: nowrap;
+}
+.val { font: 400 .95em var(--display); letter-spacing: .03em; white-space: nowrap; }
+.k {
+  display: inline-grid; place-items: center; width: 1.55em; height: 1.55em; border-radius: 50%;
+  background: var(--ink); color: #fff; font: 600 .74em var(--display); vertical-align: .08em;
+}
+
+/* figures */
+figure { margin: 0 0 5mm; break-inside: avoid; }
+figure img.panel { display: block; width: 100%; border-radius: 2mm; }
+figcaption { font-size: 8pt; line-height: 1.45; color: var(--muted); margin-top: 2mm; }
+figcaption b { color: var(--ink); font-family: var(--display); letter-spacing: .04em; }
+
+.row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7mm; margin: 4mm 0 5mm; break-inside: avoid; }
+.row3 figure { text-align: center; margin: 0; }
+.row3 img.disc { width: 44mm; height: 44mm; margin: 1.5mm auto 0; }
+.row3 figcaption { text-align: center; }
+
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 9mm; break-inside: avoid; margin: 3mm 0 5mm; }
+.pair figure { margin: 0; }
+.pair img.disc { width: 52mm; height: 52mm; margin: 1.5mm auto 0; }
+
+/* knob tables */
+table.knobs { width: 100%; border-collapse: collapse; margin: 1mm 0 4mm; font-size: 8.6pt; line-height: 1.42; break-inside: avoid; }
+table.knobs th {
+  font: 400 7pt var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  text-align: left; padding: 0 2.5mm 1.5mm 0; border-bottom: .8pt solid var(--ink);
+}
+table.knobs td { padding: 2mm 2.5mm 2mm 0; border-bottom: .5pt solid var(--rule); vertical-align: top; }
+table.knobs td.kn { white-space: nowrap; width: 17mm; }
+table.knobs td.fn-cell { width: 22mm; }
+table.knobs td.range { width: 36mm; color: #3b3d41; }
+table.knobs td.def { width: 26mm; color: #3b3d41; }
+.opt { display: inline-block; font: 400 .92em var(--display); letter-spacing: .03em; margin-right: .7em; white-space: nowrap; }
+
+/* callouts */
+.try {
+  background: var(--accent-wash); border-left: 2.2pt solid var(--accent);
+  padding: 3mm 4mm 2mm; margin: 3mm 0 5mm; break-inside: avoid;
+}
+.try .t { font: 600 8pt var(--display); letter-spacing: .2em; text-transform: uppercase; color: var(--accent); margin-bottom: 1mm; }
+.try ul { margin: 0; padding-left: 4.5mm; }
+.try li { margin-bottom: 1.2mm; }
+.note { font-size: 8.4pt; color: var(--muted); border-top: .5pt solid var(--rule); padding-top: 2mm; }
+
+/* annotated screen */
+.anatomy { display: grid; grid-template-columns: 104mm 1fr; gap: 6mm; align-items: start; margin-top: 2mm; }
+.anatomy svg { width: 100%; height: auto; display: block; }
+ol.legend { list-style: none; margin: 0; padding: 0; counter-reset: n; font-size: 8.8pt; }
+ol.legend li { position: relative; padding-left: 8mm; margin-bottom: 2.1mm; counter-increment: n; }
+ol.legend li::before {
+  content: counter(n); position: absolute; left: 0; top: .1mm;
+  width: 5.2mm; height: 5.2mm; border-radius: 50%; background: #fff; border: 1pt solid var(--ink);
+  display: grid; place-items: center; font: 600 7.5pt var(--display);
+}
+ol.legend b { font-family: var(--display); letter-spacing: .03em; }
+
+.colors { display: grid; grid-template-columns: 46mm 1fr; gap: 8mm; align-items: center; break-inside: avoid; margin-top: 3mm; }
+.colors img { width: 46mm; display: block; }
+
+/* the four views */
+.views { display: grid; grid-template-columns: 1fr 1fr; gap: 8mm 9mm; margin-top: 4mm; }
+.view { display: grid; grid-template-columns: 40mm 1fr; gap: 5mm; align-items: center; break-inside: avoid; }
+.view img.disc { width: 40mm; height: 40mm; }
+.view h4 { font: 600 10pt var(--display); letter-spacing: .08em; margin: 0 0 1mm; }
+.view h4 span { font-weight: 400; font-size: 8pt; color: var(--muted); letter-spacing: .04em; margin-left: 1.5mm; }
+.view p { font-size: 8.6pt; margin: 0; }
+.newpage { break-before: page; }
+.newpage > h2:first-child { margin-top: 0; }
+.views { padding-top: 2mm; }
+
+/* build.py's page finder: takes no space, invisible */
+.mark { position: absolute; font-size: 2px; color: #fff; }
+
+/* ------------------------------------------------------------- contents */
+.toc { break-after: page; padding-top: 10mm; }
+.toc h1 { font: 300 30pt var(--display); letter-spacing: .16em; margin: 0 0 3mm; }
+.toc .intro { color: var(--muted); max-width: 140mm; margin-bottom: 9mm; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { display: flex; align-items: baseline; gap: 3mm; padding: 1.6mm 0; border-bottom: .5pt solid var(--rule); }
+.toc li .t { font: 600 11pt var(--display); letter-spacing: .04em; }
+.toc li .d { color: var(--muted); font-size: 8.8pt; flex: 1; }
+.toc li .pg { font: 600 11pt var(--display); color: var(--accent); min-width: 8mm; text-align: right; }
+.toc li.sub { padding-left: 12mm; }
+.toc li.sub .t { font-weight: 400; font-size: 10pt; }
+.toc li.sub .t b { display: inline-block; width: 6mm; color: var(--accent); font-weight: 600; }
+.toc li.group { border-bottom: none; padding-top: 4mm; }
+.pg { font-family: var(--display); }
+
+/* numbered steps (quick start) */
+ol.steps { list-style: none; margin: 2mm 0 4mm; padding: 0; counter-reset: s; }
+ol.steps > li { position: relative; padding: 0 0 0 11mm; margin-bottom: 3.6mm; counter-increment: s; break-inside: avoid; }
+ol.steps > li::before {
+  content: counter(s); position: absolute; left: 0; top: -.4mm; width: 7mm; height: 7mm; border-radius: 50%;
+  border: 1.2pt solid var(--accent); color: var(--accent); display: grid; place-items: center; font: 600 10pt var(--display);
+}
+ol.steps b { font-family: var(--display); letter-spacing: .03em; font-size: 10.2pt; }
+
+/* diagrams */
+.diagram { margin: 3mm 0 5mm; break-inside: avoid; }
+.diagram svg, .diagram img { width: 100%; height: auto; display: block; }
+.flow text { font-family: Bahnschrift, "Segoe UI", sans-serif; fill: #1c1d1f; }
+.flow .bt { font-size: 12.5px; font-weight: 600; letter-spacing: .6px; text-anchor: middle; }
+.flow .bs { font-size: 9.5px; fill: #62666d; text-anchor: middle; }
+.flow .ml { font-size: 9.5px; fill: #a4501d; text-anchor: middle; }
+.flow .lb { font-size: 9px; fill: #62666d; }
+.flow rect.box { fill: #fff; stroke: #1c1d1f; stroke-width: 1.3; }
+.flow .wire { stroke: #1c1d1f; stroke-width: 1.3; fill: none; }
+.flow .mod { stroke: #a4501d; stroke-width: 1; fill: none; stroke-dasharray: 3 2; }
+
+/* note chips: a note with its screen color */
+.notes { display: grid; grid-template-columns: 50mm 1fr; gap: 2.2mm 4mm; align-items: center; margin: 3mm 0 5mm; break-inside: avoid; }
+.notes .lab { font-size: 8.4pt; color: var(--muted); line-height: 1.3; }
+.notes .lab b { color: var(--ink); font-family: var(--display); letter-spacing: .03em; font-size: 9pt; }
+.chips { display: flex; flex-wrap: wrap; gap: 1.2mm; }
+.n {
+  display: inline-flex; align-items: center; gap: 1.2mm; padding: .5mm 2mm .5mm 1.3mm;
+  border: .6pt solid var(--rule); border-radius: 3mm; font: 400 8.6pt var(--display); background: #fff;
+}
+.n::before { content: ""; width: 2.6mm; height: 2.6mm; border-radius: 50%; box-shadow: 0 0 0 .5pt #0b0b0c; background: var(--c); }
+.n.chord { border-color: var(--accent); border-width: 1pt; }
+.n-C { --c: #ff0000 } .n-G { --c: #ff8000 } .n-D { --c: #ffff00 } .n-A { --c: #80ff00 }
+.n-E { --c: #00ff00 } .n-B { --c: #00ff80 } .n-F { --c: #ff0080 }
+
+/* generic small screen rows */
+.screens { display: flex; justify-content: space-between; gap: 4mm; margin: 3mm 0 5mm; break-inside: avoid; }
+.screens figure { margin: 0; text-align: center; flex: 1; }
+.screens img.disc { margin: 1.5mm auto 0; }
+.screens figcaption { text-align: center; }
+.side { display: grid; grid-template-columns: 1fr 50mm; gap: 7mm; align-items: center; break-inside: avoid; margin: 2mm 0 4mm; }
+.side img.disc { width: 50mm; height: 50mm; }
+.side figure { margin: 0; }
+
+/* plain reference tables */
+table.ref { width: 100%; border-collapse: collapse; font-size: 8.6pt; margin: 1mm 0 5mm; break-inside: avoid; }
+table.ref th { font: 400 7pt var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  text-align: left; padding: 0 3mm 1.5mm 0; border-bottom: .8pt solid var(--ink); }
+table.ref td { padding: 1.5mm 3mm 1.5mm 0; border-bottom: .5pt solid var(--rule); vertical-align: top; }
+table.ref td.name { font: 600 8.8pt var(--display); letter-spacing: .04em; white-space: nowrap; }
+table.ref td.mono { font-family: var(--display); letter-spacing: .03em; white-space: nowrap; }
+
+/* recipes */
+.recipe { break-inside: avoid; margin: 0 0 9mm; }
+.recipe-head { display: grid; grid-template-columns: 44mm 1fr; gap: 7mm; align-items: center; margin-bottom: 3mm; }
+.recipe-head img.disc { width: 44mm; height: 44mm; }
+.recipe-head h2 { margin: 0 0 1.5mm; font-size: 15pt; }
+.recipe-head p { margin: 0; color: #3b3d41; font-size: 9.4pt; }
+table.settings { width: 100%; border-collapse: collapse; font-size: 8.5pt; }
+table.settings th { font: 400 7pt var(--display); letter-spacing: .14em; text-transform: uppercase; color: var(--muted);
+  text-align: left; padding: 0 2mm 1.2mm 0; border-bottom: .8pt solid var(--ink); }
+table.settings td { padding: .9mm 2mm .9mm 0; vertical-align: baseline; }
+table.settings tr.first td { border-top: .5pt solid var(--rule); }
+table.settings td.pg { width: 26mm; font: 600 8.4pt var(--display); letter-spacing: .04em; color: var(--accent); white-space: nowrap; }
+table.settings td.sec { width: 20mm; font: 400 8pt var(--display); letter-spacing: .06em; color: var(--muted); }
+table.settings td.v { width: 26mm; font-family: var(--display); letter-spacing: .03em; }
+table.settings td.v.off { color: #c4c0b8; }
+
+/* cheat sheet */
+table.cheat { width: 100%; border-collapse: collapse; font: 400 8.2pt var(--display); letter-spacing: .03em; }
+table.cheat th { font: 400 6.8pt var(--display); letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  text-align: left; padding: 0 2mm 1.5mm 0; border-bottom: .8pt solid var(--ink); }
+table.cheat td { padding: 1.3mm 2mm 1.3mm 0; border-bottom: .5pt solid var(--rule); vertical-align: top; }
+table.cheat td.p { font-weight: 600; white-space: nowrap; }
+table.cheat td.p b { color: var(--accent); display: inline-block; width: 4mm; }
+table.cheat td.s { color: var(--muted); white-space: nowrap; }
+table.cheat tr.cont td { border-top: none; }
+table.cheat tr.cont td.p, table.cheat tr.cont td.p b { color: transparent; }
+table.cheat .knob10 { color: var(--muted); }

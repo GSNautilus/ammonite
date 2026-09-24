@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ammonite Manual</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- =================================================================== COVER -->
+<section class="cover">
+  <img class="logo" src="img/ammonite.svg" alt="">
+  <div class="kicker">Owner's manual</div>
+  <h1>AMMONITE</h1>
+  <div class="sub">Three-voice arpeggiator synthesizer</div>
+  <div class="hero">
+    <img class="disc" src="img/screen_cover.png" alt="The Ammonite screen at power-on">
+  </div>
+  <div class="foot">
+    <div>Daisy Seed &middot; 12 knobs &middot; round screen<br>Manual draft, September 2026</div>
+    <div style="text-align:right">Oscillators, arps and chords<br>in one small box</div>
+  </div>
+</section>
+
+<!-- ================================================================ CONTENTS -->
+<section class="toc">
+  <h1>CONTENTS</h1>
+  <p class="intro">Every screen picture in this manual comes straight from Ammonite's own code:
+  it is exactly what the round screen shows. A word on words: <b>page</b> always means one of
+  Ammonite's nine knob pages (<i>page 3 ARP</i>); <b>p.&nbsp;12</b> means a page of this booklet.</p>
+  <ol>
+    <li><span class="t">Quick start</span><span class="d">from power to your own pattern</span><span class="pg" data-ref="quick">00</span></li>
+    <li><span class="t">The panel</span><span class="d">pages, columns, sections, and how knobs take over</span><span class="pg" data-ref="panel">00</span></li>
+    <li><span class="t">How Ammonite plays</span><span class="d">three voices, one key, one clock</span><span class="pg" data-ref="how">00</span></li>
+    <li class="group"><span class="t">The nine pages</span><span class="d"></span></li>
+    <li class="sub"><span class="t"><b>1</b>MAIN</span><span class="d">levels, key, tempo, masters</span><span class="pg" data-ref="main">00</span></li>
+    <li class="sub"><span class="t"><b>2</b>OSC</span><span class="d">shape and pitch</span><span class="pg" data-ref="osc">00</span></li>
+    <li class="sub"><span class="t"><b>3</b>ARP</span><span class="d">notes, rhythm, chance</span><span class="pg" data-ref="arp">00</span></li>
+    <li class="sub"><span class="t"><b>4</b>ENVELOPE</span><span class="d">amp, filter and pitch envelopes, glide</span><span class="pg" data-ref="envelope">00</span></li>
+    <li class="sub"><span class="t"><b>5</b>FILTER</span><span class="d">cutoff, resonance, type, drive</span><span class="pg" data-ref="filter">00</span></li>
+    <li class="sub"><span class="t"><b>6</b>LFO</span><span class="d">fifteen LFOs, five targets</span><span class="pg" data-ref="lfo">00</span></li>
+    <li class="sub"><span class="t"><b>7</b>DELAY</span><span class="d">one echo per oscillator</span><span class="pg" data-ref="delay">00</span></li>
+    <li class="sub"><span class="t"><b>8</b>MIX</span><span class="d">pan, width, reverb</span><span class="pg" data-ref="mix">00</span></li>
+    <li class="sub"><span class="t"><b>9</b>KEY</span><span class="d">progressions, tuning, view</span><span class="pg" data-ref="key">00</span></li>
+    <li class="group"></li>
+    <li><span class="t">Reading the screen</span><span class="d">rings, colors, four views</span><span class="pg" data-ref="screen">00</span></li>
+    <li><span class="t">Recipes</span><span class="d">five patches to start from</span><span class="pg" data-ref="recipes">00</span></li>
+    <li><span class="t">Scales and chords</span><span class="d">every SCALE setting, spelled out</span><span class="pg" data-ref="scales">00</span></li>
+    <li><span class="t">Cheat sheet</span><span class="d">every knob on one page</span><span class="pg" data-ref="cheat">00</span></li>
+  </ol>
+</section>
+
+<!-- ============================================================= QUICK START -->
+<section class="chapter" id="quick">
+  <header class="sec-head">
+    <div class="badge plain">
+      <svg viewBox="0 0 40 40" width="9mm" height="9mm"><path d="M13 9 L32 20 L13 31 Z" fill="currentColor"/></svg>
+    </div>
+    <div>
+      <div class="kicker">Start here</div>
+      <h1>Quick start</h1>
+      <p class="lede">Ammonite plays the moment it has power. Five minutes from here you will
+      have changed its key, its tempo and its chords.</p>
+    </div>
+  </header>
+
+  <ol class="steps">
+    <li><b>Turn it down, then plug in.</b> Turn knob <span class="k">12</span> (VOLUME) to the
+    left, connect the stereo output to your amp, mixer or speakers, and power Ammonite from
+    USB. Then bring VOLUME up.</li>
+    <li><b>Listen.</b> Three arpeggios in A minor at 110 BPM. OSC&nbsp;1 plays the low root and
+    fifth in quarter notes, OSC&nbsp;2 runs up and down the chord in eighths, OSC&nbsp;3 picks
+    random notes of the scale in sixteenths, leaving a few steps out. No effects are on yet.</li>
+  </ol>
+
+  <figure>
+    <img class="panel" src="img/panel_main_idle.png" alt="The panel at power-on">
+    <figcaption><b>Power-on.</b> Knob 11 points at page 1, MAIN. The screen shows the three
+    arps as rings (see <i>Reading the screen</i>, p.&nbsp;<span class="pg" data-ref="screen">00</span>).</figcaption>
+  </figure>
+
+  <ol class="steps" style="counter-reset: s 2">
+    <li><b>Change the tempo.</b> Turn knob <span class="k">6</span>, TEMPO. The screen shows what
+    you are turning and its value, then fades back to the rings.</li>
+    <li><b>Change the key.</b> Knob <span class="k">4</span> is ROOT, knob <span class="k">5</span>
+    is SCALE. Try <span class="val">DORIAN</span> or <span class="val">PENTA</span>. All three arps
+    follow at once; nothing can play a wrong note.</li>
+    <li><b>Let the chords move.</b> Turn knob <span class="k">11</span> all the way right, to
+    page 9, KEY. Turn knob <span class="k">1</span> (PROG) to <span class="val">POP</span>. Now the
+    chord changes every bar, and every arp follows it.</li>
+    <li><b>Add echoes and space.</b> Knob <span class="k">11</span> to page 7, DELAY: turn up
+    knobs <span class="k">7</span>&ndash;<span class="k">9</span>, the delay SEND of each
+    oscillator. Then page 8, MIX: knobs <span class="k">7</span>&ndash;<span class="k">9</span>
+    are the reverb sends.</li>
+  </ol>
+
+  <div class="try">
+    <div class="t">Two things worth knowing now</div>
+    <ul>
+      <li><b>Changing page never changes the sound.</b> But when you then touch a knob, its
+      setting jumps to where the knob points. The whole story is on
+      p.&nbsp;<span class="pg" data-ref="panel">00</span>.</li>
+      <li><b>Nothing is saved.</b> Switch off and on, and Ammonite starts again from its
+      power-on sound, with one exception: the page knob 11 points at when you switch on takes
+      its settings from where its knobs are. With knob 11 on page 1, that means the levels,
+      key, tempo and masters start where you left the knobs.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- =============================================================== THE PANEL -->
+<section class="chapter" id="panel">
+  <header class="sec-head">
+    <div class="badge plain">
+      <svg viewBox="0 0 40 40" width="11mm" height="11mm" fill="none" stroke="currentColor" stroke-width="2.4">
+        <circle cx="10" cy="14" r="5"/><circle cx="30" cy="14" r="5"/><circle cx="10" cy="29" r="5"/><circle cx="30" cy="29" r="5"/></svg>
+    </div>
+    <div>
+      <div class="kicker">Twelve knobs, nine pages</div>
+      <h1>The panel</h1>
+      <p class="lede">Twelve knobs control about a hundred settings. They are organised so that
+      once you know four rules, you can find anything.</p>
+    </div>
+  </header>
+
+  <div class="diagram">
+    <svg viewBox="0 -70 1240 530" xmlns="http://www.w3.org/2000/svg">
+      <image href="img/panel_main_idle.png" x="0" y="0" width="1240" height="390"/>
+      <g font-family="Bahnschrift, Segoe UI, sans-serif" font-size="22" font-weight="600" fill="#a4501d" text-anchor="middle" letter-spacing="1">
+        <text x="102" y="-22">OSC 1</text><text x="256" y="-22">OSC 2</text><text x="413" y="-22">OSC 3</text>
+        <text x="844" y="-22">OSC 1</text><text x="992" y="-22">OSC 2</text><text x="1142" y="-22">OSC 3</text>
+      </g>
+      <g stroke="#a4501d" stroke-width="2" fill="none">
+        <path d="M60 -10 V-4 H455 V-10"/><path d="M800 -10 V-4 H1185 V-10"/>
+      </g>
+      <g font-family="Bahnschrift, Segoe UI, sans-serif" font-size="20" fill="#1c1d1f" text-anchor="middle">
+        <text x="848" y="425">shared setting</text><text x="848" y="448">or SECTION</text>
+        <text x="995" y="425" font-weight="600">PAGE</text><text x="995" y="448">1 to 9</text>
+        <text x="1144" y="425" font-weight="600">VOLUME</text><text x="1144" y="448">on every page</text>
+        <text x="258" y="425">on pages 2 to 8, each column is one oscillator</text>
+      </g>
+    </svg>
+  </div>
+
+  <h2>1. Knob 11 picks the page</h2>
+  <p>There are nine pages. Turn knob <span class="k">11</span> and the screen lists the new
+  page's knobs. Knob <span class="k">12</span> is always VOLUME, whatever the page.</p>
+  <table class="ref">
+    <tr><th>Page</th><th>What its knobs do</th><th>Knob 10</th><th>Manual</th></tr>
+    <tr><td class="name">1 MAIN</td><td>levels, key, tempo, and master cutoff, delay and reverb</td><td class="mono">SWING</td><td>p.&nbsp;<span class="pg" data-ref="main">00</span></td></tr>
+    <tr><td class="name">2 OSC</td><td>each oscillator's shape, octave and starting note</td><td class="mono">DETUNE</td><td>p.&nbsp;<span class="pg" data-ref="osc">00</span></td></tr>
+    <tr><td class="name">3 ARP</td><td>what each arp plays and when</td><td class="mono">SECTION</td><td>p.&nbsp;<span class="pg" data-ref="arp">00</span></td></tr>
+    <tr><td class="name">4 ENVELOPE</td><td>how each note starts and ends, in volume, filter and pitch</td><td class="mono">SECTION</td><td>p.&nbsp;<span class="pg" data-ref="envelope">00</span></td></tr>
+    <tr><td class="name">5 FILTER</td><td>brightness and tone of each oscillator</td><td class="mono">DRIVE</td><td>p.&nbsp;<span class="pg" data-ref="filter">00</span></td></tr>
+    <tr><td class="name">6 LFO</td><td>slow (or fast) movement of pitch, cutoff, volume, pan, shape</td><td class="mono">TARGET</td><td>p.&nbsp;<span class="pg" data-ref="lfo">00</span></td></tr>
+    <tr><td class="name">7 DELAY</td><td>each oscillator's own echo</td><td class="mono">SECTION</td><td>p.&nbsp;<span class="pg" data-ref="delay">00</span></td></tr>
+    <tr><td class="name">8 MIX</td><td>pan, stereo width and reverb send</td><td class="mono">SIZE</td><td>p.&nbsp;<span class="pg" data-ref="mix">00</span></td></tr>
+    <tr><td class="name">9 KEY</td><td>chord progressions, tuning, reverb tone, the screen view</td><td class="mono">VIEW</td><td>p.&nbsp;<span class="pg" data-ref="key">00</span></td></tr>
+  </table>
+
+  <h2>2. Columns are oscillators</h2>
+  <p>On pages 2 to 8, each column of knobs belongs to one oscillator, in both groups: knobs
+  <span class="k">1</span> <span class="k">4</span> <span class="k">7</span> are OSC&nbsp;1,
+  <span class="k">2</span> <span class="k">5</span> <span class="k">8</span> are OSC&nbsp;2,
+  <span class="k">3</span> <span class="k">6</span> <span class="k">9</span> are OSC&nbsp;3. Each
+  row does one job for all three: on page 5, for example, knobs 1&ndash;3 are the three
+  CUTOFFs, 4&ndash;6 the three RESOs and 7&ndash;9 the three TYPEs. The screen lists a page
+  the same way: <span class="val">1-3 CUTOFF</span>, <span class="val">4-6 RESO</span>&hellip;</p>
+  <p>Pages 1 MAIN and 9 KEY are different: they set things for the whole instrument, so every
+  knob there has its own job.</p>
+
+  <h2>3. Knob 10 is shared, or picks a section</h2>
+  <p>On most pages knob <span class="k">10</span> is one setting shared by all three
+  oscillators (DETUNE, DRIVE, SIZE&hellip;). On four pages there is more to control than nine
+  knobs can hold, so the page is split into <b>sections</b> and knob 10 chooses one: ARP,
+  ENVELOPE and DELAY call it SECTION, LFO calls it TARGET. Choosing a section only changes what
+  knobs 1&ndash;9 control. It never changes the sound.</p>
+
+  <h2>4. A knob takes over when you turn it</h2>
+  <p>Every knob on every page and section remembers its own setting. When you change page (or
+  section) the knobs themselves stay where they are, so most of them now point somewhere other
+  than the setting they control. Ammonite leaves every setting alone until you turn its knob.
+  The moment you do, the setting <b>jumps</b> to where the knob points, and from then on
+  follows it.</p>
+  <p>So glance at a knob's pointer before you turn it. If it points far from where the sound
+  is, expect a jump. A tiny wobble does not count as a turn, so brushing a knob does
+  nothing.</p>
+
+  <h2>The screen tells you what you touched</h2>
+  <div class="screens">
+    <figure>
+      <img class="disc" src="img/screen_readout_tempo.png" alt="Readout" style="width:40mm;height:40mm">
+      <figcaption><b>Readout.</b> Turn any knob: its name, value and a gauge. Column pages add
+      the oscillator (and section) above the name.</figcaption>
+    </figure>
+    <figure>
+      <img class="disc" src="img/screen_pagemap_filter.png" alt="Page map" style="width:40mm;height:40mm">
+      <figcaption><b>Page map.</b> Turn knob 11: the page's name and what each row of knobs
+      does.</figcaption>
+    </figure>
+    <figure>
+      <img class="disc" src="img/screen_sub_lfo_cutoff.png" alt="Section map" style="width:40mm;height:40mm">
+      <figcaption><b>Section map.</b> Turn knob 10 on a page with sections: the section, its
+      rows, and one dot per section.</figcaption>
+    </figure>
+  </div>
+  <p>About 2.5 seconds after you let go, the text fades and the rings return. Under a section
+  map, the bright dot is the section you are in. On the LFO page, a colored dot marks a target
+  that is doing something (its DEPTH is up on some oscillator) and a grey dot one that is off.</p>
+</section>
+
+<!-- ======================================================== HOW AMMONITE PLAYS -->
+<section class="chapter" id="how">
+  <header class="sec-head">
+    <div class="badge plain">
+      <svg viewBox="0 0 40 40" width="11mm" height="11mm" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <path d="M5 30 H35"/><path d="M5 20 H35"/><path d="M5 10 H35"/><circle cx="12" cy="30" r="3" fill="currentColor"/><circle cx="22" cy="20" r="3" fill="currentColor"/><circle cx="30" cy="10" r="3" fill="currentColor"/></svg>
+    </div>
+    <div>
+      <div class="kicker">The ideas behind the knobs</div>
+      <h1>How Ammonite plays</h1>
+      <p class="lede">Three voices, one key and one clock. Everything on the nine pages is a
+      detail of one of these three.</p>
+    </div>
+  </header>
+
+  <h2>Three voices</h2>
+  <p>Ammonite has three oscillators, OSC&nbsp;1 to OSC&nbsp;3. Each is a complete little synth
+  with its own arpeggiator, envelopes, filter, LFOs, echo and place in the stereo mix. They
+  play one note at a time each, so together they make three-part music. Inside, every
+  oscillator is really <i>two</i> oscillators, pulled slightly apart by DETUNE for a fuller
+  sound.</p>
+
+  <div class="diagram flow">
+    <svg viewBox="0 0 810 290" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 1 L9 5 L0 9 Z" fill="#1c1d1f"/></marker>
+        <marker id="am" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+          <path d="M0 1 L9 5 L0 9 Z" fill="#a4501d"/></marker>
+      </defs>
+      <rect x="8" y="8" width="567" height="272" rx="10" fill="#faf6f1" stroke="#a4501d" stroke-width="1.2" stroke-dasharray="5 3"/>
+      <text x="22" y="28" class="ml" style="text-anchor:start;letter-spacing:2px;font-size:10.5px">EACH OSCILLATOR, &#215; 3</text>
+
+      <text x="67" y="60" class="ml">arp note, PITCH env</text><text x="67" y="72" class="ml">LFOs, GLIDE</text>
+      <text x="267" y="60" class="ml">FILTER env, LFO</text><text x="267" y="72" class="ml">master CUTOFF</text>
+      <text x="367" y="60" class="ml">AMP env</text><text x="367" y="72" class="ml">AMP LFO</text>
+      <text x="467" y="72" class="ml">PAN LFO</text>
+      <path class="mod" d="M67 80 V106" marker-end="url(#am)"/>
+      <path class="mod" d="M267 80 V106" marker-end="url(#am)"/>
+      <path class="mod" d="M367 80 V106" marker-end="url(#am)"/>
+      <path class="mod" d="M467 80 V106" marker-end="url(#am)"/>
+
+      <rect class="box" x="25" y="110" width="84" height="52" rx="5"/>
+      <text x="67" y="131" class="bt">2 &#215; OSC</text><text x="67" y="145" class="bs">SHAPE</text><text x="67" y="156" class="bs">DETUNE</text>
+      <rect class="box" x="125" y="110" width="84" height="52" rx="5"/>
+      <text x="167" y="131" class="bt">DRIVE</text><text x="167" y="145" class="bs">shared</text>
+      <rect class="box" x="225" y="110" width="84" height="52" rx="5"/>
+      <text x="267" y="131" class="bt">FILTER</text><text x="267" y="145" class="bs">CUTOFF &#183; RESO</text><text x="267" y="156" class="bs">TYPE</text>
+      <rect class="box" x="325" y="110" width="84" height="52" rx="5"/>
+      <text x="367" y="131" class="bt">AMP</text><text x="367" y="145" class="bs">envelope</text><text x="367" y="156" class="bs">&#215; LEVEL</text>
+      <rect class="box" x="425" y="110" width="84" height="52" rx="5"/>
+      <text x="467" y="131" class="bt">PAN</text><text x="467" y="145" class="bs">PAN &#183; WIDTH</text>
+      <rect class="box" x="425" y="200" width="84" height="52" rx="5"/>
+      <text x="467" y="221" class="bt">DELAY</text><text x="467" y="235" class="bs">TIME &#183; COLOR</text>
+
+      <path class="wire" d="M109 136 H123" marker-end="url(#ar)"/>
+      <path class="wire" d="M209 136 H223" marker-end="url(#ar)"/>
+      <path class="wire" d="M309 136 H323" marker-end="url(#ar)"/>
+      <path class="wire" d="M409 136 H423" marker-end="url(#ar)"/>
+      <path class="wire" d="M467 162 V198" marker-end="url(#ar)"/>
+      <text x="474" y="184" class="lb">SEND</text>
+      <path class="wire" d="M509 136 H540"/>
+      <path class="wire" d="M509 226 H540 V142" marker-end="url(#ar)"/>
+      <circle cx="540" cy="136" r="3.5" fill="#1c1d1f"/>
+      <path class="wire" d="M540 136 H598" marker-end="url(#ar)"/>
+      <path class="wire" d="M558 136 V226 H598" marker-end="url(#ar)"/>
+      <text x="563" y="218" class="lb">REV SEND</text>
+
+      <rect class="box" x="600" y="110" width="90" height="52" rx="5"/>
+      <text x="645" y="131" class="bt">SUM</text><text x="645" y="145" class="bs">+ soft limiter</text>
+      <rect class="box" x="600" y="200" width="90" height="52" rx="5"/>
+      <text x="645" y="221" class="bt">REVERB</text><text x="645" y="235" class="bs">SIZE &#183; DAMPING</text><text x="645" y="246" class="bs">PREDELAY</text>
+      <path class="wire" d="M645 200 V164" marker-end="url(#ar)"/>
+      <rect class="box" x="715" y="110" width="86" height="52" rx="5"/>
+      <text x="758" y="131" class="bt">VOLUME</text><text x="758" y="145" class="bs">out L / R</text>
+      <path class="wire" d="M690 136 H713" marker-end="url(#ar)"/>
+    </svg>
+  </div>
+
+  <h2>One key</h2>
+  <p>You never choose notes on Ammonite. You choose a <b>key</b> (ROOT and SCALE on page 1), a
+  <b>chord</b> within it, and then, for each oscillator, which of the chord's notes it may use.
+  That set of notes is the oscillator's <b>pool</b>, and its arp plays from nothing else. Here
+  is how the power-on sound gets its notes:</p>
+
+  <div class="notes">
+    <div class="lab"><b>Key</b><br>ROOT A, SCALE MINOR</div>
+    <div class="chips"><span class="n n-A chord">A</span><span class="n n-B">B</span><span class="n n-C chord">C</span><span class="n n-D">D</span><span class="n n-E chord">E</span><span class="n n-F">F</span><span class="n n-G">G</span></div>
+    <div class="lab"><b>Chord</b><br>i, the first chord: Am</div>
+    <div class="chips"><span class="n n-A chord">A</span><span class="n n-C chord">C</span><span class="n n-E chord">E</span></div>
+    <div class="lab"><b>OSC 1 pool</b><br>DEGREE +0, FIFTHS, 1 octave</div>
+    <div class="chips"><span class="n n-A">A2</span><span class="n n-E">E3</span></div>
+    <div class="lab"><b>OSC 2 pool</b><br>DEGREE +2, TRIAD, 2 octaves</div>
+    <div class="chips"><span class="n n-C">C4</span><span class="n n-E">E4</span><span class="n n-G">G4</span><span class="n n-C">C5</span><span class="n n-E">E5</span><span class="n n-G">G5</span></div>
+    <div class="lab"><b>OSC 3 pool</b><br>DEGREE +4, KEY, 2 octaves</div>
+    <div class="chips"><span class="n n-E">E5</span><span class="n n-F">F5</span><span class="n n-G">G5</span><span class="n n-A">A5</span><span class="n n-B">B5</span><span class="n n-C">C6</span><span class="n n-D">D6</span><span class="n n-E">E6</span><span class="n n-F">F6</span><span class="n n-G">G6</span><span class="n n-A">A6</span><span class="n n-B">B6</span><span class="n n-C">C7</span><span class="n n-D">D7</span></div>
+  </div>
+  <p>DEGREE (page 2) moves a pool's starting note up the scale from the chord's root: OSC&nbsp;2
+  starts two scale steps up, on C, so its TRIAD is C&nbsp;E&nbsp;G. POOL and RANGE (page 3) say
+  which notes to take and over how many octaves; OCTAVE (page 2) places the pool high or low.
+  The colored dots are each note's screen color (p.&nbsp;<span class="pg" data-ref="screen">00</span>).</p>
+  <p>When the chord changes, from a progression or from CHORD on page 9, every pool is rebuilt
+  on the new chord, and all three oscillators move with it. SCALE can also be a <b>chord
+  type</b> (MAJ, MIN7, ADD9&hellip;) instead of a scale: then the key <i>is</i> that chord, and a
+  progression moves it around, keeping its color.</p>
+
+  <h2>One clock</h2>
+  <p>A single master clock (TEMPO on page 1) drives all three arps, the progression, the delay
+  times and, if you want, the LFOs. Each arp divides the beat its own way (DIVISION), but
+  every grid starts from the same beat, so however strange the combination, the three never
+  drift apart.</p>
+  <div class="diagram"><img src="img/clock.svg" alt="The three arps on the master clock"></div>
+  <p class="note" style="border:none;padding:0">Two bars of the power-on patterns. Each block
+  is a step; rust marks the first step of a pattern. OSC&nbsp;3's pattern is 6 steps long, so
+  it starts over at different places in each bar; its DENSITY of 4/6 leaves out the same two
+  steps every time round (hollow).</p>
+  <p>Three things shape the rhythm beyond DIVISION. <b>LENGTH</b> sets how many steps a pattern
+  has before it starts over; different lengths make patterns that slide against each other.
+  <b>DENSITY</b> leaves steps out, spread as evenly as possible. <b>SWING</b> (page 1, knob 10)
+  delays every second step. And RESTART on page 9 can pull every pattern back to its first step
+  on each bar or each chord.</p>
+
+  <h2>Arps and drones</h2>
+  <p>Set an oscillator's MODE (page 3) to <span class="val">OFF</span> and it stops
+  arpeggiating: it holds a single note (the first of its pool) and slides to the new note when
+  the chord changes. A drone ignores the amp envelope's decay: it fades in over ATTACK and then
+  simply holds. One drone under two arps, or three drones and no arps at all, are both good
+  ways to play Ammonite.</p>
+</section>
+
+<!-- ================================================================ PAGE 1 MAIN -->
+<section class="chapter" id="main">
+  <header class="sec-head">
+    <div class="badge">1</div>
+    <div>
+      <div class="kicker">Page 1 &middot; whole instrument</div>
+      <h1>MAIN</h1>
+      <p class="lede">The performance page: how loud each oscillator is, what key and tempo you
+      are in, and three master knobs that move a whole part of the sound at once.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_main.png" alt="Page 1, MAIN">
+    <figcaption><b>Page 1 just chosen.</b> MAIN is a whole-instrument page: every knob has its
+    own job. The screen's two columns mirror the panel's two groups.</figcaption>
+  </figure>
+
+  <table class="knobs">
+    <tr><th>Knob</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">LEVEL</span></td><td class="range">0 to 100</td><td class="def">80, 70, 60</td>
+      <td>The volume of OSC&nbsp;1, 2 and 3.</td></tr>
+    <tr><td class="kn"><span class="k">4</span></td>
+      <td class="fn-cell"><span class="fn">ROOT</span></td><td class="range">C to B</td><td class="def">A</td>
+      <td>The key's home note. Everything transposes with it, progressions included.</td></tr>
+    <tr><td class="kn"><span class="k">5</span></td>
+      <td class="fn-cell"><span class="fn">SCALE</span></td><td class="range">10 scales, then 10 chord types</td><td class="def">MINOR</td>
+      <td>Which notes belong to the key. Turn past BLUES for chord keys, MAJ to ADD9: the key becomes
+      that chord. Every setting is spelled out on p.&nbsp;<span class="pg" data-ref="scales">00</span>.</td></tr>
+    <tr><td class="kn"><span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">TEMPO</span></td><td class="range">40 to 240 BPM</td><td class="def">110 BPM</td>
+      <td>The master clock: arps, chord changes, delay times and synced LFOs.</td></tr>
+    <tr><td class="kn"><span class="k">7</span></td>
+      <td class="fn-cell"><span class="fn">CUTOFF</span></td><td class="range">&minus;3.0 to +3.0 OCT</td><td class="def">+0.0 OCT</td>
+      <td>Moves all three filters together, up to three octaves either way from where page 5 has them.
+      A performance filter sweep.</td></tr>
+    <tr><td class="kn"><span class="k">8</span></td>
+      <td class="fn-cell"><span class="fn">DELAY</span></td><td class="range">0.0 to 2.0 X</td><td class="def">1.0 X</td>
+      <td>Scales all three delay SENDs (page 7) at once: 0 silences every echo, 2 doubles every send.</td></tr>
+    <tr><td class="kn"><span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">REVERB</span></td><td class="range">0.0 to 2.0 X</td><td class="def">1.0 X</td>
+      <td>The same for the three reverb sends (page 8).</td></tr>
+    <tr><td class="kn"><span class="k">10</span></td>
+      <td class="fn-cell"><span class="fn">SWING</span></td><td class="range">0 to 100</td><td class="def">0</td>
+      <td>Delays every second step of every arp. At 100 the steps go long-short, 2 to 1: a full
+      triplet shuffle.</td></tr>
+  </table>
+
+  <div class="side">
+    <div>
+      <p><b>Why the masters sit in the middle.</b> The three master knobs multiply or shift what
+      the other pages set. At their centre positions they change nothing, so you can dial in each
+      oscillator's cutoff, echo and reverb carefully on pages 5, 7 and 8, then come back here and
+      move all three together while you play.</p>
+      <div class="try">
+        <div class="t">Try this</div>
+        <ul>
+          <li>Turn SCALE slowly from one end to the other while the arps run. Each step is a new
+          key; the chord keys at the far end are the most colorful.</li>
+          <li>Sweep CUTOFF down to &minus;3 and back for a whole-mix filter build.</li>
+          <li>SWING at about 30 loosens sixteenths without sounding like a shuffle.</li>
+        </ul>
+      </div>
+    </div>
+    <figure>
+      <img class="disc" src="img/screen_readout_tempo.png" alt="TEMPO readout">
+      <figcaption><b>TEMPO turned to 120 BPM.</b> Page 1 has no columns, so the readout shows no
+      oscillator.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================================================================= PAGE 2 OSC -->
+<section class="chapter" id="osc">
+  <header class="sec-head">
+    <div class="badge">2</div>
+    <div>
+      <div class="kicker">Page 2 &middot; one column per oscillator</div>
+      <h1>OSC</h1>
+      <p class="lede">What each oscillator sounds like, how high it plays, and which note of the
+      chord it starts from.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_osc.png" alt="Page 2, OSC">
+    <figcaption><b>Page 2.</b> Row A (knobs 1&ndash;3) is SHAPE, row B (4&ndash;6) OCTAVE, row C
+    (7&ndash;9) DEGREE; knob 10 is DETUNE, shared by all three.</figcaption>
+  </figure>
+
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">SHAPE</span></td><td class="range">0 to 100</td><td class="def">100, 50, 30</td>
+      <td>The waveform, morphing smoothly: <span class="val">0</span> a pure sine (soft, round),
+      <span class="val">50</span> a square (hollow, woody), <span class="val">100</span> a saw
+      (bright, buzzy).</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">OCTAVE</span></td><td class="range">&minus;1 to +3</td><td class="def">+0, +1, +2</td>
+      <td>Moves the oscillator's whole pool by octaves. At +0 the pool starts around the second
+      octave (A2 at power-on); each step doubles the pitch.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">DEGREE</span></td><td class="range">+0 to +7</td><td class="def">+0, +2, +4</td>
+      <td>Where the pool starts, in steps up the scale from the chord's root. The power-on values
+      are the chord's root, third and fifth: with every arp off, the three drone the chord.</td></tr>
+    <tr><td class="kn"><span class="k">10</span></td>
+      <td class="fn-cell"><span class="fn">DETUNE</span></td><td class="range">0.0 to 20.0 CT</td><td class="def">8.0 CT</td>
+      <td>Each oscillator is two oscillators; DETUNE pulls them apart (in cents, hundredths of a
+      semitone). A little gives a gentle chorus; 20 is wide and wobbly. MIX WIDTH (page 8) can
+      spread the two apart in stereo.</td></tr>
+  </table>
+
+  <div class="try">
+    <div class="t">Try this</div>
+    <ul>
+      <li><b>A bass line.</b> OSC&nbsp;1 at SHAPE <span class="val">0</span> and OCTAVE
+      <span class="val">&minus;1</span> gives a round sub bass under the other two.</li>
+      <li><b>Unison.</b> Give OSC&nbsp;2 and OSC&nbsp;3 the same DEGREE and OCTAVE as OSC&nbsp;1, but
+      different MODEs on page 3: three rhythms on the same notes.</li>
+      <li><b>Chord colors.</b> With every arp off, try DEGREEs 0, 2, 4, 6: a seventh chord that
+      follows the progression.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================================================================ PAGE 3 ARP -->
+<section class="chapter" id="arp">
+  <header class="sec-head">
+    <div class="badge">3</div>
+    <div>
+      <div class="kicker">Page 3 &middot; three sections</div>
+      <h1>ARP</h1>
+      <p class="lede">Which notes each oscillator plays, when it plays them, and how often it
+      surprises you.</p>
+    </div>
+  </header>
+
+  <p>Every oscillator has its own arpeggiator. On each step it takes the next note from its
+  <em>pool</em> (p.&nbsp;<span class="pg" data-ref="how">00</span>), a handful of notes built from
+  the key and the chord playing now. All three arps run from one master clock, so however
+  different their rhythms, they never drift apart.</p>
+
+  <p>There are too many settings for one page of knobs, so ARP has three sections.
+  Knob <span class="k">10</span> picks the section. Choosing a section only changes what
+  knobs <span class="k">1</span>&ndash;<span class="k">9</span> control, never the sound.</p>
+
+  <figure>
+    <img class="panel" src="img/panel_page_arp_chance.png" alt="The ARP page, CHANCE section">
+    <figcaption><b>The ARP page with the CHANCE section chosen.</b> Knob 10 has just been
+    turned, so the screen lists the section's knobs. Each column is one oscillator:
+    knobs 1, 4 and 7 set OSC&nbsp;1; knobs 2, 5 and 8 set OSC&nbsp;2; knobs 3, 6 and 9 set OSC&nbsp;3.</figcaption>
+  </figure>
+
+  <div class="row3">
+    <figure>
+      <img class="disc" src="img/screen_sub_arp_notes.png" alt="NOTES section map">
+      <figcaption><b>NOTES</b><br>which notes</figcaption>
+    </figure>
+    <figure>
+      <img class="disc" src="img/screen_sub_arp_rhythm.png" alt="RHYTHM section map">
+      <figcaption><b>RHYTHM</b><br>when they play</figcaption>
+    </figure>
+    <figure>
+      <img class="disc" src="img/screen_sub_arp_chance.png" alt="CHANCE section map">
+      <figcaption><b>CHANCE</b><br>how often, how surprising</figcaption>
+    </figure>
+  </div>
+
+  <h3>Notes</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr>
+      <td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">MODE</span></td>
+      <td class="range"><span class="opt">OFF</span><span class="opt">LOOP</span><span class="opt">UP</span><span class="opt">DOWN</span><span class="opt">UP-DN</span><span class="opt">RANDOM</span></td>
+      <td class="def">UP, UP-DN, RANDOM</td>
+      <td>The order the arp walks through its pool. <span class="val">LOOP</span> repeats one
+      note in rhythm. <span class="val">OFF</span> stops the arp: the oscillator holds a
+      single note, a drone that slides to follow the chord.</td>
+    </tr>
+    <tr>
+      <td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">POOL</span></td>
+      <td class="range"><span class="opt">KEY</span><span class="opt">TRIAD</span><span class="opt">7TH</span><span class="opt">FIFTHS</span><span class="opt">ROOT</span></td>
+      <td class="def">FIFTHS, TRIAD, KEY</td>
+      <td>Which notes the arp may use. <span class="val">KEY</span>: every note of the scale.
+      <span class="val">TRIAD</span> and <span class="val">7TH</span>: the chord's three or
+      four notes. <span class="val">FIFTHS</span>: root and fifth. <span class="val">ROOT</span>:
+      the root alone, in octaves.</td>
+    </tr>
+    <tr>
+      <td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">RANGE</span></td>
+      <td class="range"><span class="opt">1 OCT</span><span class="opt">2 OCT</span><span class="opt">3 OCT</span></td>
+      <td class="def">1, 2, 2 OCT</td>
+      <td>How many octaves the pool spans.</td>
+    </tr>
+  </table>
+  <p class="note">Where a pool starts is set on page 2, OSC: <span class="fn">DEGREE</span> moves
+  it up the scale from the chord's root, <span class="fn">OCTAVE</span> moves it by octaves.</p>
+
+  <h3>Rhythm</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr>
+      <td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">DIVISION</span></td>
+      <td class="range"><span class="opt">1/1</span><span class="opt">1/2</span><span class="opt">1/4</span><span class="opt">1/4T</span><span class="opt">1/8</span><span class="opt">1/8T</span><span class="opt">1/16</span><span class="opt">1/16T</span><span class="opt">1/32</span></td>
+      <td class="def">1/4, 1/8, 1/16</td>
+      <td>The length of one step, as a note value of the tempo. <span class="val">T</span> is a
+      triplet: three steps in the time of two.</td>
+    </tr>
+    <tr>
+      <td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">LENGTH</span></td>
+      <td class="range">1 to 16 steps</td>
+      <td class="def">8, 8, 6</td>
+      <td>How many steps before the pattern starts over. Give the oscillators different
+      lengths and their patterns slide against each other, lining up again only now
+      and then.</td>
+    </tr>
+    <tr>
+      <td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">GATE</span></td>
+      <td class="range">0 to 100</td>
+      <td class="def">50</td>
+      <td>How long each note is held, as a share of its step: short for staccato, full for
+      legato. It matters most when the amp envelope has some <span class="fn">SUSTAIN</span>
+      (page 4).</td>
+    </tr>
+  </table>
+
+  <h3>Chance</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr>
+      <td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">DENSITY</span></td>
+      <td class="range">none to every step, shown as <span class="val">3/8</span></td>
+      <td class="def">8/8, 8/8, 4/6</td>
+      <td>How many of the pattern's steps play. The hits are spread as evenly as possible (a
+      <em>Euclidean</em> rhythm), and the same steps play every time round: a pattern, not a
+      dice roll.</td>
+    </tr>
+    <tr>
+      <td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">VARY</span></td>
+      <td class="range">0 to 100</td>
+      <td class="def">0</td>
+      <td>The chance that a step plays a random note from its pool instead of the next one.</td>
+    </tr>
+    <tr>
+      <td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">RATCHET</span></td>
+      <td class="range">0 to 100</td>
+      <td class="def">0</td>
+      <td>The chance that a step splits into 2 to 4 quick repeats of its note.</td>
+    </tr>
+  </table>
+
+  <div class="pair">
+    <figure>
+      <img class="disc" src="img/screen_arp_readout_density.png" alt="DENSITY readout">
+      <figcaption><b>Turning a knob</b> shows its readout: section, oscillator, name and value.
+      Here OSC&nbsp;3's DENSITY is at <span class="val">3/6</span>: three of its six steps play.</figcaption>
+    </figure>
+    <figure>
+      <img class="disc" src="img/screen_arp_density_rings.png" alt="The rings with rests">
+      <figcaption><b>A few seconds later</b> the readout fades. The inner ring (OSC&nbsp;3) now
+      shows its three rests as hollow dots, spaced evenly around the ring.</figcaption>
+    </figure>
+  </div>
+
+  <div class="try">
+    <div class="t">Try this</div>
+    <ul>
+      <li><b>A classic off-beat.</b> On OSC&nbsp;1 set <span class="fn">LENGTH</span>
+      <span class="val">8</span> and <span class="fn">DENSITY</span> <span class="val">3/8</span>:
+      the <em>tresillo</em>, the 3-3-2 rhythm under half of all pop music.</li>
+      <li><b>Patterns that drift.</b> Set <span class="fn">DIVISION</span> to <span class="val">1/8</span>
+      on all three oscillators and <span class="fn">LENGTH</span> to 8, 7 and 5. The three
+      patterns only line up again after 280 steps.</li>
+      <li><b>A little life.</b> On the fastest oscillator, raise <span class="fn">VARY</span> to
+      about 20 and <span class="fn">RATCHET</span> to about 10.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- =========================================================== PAGE 4 ENVELOPE -->
+<section class="chapter" id="envelope">
+  <header class="sec-head">
+    <div class="badge">4</div>
+    <div>
+      <div class="kicker">Page 4 &middot; three sections</div>
+      <h1>ENVELOPE</h1>
+      <p class="lede">What happens inside each note: how its volume rises and falls, how the
+      filter opens with it, and how its pitch arrives.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_envelope.png" alt="Page 4, ENVELOPE">
+    <figcaption><b>Page 4 just chosen, AMP section.</b> Knob 10 switches between AMP, FILTER and
+    PITCH.</figcaption>
+  </figure>
+
+  <div class="row3">
+    <figure><img class="disc" src="img/screen_sub_envelope_amp.png" alt="AMP section">
+      <figcaption><b>AMP</b><br>volume of each note</figcaption></figure>
+    <figure><img class="disc" src="img/screen_sub_envelope_filter.png" alt="FILTER section">
+      <figcaption><b>FILTER</b><br>a filter sweep per note</figcaption></figure>
+    <figure><img class="disc" src="img/screen_sub_envelope_pitch.png" alt="PITCH section">
+      <figcaption><b>PITCH</b><br>how each note arrives</figcaption></figure>
+  </div>
+
+  <h3>Amp</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">ATTACK</span></td><td class="range">1 MS to 4.1 S</td><td class="def">2 MS</td>
+      <td>How long a note takes to reach full volume. Short is a click-free hit; long is a swell.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">DECAY</span></td><td class="range">5 MS to 4.0 S</td><td class="def">401, 249, 180 MS</td>
+      <td>How long it takes to fall to the SUSTAIN level, and also how long the note takes to
+      fade out once its GATE ends.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">SUSTAIN</span></td><td class="range">0 to 100</td><td class="def">40, 0, 0</td>
+      <td>The level a note holds while its GATE (page 3) lasts. <span class="val">0</span> makes
+      every note a pluck that dies away over DECAY.</td></tr>
+  </table>
+  <p class="note">A new note starts from wherever the last one had got to, so fast patterns
+  never click. An oscillator whose MODE is OFF (a drone) fades in over ATTACK and then holds.</p>
+
+  <h3>Filter</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">ATTACK</span></td><td class="range">1 MS to 4.1 S</td><td class="def">2 MS</td>
+      <td>How long the filter takes to open to its peak after each note starts.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">DECAY</span></td><td class="range">5 MS to 4.0 S</td><td class="def">249 MS</td>
+      <td>How long it takes to close back to the CUTOFF set on page 5.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">AMOUNT</span></td><td class="range">&minus;4.0 to +4.0 OCT</td><td class="def">+0.0 OCT</td>
+      <td>How far each note moves the cutoff. Positive opens it (brighter at the start of the
+      note), negative closes it (the note starts dark and opens up). 0 switches it off.</td></tr>
+  </table>
+
+  <h3>Pitch</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">AMOUNT</span></td><td class="range">&minus;12 to +12 ST</td><td class="def">+0 ST</td>
+      <td>Each note starts this many semitones away from its pitch and slides into place.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">DECAY</span></td><td class="range">5 MS to 997 MS</td><td class="def">24 MS</td>
+      <td>How long that slide takes. A few milliseconds makes a click or a bell-like ping; longer
+      makes a swoop.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">GLIDE</span></td><td class="range">0 MS to 1.0 S</td><td class="def">0 MS</td>
+      <td>Portamento: each arp note slides from the last one instead of jumping. Drones always
+      slide a little (about 0.4 s) when the chord changes; a longer GLIDE slows that too.</td></tr>
+  </table>
+
+  <div class="try">
+    <div class="t">Try this</div>
+    <ul>
+      <li><b>Pads.</b> ATTACK around 1 S, SUSTAIN 80, GATE 100 on page 3, and a slow DIVISION such as 1/2.</li>
+      <li><b>Squelch.</b> FILTER AMOUNT <span class="val">+3.0 OCT</span>, FILTER DECAY about 150 MS, with
+      CUTOFF low and RESO high on page 5.</li>
+      <li><b>Bells.</b> SHAPE 0 on page 2, PITCH AMOUNT <span class="val">+12 ST</span>, PITCH DECAY
+      <span class="val">8 MS</span>, AMP DECAY about 900 MS. See the recipe on
+      p.&nbsp;<span class="pg" data-ref="recipes">00</span>.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================= PAGE 5 FILTER -->
+<section class="chapter" id="filter">
+  <header class="sec-head">
+    <div class="badge">5</div>
+    <div>
+      <div class="kicker">Page 5 &middot; one column per oscillator</div>
+      <h1>FILTER</h1>
+      <p class="lede">Each oscillator has its own filter: the main way to make it brighter or
+      darker, thinner or rounder.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_filter.png" alt="Page 5, FILTER">
+    <figcaption><b>Page 5.</b> CUTOFF, RESO and TYPE per oscillator; knob 10 is DRIVE, shared.</figcaption>
+  </figure>
+
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">CUTOFF</span></td><td class="range">80 HZ to 12.0 KHZ</td><td class="def">1.2, 2.0, 3.0 KHZ</td>
+      <td>The filter's frequency. For the low-pass type: lower is darker and softer.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">RESO</span></td><td class="range">0 to 100</td><td class="def">30, 20, 20</td>
+      <td>Resonance: a peak at the cutoff. Higher values whistle and sing, especially when the
+      cutoff moves.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">TYPE</span></td>
+      <td class="range"><span class="opt">LP</span><span class="opt">LP-BP</span><span class="opt">BP</span><span class="opt">BP-HP</span><span class="opt">HP</span></td>
+      <td class="def">LP</td>
+      <td>A smooth morph from low-pass (keeps the lows) through band-pass (a narrow, nasal band)
+      to high-pass (keeps the highs, thin and airy).</td></tr>
+    <tr><td class="kn"><span class="k">10</span></td>
+      <td class="fn-cell"><span class="fn">DRIVE</span></td><td class="range">0 to 100</td><td class="def">0</td>
+      <td>Pushes all three oscillators into soft saturation before their filters: warmer, then
+      grittier. The level stays roughly the same.</td></tr>
+  </table>
+
+  <div class="side">
+    <div>
+      <p><b>Four things move the cutoff.</b> The CUTOFF knob here sets where each filter rests.
+      On top of it come the master CUTOFF on page 1 (all three at once), the FILTER envelope on
+      page 4 (with every note) and the CUTOFF LFO on page 6 (slowly, or not so slowly). They add
+      up, so a filter can move a long way.</p>
+      <div class="try">
+        <div class="t">Try this</div>
+        <ul>
+          <li>TYPE <span class="val">BP</span> with RESO around 60 turns a saw into a vowel-like,
+          talking sound.</li>
+          <li>Put OSC&nbsp;3 on <span class="val">HP</span>: its high arp becomes a thin shimmer
+          over the others.</li>
+        </ul>
+      </div>
+    </div>
+    <figure>
+      <img class="disc" src="img/screen_readout_cutoff.png" alt="CUTOFF readout">
+      <figcaption><b>Knob 2 turned:</b> OSC&nbsp;2's CUTOFF at 1.5 KHZ.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- ================================================================ PAGE 6 LFO -->
+<section class="chapter" id="lfo">
+  <header class="sec-head">
+    <div class="badge">6</div>
+    <div>
+      <div class="kicker">Page 6 &middot; five targets</div>
+      <h1>LFO</h1>
+      <p class="lede">Movement. Each oscillator has five LFOs, one for each thing they can move:
+      pitch, cutoff, volume, pan and shape. That is fifteen in all, each with its own speed.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_lfo.png" alt="Page 6, LFO">
+    <figcaption><b>Page 6, PITCH target.</b> Knob 10 is called TARGET here: it picks what the
+    LFOs on knobs 1&ndash;9 move.</figcaption>
+  </figure>
+
+  <div class="screens">
+    <figure><img class="disc" src="img/screen_sub_lfo_pitch.png" alt="" style="width:30mm;height:30mm"><figcaption><b>PITCH</b></figcaption></figure>
+    <figure><img class="disc" src="img/screen_sub_lfo_cutoff.png" alt="" style="width:30mm;height:30mm"><figcaption><b>CUTOFF</b></figcaption></figure>
+    <figure><img class="disc" src="img/screen_sub_lfo_amp.png" alt="" style="width:30mm;height:30mm"><figcaption><b>AMP</b></figcaption></figure>
+    <figure><img class="disc" src="img/screen_sub_lfo_pan.png" alt="" style="width:30mm;height:30mm"><figcaption><b>PAN</b></figcaption></figure>
+    <figure><img class="disc" src="img/screen_sub_lfo_shape.png" alt="" style="width:30mm;height:30mm"><figcaption><b>SHAPE</b></figcaption></figure>
+  </div>
+  <p>Every target has the same three rows. At power-on every DEPTH is 0, so the dots of the
+  other targets are grey: an LFO does nothing until you raise its DEPTH.</p>
+
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">RATE</span></td>
+      <td class="range">0.02 to 20.0 HZ; with LFO SYNC on TEMPO: <span class="opt">4 BARS</span><span class="opt">2 BARS</span><span class="opt">1 BAR</span><span class="opt">1/2</span><span class="opt">1/4</span><span class="opt">1/4T</span><span class="opt">1/8</span><span class="opt">1/8T</span><span class="opt">1/16</span></td>
+      <td class="def">0.32 HZ (CUTOFF: 0.09, 0.13, 0.17 HZ)</td>
+      <td>How fast the LFO cycles: from about once a minute to a buzz. With LFO SYNC (page 9) set
+      to TEMPO, RATE picks a note length instead, and the LFO locks to the bar.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">DEPTH</span></td><td class="range">0 to 100</td><td class="def">0</td>
+      <td>How much it moves its target (table below).</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">WAVE</span></td>
+      <td class="range"><span class="opt">SINE</span><span class="opt">TRI</span><span class="opt">SAW</span><span class="opt">SQUARE</span><span class="opt">S+H</span><span class="opt">DRIFT</span></td>
+      <td class="def">SINE</td>
+      <td>The movement's shape. <span class="val">S+H</span> jumps to a new random value each
+      cycle; <span class="val">DRIFT</span> wanders smoothly from one random value to the next.</td></tr>
+  </table>
+
+  <table class="ref">
+    <tr><th>Target</th><th>At DEPTH 100</th><th>Sounds like</th></tr>
+    <tr><td class="name">PITCH</td><td>up and down one semitone</td><td>vibrato, or a seasick wobble when slow</td></tr>
+    <tr><td class="name">CUTOFF</td><td>three octaves either way</td><td>a filter that breathes or wah-wahs</td></tr>
+    <tr><td class="name">AMP</td><td>dips all the way to silence (never louder)</td><td>tremolo, or a chopped gate with SQUARE</td></tr>
+    <tr><td class="name">PAN</td><td>swings from full left to full right</td><td>notes moving around the room</td></tr>
+    <tr><td class="name">SHAPE</td><td>50 either side of the SHAPE setting</td><td>a tone that keeps changing color</td></tr>
+  </table>
+
+  <div class="try">
+    <div class="t">Try this</div>
+    <ul>
+      <li><b>Slow life.</b> CUTOFF target, DEPTH about 30 on all three: the power-on rates are
+      slow and all different, so the three filters drift in and out of step.</li>
+      <li><b>Rhythmic chop.</b> Set LFO SYNC to TEMPO on page 9, then AMP target, RATE
+      <span class="val">1/8</span>, WAVE <span class="val">SQUARE</span>, DEPTH 100 on a drone.</li>
+      <li><b>Wide arps.</b> PAN target, WAVE <span class="val">S+H</span>, RATE about 4 HZ: every
+      few notes land somewhere new in the stereo field.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ============================================================== PAGE 7 DELAY -->
+<section class="chapter" id="delay">
+  <header class="sec-head">
+    <div class="badge">7</div>
+    <div>
+      <div class="kicker">Page 7 &middot; two sections</div>
+      <h1>DELAY</h1>
+      <p class="lede">Each oscillator has its own stereo echo, timed to the tempo. Three
+      delays, three different rhythms of repeats.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_delay.png" alt="Page 7, DELAY">
+    <figcaption><b>Page 7, TIME section.</b> Knob 10 switches between TIME and COLOR. All the
+    SENDs start at 0: turn one up to hear its echo.</figcaption>
+  </figure>
+
+  <div class="row3" style="grid-template-columns: 1fr 1fr 1.2fr; align-items: center">
+    <figure><img class="disc" src="img/screen_sub_delay_time.png" alt="TIME section">
+      <figcaption><b>TIME</b><br>when the echoes come</figcaption></figure>
+    <figure><img class="disc" src="img/screen_sub_delay_color.png" alt="COLOR section">
+      <figcaption><b>COLOR</b><br>what they sound like</figcaption></figure>
+    <p style="text-align:left;font-size:8.8pt">Each echo is fed from its oscillator after
+    the pan, so it starts in the same place in the stereo field. The echoes also go on to the
+    reverb with the dry sound. The master DELAY knob on page 1 scales all three SENDs at
+    once.</p>
+  </div>
+
+  <h3>Time</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">DIVISION</span></td>
+      <td class="range"><span class="opt">1/32</span><span class="opt">1/16</span><span class="opt">1/16T</span><span class="opt">1/8</span><span class="opt">1/8T</span><span class="opt">1/8.</span><span class="opt">1/4</span><span class="opt">1/4T</span><span class="opt">1/4.</span><span class="opt">1/2</span><span class="opt">1/1</span></td>
+      <td class="def">1/8., 1/4, 1/8T</td>
+      <td>The time between echoes as a note value of the tempo. A dot (<span class="val">1/8.</span>)
+      is one and a half times as long: the classic dotted echo that bounces off the beat.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">FEEDBACK</span></td><td class="range">0 to 100</td><td class="def">40</td>
+      <td>How much of each echo comes back again: a single repeat at 0, a long tail near 100.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">SEND</span></td><td class="range">0 to 100</td><td class="def">0</td>
+      <td>How much of the oscillator goes into its delay. At 0 the delay is off.</td></tr>
+  </table>
+
+  <h3>Color</h3>
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">TONE</span></td><td class="range">500 HZ to 12.0 KHZ</td><td class="def">4.0 KHZ</td>
+      <td>Each repeat passes through a gentle low-pass: lower settings make the echoes darker and
+      darker as they fade, like tape.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">WOBBLE</span></td><td class="range">0.0 to 3.0 MS</td><td class="def">0.9 MS</td>
+      <td>A slow, random wander in the delay time, the way a tape machine drifts. It bends the
+      pitch of the echoes slightly.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">WIDTH</span></td><td class="range">0 to 100</td><td class="def">100</td>
+      <td>At 0 the echoes stay where the oscillator is panned. At 100 they ping-pong: left, right,
+      left.</td></tr>
+  </table>
+
+  <div class="try">
+    <div class="t">Try this</div>
+    <ul>
+      <li>Delay only the slowest oscillator, with a dotted DIVISION: the echoes fill the gaps
+      between its notes.</li>
+      <li>FEEDBACK 80, TONE 1.5 KHZ, WOBBLE 2 MS: a dark dub echo that sinks away (see the recipe
+      <i>Dub echoes</i>).</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================================================================ PAGE 8 MIX -->
+<section class="chapter" id="mix">
+  <header class="sec-head">
+    <div class="badge">8</div>
+    <div>
+      <div class="kicker">Page 8 &middot; one column per oscillator</div>
+      <h1>MIX</h1>
+      <p class="lede">Where each oscillator sits in the stereo picture, and how much of it goes
+      to the reverb.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_mix.png" alt="Page 8, MIX">
+    <figcaption><b>Page 8.</b> PAN, WIDTH and REV SEND per oscillator; knob 10 is the reverb's
+    SIZE.</figcaption>
+  </figure>
+
+  <table class="knobs">
+    <tr><th>Knobs</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span> <span class="k">2</span> <span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">PAN</span></td><td class="range">L100, C, R100</td><td class="def">C, L40, R40</td>
+      <td>Left to right. OSC&nbsp;1 starts in the middle, the other two to either side.</td></tr>
+    <tr><td class="kn"><span class="k">4</span> <span class="k">5</span> <span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">WIDTH</span></td><td class="range">0 to 100</td><td class="def">0</td>
+      <td>Spreads the oscillator's two detuned halves apart, one left and one right. Wide and
+      shimmering with some DETUNE (page 2); at 0 the oscillator is a single point.</td></tr>
+    <tr><td class="kn"><span class="k">7</span> <span class="k">8</span> <span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">REV SEND</span></td><td class="range">0 to 100</td><td class="def">0</td>
+      <td>How much of the oscillator, echoes included, goes into the reverb. At 0 it stays dry.</td></tr>
+    <tr><td class="kn"><span class="k">10</span></td>
+      <td class="fn-cell"><span class="fn">SIZE</span></td><td class="range">0 to 100</td><td class="def">75</td>
+      <td>The reverb's size and length, from a small room to a long hall.</td></tr>
+  </table>
+  <p class="note">There is one reverb, shared by all three. Its tone is set on page 9 (DAMPING,
+  PREDELAY) and the master REVERB knob on page 1 scales all three sends at once.</p>
+
+  <div class="try">
+    <div class="t">Try this</div>
+    <ul>
+      <li>Send only the high OSC&nbsp;3 to the reverb, at about 60, with SIZE 90: a halo above a
+      dry, punchy low end.</li>
+      <li>DETUNE 15 on page 2 and WIDTH 100 on all three: the power-on patch becomes a wide
+      stereo wash.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ================================================================ PAGE 9 KEY -->
+<section class="chapter" id="key">
+  <header class="sec-head">
+    <div class="badge">9</div>
+    <div>
+      <div class="kicker">Page 9 &middot; whole instrument</div>
+      <h1>KEY</h1>
+      <p class="lede">Chord progressions, tuning, a few reverb details, and which picture the
+      screen shows.</p>
+    </div>
+  </header>
+
+  <figure>
+    <img class="panel" src="img/panel_page_key.png" alt="Page 9, KEY">
+    <figcaption><b>Page 9.</b> Like MAIN, a whole-instrument page with a separate job for every
+    knob.</figcaption>
+  </figure>
+
+  <table class="knobs">
+    <tr><th>Knob</th><th>Function</th><th>Settings</th><th>Power-on</th><th>What it does</th></tr>
+    <tr><td class="kn"><span class="k">1</span></td>
+      <td class="fn-cell"><span class="fn">PROG</span></td>
+      <td class="range"><span class="opt">OFF</span><span class="opt">POP</span><span class="opt">50S</span><span class="opt">SAD</span><span class="opt">EPIC</span><span class="opt">JAZZ</span><span class="opt">VAMP</span><span class="opt">CANON</span><span class="opt">FALL</span></td>
+      <td class="def">OFF</td>
+      <td>A chord progression that steps along by itself (table below). OFF holds the chord set
+      by CHORD.</td></tr>
+    <tr><td class="kn"><span class="k">2</span></td>
+      <td class="fn-cell"><span class="fn">CHANGE</span></td>
+      <td class="range"><span class="opt">1/2 BAR</span><span class="opt">1 BAR</span><span class="opt">2 BARS</span><span class="opt">4 BARS</span></td>
+      <td class="def">1 BAR</td>
+      <td>How long each chord of the progression lasts. Changes always land on the beat.</td></tr>
+    <tr><td class="kn"><span class="k">3</span></td>
+      <td class="fn-cell"><span class="fn">CHORD</span></td><td class="range">I to VII</td><td class="def">I</td>
+      <td>With PROG OFF: the chord to play, by its place in the key. Play your own progression by
+      turning it.</td></tr>
+    <tr><td class="kn"><span class="k">4</span></td>
+      <td class="fn-cell"><span class="fn">RESTART</span></td>
+      <td class="range"><span class="opt">FREE</span><span class="opt">BAR</span><span class="opt">CHORD</span></td>
+      <td class="def">FREE</td>
+      <td>When every pattern jumps back to its first step. FREE: never, the patterns run on and
+      drift. BAR: at every bar line. CHORD: at every chord change.</td></tr>
+    <tr><td class="kn"><span class="k">5</span></td>
+      <td class="fn-cell"><span class="fn">OCTAVE</span></td><td class="range">&minus;2 to +2</td><td class="def">+0</td>
+      <td>Moves the whole instrument up or down by octaves.</td></tr>
+    <tr><td class="kn"><span class="k">6</span></td>
+      <td class="fn-cell"><span class="fn">FINE</span></td><td class="range">&minus;50 to +50 CT</td><td class="def">+0 CT</td>
+      <td>Fine tuning, up to a quarter-tone either way, to play along with a record or another
+      instrument.</td></tr>
+    <tr><td class="kn"><span class="k">7</span></td>
+      <td class="fn-cell"><span class="fn">LFO SYNC</span></td>
+      <td class="range"><span class="opt">FREE</span><span class="opt">TEMPO</span></td><td class="def">FREE</td>
+      <td>TEMPO locks all fifteen LFOs to the master clock, with RATE picking a note length (page 6).</td></tr>
+    <tr><td class="kn"><span class="k">8</span></td>
+      <td class="fn-cell"><span class="fn">DAMPING</span></td><td class="range">12.0 KHZ to 1.0 KHZ</td><td class="def">6.9 KHZ</td>
+      <td>The reverb's tone: turn right for a darker, softer reverb.</td></tr>
+    <tr><td class="kn"><span class="k">9</span></td>
+      <td class="fn-cell"><span class="fn">PREDELAY</span></td><td class="range">0 to 250 MS</td><td class="def">0 MS</td>
+      <td>A gap before the reverb starts. Keeps notes clear in front of a big reverb.</td></tr>
+    <tr><td class="kn"><span class="k">10</span></td>
+      <td class="fn-cell"><span class="fn">VIEW</span></td>
+      <td class="range"><span class="opt">RINGS</span><span class="opt">PITCH</span><span class="opt">WHEEL</span><span class="opt">SCOPE</span></td>
+      <td class="def">PITCH</td>
+      <td>What the screen shows (p.&nbsp;<span class="pg" data-ref="screen">00</span>).</td></tr>
+  </table>
+
+  <h2>The progressions</h2>
+  <div class="side" style="grid-template-columns: 1fr 44mm; align-items: start">
+    <table class="ref" style="margin:0">
+      <tr><th>PROG</th><th>Degrees</th><th>In A minor (power-on)</th><th>In C major</th></tr>
+      <tr><td class="name">POP</td><td class="mono">1 5 6 4</td><td>Am Em F Dm</td><td>C G Am F</td></tr>
+      <tr><td class="name">50S</td><td class="mono">1 6 4 5</td><td>Am F Dm Em</td><td>C Am F G</td></tr>
+      <tr><td class="name">SAD</td><td class="mono">6 4 1 5</td><td>F Dm Am Em</td><td>Am F C G</td></tr>
+      <tr><td class="name">EPIC</td><td class="mono">1 6 3 7</td><td>Am F C G</td><td>C Am Em Bdim</td></tr>
+      <tr><td class="name">JAZZ</td><td class="mono">2 5 1 1</td><td>Bdim Em Am Am</td><td>Dm G C C</td></tr>
+      <tr><td class="name">VAMP</td><td class="mono">1 4</td><td>Am Dm</td><td>C F</td></tr>
+      <tr><td class="name">CANON</td><td class="mono">1 5 6 3 4 1 4 5</td><td>Am Em F C Dm Am Dm Em</td><td>C G Am Em F C F G</td></tr>
+      <tr><td class="name">FALL</td><td class="mono">1 7 6 5</td><td>Am G F Em</td><td>C Bdim Am G</td></tr>
+    </table>
+    <figure>
+      <img class="disc" src="img/screen_key_prog.png" alt="A progression running" style="width:44mm;height:44mm">
+      <figcaption><b>POP running in A minor,</b> on its third chord: F, degree VI, chord 3 of 4.
+      The four dots are the beats of the bar.</figcaption>
+    </figure>
+  </div>
+  <p>A progression is written in scale degrees, so it works in any key: ROOT and SCALE on page 1
+  still transpose it while it runs. The chord changes on the bar line; a note already sounding
+  finishes, and the next one uses the new chord. With a chord key (SCALE set to MAJ, MIN7 and so
+  on) every chord of the progression takes that chord's quality.</p>
+</section>
+
+<!-- ======================================================== READING THE SCREEN -->
+<section class="chapter" id="screen">
+  <header class="sec-head">
+    <div class="badge plain">
+      <svg viewBox="0 0 40 40" width="11mm" height="11mm" fill="none" stroke="currentColor" stroke-width="2.2">
+        <circle cx="20" cy="20" r="17"/><circle cx="20" cy="20" r="11"/><circle cx="20" cy="20" r="5"/></svg>
+    </div>
+    <div>
+      <div class="kicker">The screen</div>
+      <h1>Reading the rings</h1>
+      <p class="lede">The screen shows what the three arps are playing, as it happens.
+      Once you can read it, you can see a pattern before you hear it.</p>
+    </div>
+  </header>
+
+  <div class="anatomy">
+    <svg viewBox="-250 -20 1460 1000" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <g id="m"><circle r="27" fill="#fff" stroke="#1c1d1f" stroke-width="3.5"/></g>
+      </defs>
+      <circle cx="480" cy="480" r="486" fill="#26282c"/>
+      <image href="img/screen_view_rings.png" x="0" y="0" width="960" height="960"/>
+      <g stroke-linecap="round">
+        <g stroke="#1c1d1f" stroke-width="8">
+          <line x1="-150" y1="110" x2="195" y2="190"/>
+          <line x1="-150" y1="290" x2="254" y2="254"/>
+          <line x1="-150" y1="450" x2="279" y2="364"/>
+          <line x1="-150" y1="700" x2="285" y2="600"/>
+          <line x1="1110" y1="250" x2="858" y2="330"/>
+          <line x1="1110" y1="860" x2="770" y2="770"/>
+        </g>
+        <g stroke="#fff" stroke-width="3.5">
+          <line x1="-150" y1="110" x2="195" y2="190"/>
+          <line x1="-150" y1="290" x2="254" y2="254"/>
+          <line x1="-150" y1="450" x2="279" y2="364"/>
+          <line x1="-150" y1="700" x2="285" y2="600"/>
+          <line x1="1110" y1="250" x2="858" y2="330"/>
+          <line x1="1110" y1="860" x2="770" y2="770"/>
+        </g>
+        <g fill="#fff" stroke="#1c1d1f" stroke-width="3">
+          <circle cx="195" cy="190" r="8"/><circle cx="254" cy="254" r="8"/>
+          <circle cx="279" cy="364" r="8"/><circle cx="285" cy="600" r="8"/>
+          <circle cx="858" cy="330" r="8"/><circle cx="770" cy="770" r="8"/>
+        </g>
+      </g>
+      <g font-family="Bahnschrift, Segoe UI, sans-serif" font-weight="600" font-size="31"
+         fill="#1c1d1f" text-anchor="middle" dominant-baseline="central">
+        <use href="#m" x="-150" y="110"/><text x="-150" y="111">1</text>
+        <use href="#m" x="-150" y="290"/><text x="-150" y="291">2</text>
+        <use href="#m" x="-150" y="450"/><text x="-150" y="451">3</text>
+        <use href="#m" x="1110" y="860"/><text x="1110" y="861">4</text>
+        <use href="#m" x="-150" y="700"/><text x="-150" y="701">5</text>
+        <use href="#m" x="1110" y="250"/><text x="1110" y="251">6</text>
+        <use href="#m" x="335" y="415"/><text x="335" y="416">7</text>
+        <use href="#m" x="548" y="555"/><text x="548" y="556">8</text>
+        <use href="#m" x="368" y="628"/><text x="368" y="629">9</text>
+      </g>
+    </svg>
+
+    <ol class="legend">
+      <li><b>OSC 1</b> is the outer ring.</li>
+      <li><b>OSC 2</b> is the middle ring.</li>
+      <li><b>OSC 3</b> is the inner ring. Each ring is cut
+      into as many arcs as its oscillator's <span class="fn">LENGTH</span>, starting at 12
+      o'clock and running clockwise. One arc is one step.</li>
+      <li><b>The playing step</b> is the big dot with a halo. It moves on one arc with every step.</li>
+      <li><b>A rest</b> is a hollow dot on a grey arc: a step that
+      <span class="fn">DENSITY</span> leaves out.</li>
+      <li><b>The line is the sound itself.</b> It is the oscillator's real waveform: it swells
+      when a note starts and flattens as it fades, and higher notes fit more waves round the ring.
+      A drone is one unbroken ring.</li>
+      <li><b>The chord</b> playing now, in the color of its root note.</li>
+      <li><b>Its numeral</b> in the key. Lowercase means minor. When a progression runs, its
+      place in it follows, e.g. <span class="val">3/4</span>.</li>
+      <li><b>The beat:</b> one dot for each beat of the bar.</li>
+    </ol>
+  </div>
+
+  <h2>Colors are notes</h2>
+  <div class="colors">
+    <img src="img/fifths_wheel.svg" alt="Note colors around the circle of fifths">
+    <div>
+      <p>Every note has its own color, the same in every octave and on every view. The colors
+      run around the <em>circle of fifths</em>: notes a fifth apart get neighboring colors.</p>
+      <p>That puts notes that sound good together close in color. A root and its fifth (the
+      two notes of a <span class="val">FIFTHS</span> pool) always look alike, and each chord of
+      a progression brings its own mix of colors to the screen.</p>
+      <p class="note">The wheel is drawn on black because the brightest colors, yellow and cyan,
+      vanish on white paper. On the screen they glow.</p>
+    </div>
+  </div>
+
+  <div class="newpage">
+  <h2>Four views <span class="tag">page 9 KEY, knob 10 VIEW</span></h2>
+  <p>The same music can be drawn four ways. Pick one with <span class="fn">VIEW</span>; the
+  readout and page maps look the same on all of them.</p>
+  <div class="views">
+    <div class="view">
+      <img class="disc" src="img/screen_view_pitch.png" alt="PITCH view">
+      <div>
+        <h4>PITCH <span>power-on</span></h4>
+        <p>The rings, with each whole ring in the color of the note its oscillator is playing
+        right now. As the arp moves, the ring changes color: you watch the melody.</p>
+      </div>
+    </div>
+    <div class="view">
+      <img class="disc" src="img/screen_view_rings.png" alt="RINGS view">
+      <div>
+        <h4>RINGS</h4>
+        <p>Each arc keeps the color of the note on its step, so the whole pattern is on screen
+        at once, and you see it change when the chord does.</p>
+      </div>
+    </div>
+    <div class="view">
+      <img class="disc" src="img/screen_view_wheel.png" alt="WHEEL view">
+      <div>
+        <h4>WHEEL</h4>
+        <p>The twelve notes around the circle of fifths, C at the top. The chord's notes are
+        joined into a shape: its outline shows the kind of chord. Each oscillator's note is a
+        bright dot (biggest for OSC&nbsp;1), nearer the rim the higher it plays.</p>
+      </div>
+    </div>
+    <div class="view">
+      <img class="disc" src="img/screen_view_scope.png" alt="SCOPE view">
+      <div>
+        <h4>SCOPE</h4>
+        <p>The three waveforms drawn over each other, each in its note's color. The plainest
+        view, and the best for hearing what <span class="fn">SHAPE</span> and the filter do.</p>
+      </div>
+    </div>
+  </div>
+  </div>
+</section>
+
+<!-- ================================================================== RECIPES -->
+<section class="chapter" id="recipes">
+  <header class="sec-head">
+    <div class="badge plain">
+      <svg viewBox="0 0 40 40" width="11mm" height="11mm" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round">
+        <path d="M8 34 V6 H26 L32 12 V34 Z"/><path d="M13 17 H27"/><path d="M13 23 H27"/><path d="M13 29 H22"/></svg>
+    </div>
+    <div>
+      <div class="kicker">Five patches</div>
+      <h1>Recipes</h1>
+      <p class="lede">Each recipe starts from the power-on sound, so switch Ammonite off and on
+      first (with knob 11 on page 1). Then make the settings in any order.</p>
+    </div>
+  </header>
+  <p class="note" style="border:none;padding:0;margin-bottom:6mm">The values are exactly what
+  the screen's readout shows when the knob is right. The three columns are OSC&nbsp;1, 2 and 3;
+  a grey dash means leave that one alone.</p>
+
+  <!--RECIPE:tide-->
+  <!--RECIPE:clockwork-->
+  <!--RECIPE:dub-->
+  <!--RECIPE:jazz-->
+  <!--RECIPE:bells-->
+</section>
+
+<!-- ======================================================= SCALES AND CHORDS -->
+<section class="chapter" id="scales">
+  <header class="sec-head">
+    <div class="badge plain">
+      <svg viewBox="0 0 40 40" width="11mm" height="11mm" fill="none" stroke="currentColor" stroke-width="2.2">
+        <path d="M4 12 H36 M4 18 H36 M4 24 H36 M4 30 H36"/><circle cx="14" cy="27" r="3" fill="currentColor"/><circle cx="24" cy="21" r="3" fill="currentColor"/></svg>
+    </div>
+    <div>
+      <div class="kicker">Appendix</div>
+      <h1>Scales and chords</h1>
+      <p class="lede">Every SCALE setting on page 1, spelled out from C. Turn ROOT and the same
+      pattern starts from another note.</p>
+    </div>
+  </header>
+
+  <h3>Scales</h3>
+  <table class="ref">
+    <tr><th>SCALE</th><th>Notes from C</th><th>Character</th></tr>
+    <tr><td class="name">MAJOR</td><td class="mono">C D E F G A B</td><td>bright, settled</td></tr>
+    <tr><td class="name">MINOR</td><td class="mono">C D D# F G G# A#</td><td>dark; the power-on key</td></tr>
+    <tr><td class="name">DORIAN</td><td class="mono">C D D# F G A A#</td><td>minor with a lift; soul and jazz</td></tr>
+    <tr><td class="name">PHRYGIAN</td><td class="mono">C C# D# F G G# A#</td><td>dark and tense, Spanish flavor</td></tr>
+    <tr><td class="name">LYDIAN</td><td class="mono">C D E F# G A B</td><td>major, floating and dreamy</td></tr>
+    <tr><td class="name">MIXO</td><td class="mono">C D E F G A A#</td><td>major with a bluesy seventh</td></tr>
+    <tr><td class="name">HARM MIN</td><td class="mono">C D D# F G G# B</td><td>minor with a dramatic leading note</td></tr>
+    <tr><td class="name">PENTA</td><td class="mono">C D E G A</td><td>five notes, no clashes at all</td></tr>
+    <tr><td class="name">PENTA MI</td><td class="mono">C D# F G A#</td><td>the minor five-note scale</td></tr>
+    <tr><td class="name">BLUES</td><td class="mono">C D# F F# G A#</td><td>minor pentatonic plus the blue note</td></tr>
+  </table>
+
+  <h3>Chord keys</h3>
+  <p>Past BLUES, SCALE turns into a chord. Then POOL <span class="val">KEY</span> plays that
+  chord's notes, and a progression moves the chord through its parent scale (natural minor for
+  MIN, MIN7 and DIM; major for the rest), keeping its quality: a MIN7 key gives a progression of
+  minor sevenths.</p>
+  <table class="ref">
+    <tr><th>SCALE</th><th>Notes from C</th><th>Character</th></tr>
+    <tr><td class="name">MAJ</td><td class="mono">C E G</td><td>plain major triad</td></tr>
+    <tr><td class="name">MIN</td><td class="mono">C D# G</td><td>plain minor triad</td></tr>
+    <tr><td class="name">SUS2</td><td class="mono">C D G</td><td>open, neither major nor minor</td></tr>
+    <tr><td class="name">SUS4</td><td class="mono">C F G</td><td>open, waiting to resolve</td></tr>
+    <tr><td class="name">MAJ7</td><td class="mono">C E G B</td><td>soft, jazzy major</td></tr>
+    <tr><td class="name">MIN7</td><td class="mono">C D# G A#</td><td>smooth minor</td></tr>
+    <tr><td class="name">DOM7</td><td class="mono">C E G A#</td><td>bluesy, restless</td></tr>
+    <tr><td class="name">DIM</td><td class="mono">C D# F#</td><td>tense, spooky</td></tr>
+    <tr><td class="name">AUG</td><td class="mono">C E G#</td><td>strange, dreamlike</td></tr>
+    <tr><td class="name">ADD9</td><td class="mono">C D E G</td><td>bright and airy</td></tr>
+  </table>
+</section>
+
+<!-- ============================================================= CHEAT SHEET -->
+<section class="chapter" id="cheat">
+  <header class="sec-head">
+    <div class="badge plain">
+      <svg viewBox="0 0 40 40" width="11mm" height="11mm" fill="none" stroke="currentColor" stroke-width="2.2">
+        <rect x="5" y="7" width="30" height="26" rx="2"/><path d="M5 15 H35 M5 23 H35 M16 7 V33"/></svg>
+    </div>
+    <div>
+      <div class="kicker">Appendix</div>
+      <h1>Cheat sheet</h1>
+      <p class="lede">Every knob on every page. Knob 11 is always PAGE, knob 12 always VOLUME.</p>
+    </div>
+  </header>
+
+  <table class="cheat">
+    <tr><th>Page</th><th>Section</th><th>Knobs 1&ndash;3</th><th>Knobs 4&ndash;6</th><th>Knobs 7&ndash;9</th><th>Knob 10</th></tr>
+    <tr><td class="p"><b>1</b>MAIN</td><td class="s">whole instrument</td><td>1&ndash;3 LEVEL</td><td>4 ROOT &middot; 5 SCALE &middot; 6 TEMPO</td><td>7 CUTOFF &middot; 8 DELAY &middot; 9 REVERB</td><td>SWING</td></tr>
+    <tr><td class="p"><b>2</b>OSC</td><td class="s"></td><td>SHAPE</td><td>OCTAVE</td><td>DEGREE</td><td>DETUNE</td></tr>
+    <tr><td class="p"><b>3</b>ARP</td><td class="s">NOTES</td><td>MODE</td><td>POOL</td><td>RANGE</td><td class="knob10" rowspan="3">SECTION</td></tr>
+    <tr class="cont"><td class="p"><b>3</b>ARP</td><td class="s">RHYTHM</td><td>DIVISION</td><td>LENGTH</td><td>GATE</td></tr>
+    <tr class="cont"><td class="p"><b>3</b>ARP</td><td class="s">CHANCE</td><td>DENSITY</td><td>VARY</td><td>RATCHET</td></tr>
+    <tr><td class="p"><b>4</b>ENVELOPE</td><td class="s">AMP</td><td>ATTACK</td><td>DECAY</td><td>SUSTAIN</td><td class="knob10" rowspan="3">SECTION</td></tr>
+    <tr class="cont"><td class="p"><b>4</b>ENVELOPE</td><td class="s">FILTER</td><td>ATTACK</td><td>DECAY</td><td>AMOUNT</td></tr>
+    <tr class="cont"><td class="p"><b>4</b>ENVELOPE</td><td class="s">PITCH</td><td>AMOUNT</td><td>DECAY</td><td>GLIDE</td></tr>
+    <tr><td class="p"><b>5</b>FILTER</td><td class="s"></td><td>CUTOFF</td><td>RESO</td><td>TYPE</td><td>DRIVE</td></tr>
+    <tr><td class="p"><b>6</b>LFO</td><td class="s">PITCH &middot; CUTOFF &middot; AMP &middot; PAN &middot; SHAPE</td><td>RATE</td><td>DEPTH</td><td>WAVE</td><td class="knob10">TARGET</td></tr>
+    <tr><td class="p"><b>7</b>DELAY</td><td class="s">TIME</td><td>DIVISION</td><td>FEEDBACK</td><td>SEND</td><td class="knob10" rowspan="2">SECTION</td></tr>
+    <tr class="cont"><td class="p"><b>7</b>DELAY</td><td class="s">COLOR</td><td>TONE</td><td>WOBBLE</td><td>WIDTH</td></tr>
+    <tr><td class="p"><b>8</b>MIX</td><td class="s"></td><td>PAN</td><td>WIDTH</td><td>REV SEND</td><td>SIZE</td></tr>
+    <tr><td class="p"><b>9</b>KEY</td><td class="s">whole instrument</td><td>1 PROG &middot; 2 CHANGE &middot; 3 CHORD</td><td>4 RESTART &middot; 5 OCTAVE &middot; 6 FINE</td><td>7 LFO SYNC &middot; 8 DAMPING &middot; 9 PREDELAY</td><td>VIEW</td></tr>
+  </table>
+  <p class="note" style="margin-top:4mm">On pages 2 to 8 each row's three knobs are OSC&nbsp;1, 2
+  and 3, left to right, in both groups. Turning knob 10 on a page with sections, or knob 11,
+  never changes the sound; a knob takes over (and its setting jumps to it) when you turn it.</p>
+</section>
+
+</body>
+</html>

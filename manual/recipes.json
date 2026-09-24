@@ -1,0 +1,1048 @@
+{
+ "tide": {
+  "rows": [
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 6,
+    "name": "TEMPO",
+    "osc": 0,
+    "text": "70 BPM"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 1,
+    "name": "SHAPE",
+    "osc": 1,
+    "text": "25"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 2,
+    "name": "SHAPE",
+    "osc": 2,
+    "text": "10"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 3,
+    "name": "SHAPE",
+    "osc": 3,
+    "text": "0"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 10,
+    "name": "DETUNE",
+    "osc": 0,
+    "text": "12.0 CT"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 1,
+    "name": "MODE",
+    "osc": 1,
+    "text": "OFF"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 2,
+    "name": "MODE",
+    "osc": 2,
+    "text": "OFF"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 3,
+    "name": "MODE",
+    "osc": 3,
+    "text": "OFF"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "PITCH",
+    "knob": 7,
+    "name": "GLIDE",
+    "osc": 1,
+    "text": "1.0 S"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "PITCH",
+    "knob": 8,
+    "name": "GLIDE",
+    "osc": 2,
+    "text": "1.0 S"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "PITCH",
+    "knob": 9,
+    "name": "GLIDE",
+    "osc": 3,
+    "text": "1.0 S"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 1,
+    "name": "CUTOFF",
+    "osc": 1,
+    "text": "763 HZ"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 2,
+    "name": "CUTOFF",
+    "osc": 2,
+    "text": "980 HZ"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 3,
+    "name": "CUTOFF",
+    "osc": 3,
+    "text": "1.3 KHZ"
+   },
+   {
+    "page": "LFO",
+    "section": "CUTOFF",
+    "knob": 4,
+    "name": "DEPTH",
+    "osc": 1,
+    "text": "35"
+   },
+   {
+    "page": "LFO",
+    "section": "CUTOFF",
+    "knob": 5,
+    "name": "DEPTH",
+    "osc": 2,
+    "text": "35"
+   },
+   {
+    "page": "LFO",
+    "section": "CUTOFF",
+    "knob": 6,
+    "name": "DEPTH",
+    "osc": 3,
+    "text": "35"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 4,
+    "name": "WIDTH",
+    "osc": 1,
+    "text": "60"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 5,
+    "name": "WIDTH",
+    "osc": 2,
+    "text": "60"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 6,
+    "name": "WIDTH",
+    "osc": 3,
+    "text": "60"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 7,
+    "name": "REV SEND",
+    "osc": 1,
+    "text": "60"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 8,
+    "name": "REV SEND",
+    "osc": 2,
+    "text": "60"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 9,
+    "name": "REV SEND",
+    "osc": 3,
+    "text": "60"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 10,
+    "name": "SIZE",
+    "osc": 0,
+    "text": "90"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 1,
+    "name": "PROG",
+    "osc": 0,
+    "text": "SAD"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 2,
+    "name": "CHANGE",
+    "osc": 0,
+    "text": "2 BARS"
+   }
+  ],
+  "peak": 0.21755844354629517,
+  "rms": 0.07326831725664298
+ },
+ "clockwork": {
+  "rows": [
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 6,
+    "name": "TEMPO",
+    "osc": 0,
+    "text": "120 BPM"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 1,
+    "name": "MODE",
+    "osc": 1,
+    "text": "UP"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 2,
+    "name": "MODE",
+    "osc": 2,
+    "text": "RANDOM"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 3,
+    "name": "MODE",
+    "osc": 3,
+    "text": "UP-DN"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 4,
+    "name": "POOL",
+    "osc": 1,
+    "text": "ROOT"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 5,
+    "name": "POOL",
+    "osc": 2,
+    "text": "TRIAD"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 6,
+    "name": "POOL",
+    "osc": 3,
+    "text": "KEY"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 1,
+    "name": "DIVISION",
+    "osc": 1,
+    "text": "1/16"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 2,
+    "name": "DIVISION",
+    "osc": 2,
+    "text": "1/16"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 3,
+    "name": "DIVISION",
+    "osc": 3,
+    "text": "1/16"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 4,
+    "name": "LENGTH",
+    "osc": 1,
+    "text": "8"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 5,
+    "name": "LENGTH",
+    "osc": 2,
+    "text": "7"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 6,
+    "name": "LENGTH",
+    "osc": 3,
+    "text": "5"
+   },
+   {
+    "page": "ARP",
+    "section": "CHANCE",
+    "knob": 1,
+    "name": "DENSITY",
+    "osc": 1,
+    "text": "5/8"
+   },
+   {
+    "page": "ARP",
+    "section": "CHANCE",
+    "knob": 2,
+    "name": "DENSITY",
+    "osc": 2,
+    "text": "4/7"
+   },
+   {
+    "page": "ARP",
+    "section": "CHANCE",
+    "knob": 3,
+    "name": "DENSITY",
+    "osc": 3,
+    "text": "3/5"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 4,
+    "name": "DECAY",
+    "osc": 1,
+    "text": "151 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 5,
+    "name": "DECAY",
+    "osc": 2,
+    "text": "151 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 6,
+    "name": "DECAY",
+    "osc": 3,
+    "text": "151 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 7,
+    "name": "SUSTAIN",
+    "osc": 1,
+    "text": "0"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "FILTER",
+    "knob": 7,
+    "name": "AMOUNT",
+    "osc": 1,
+    "text": "+2.0 OCT"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "FILTER",
+    "knob": 8,
+    "name": "AMOUNT",
+    "osc": 2,
+    "text": "+2.0 OCT"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "FILTER",
+    "knob": 9,
+    "name": "AMOUNT",
+    "osc": 3,
+    "text": "+2.0 OCT"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 1,
+    "name": "CUTOFF",
+    "osc": 1,
+    "text": "763 HZ"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 2,
+    "name": "CUTOFF",
+    "osc": 2,
+    "text": "763 HZ"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 3,
+    "name": "CUTOFF",
+    "osc": 3,
+    "text": "763 HZ"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 4,
+    "name": "RESO",
+    "osc": 1,
+    "text": "50"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 5,
+    "name": "RESO",
+    "osc": 2,
+    "text": "50"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 6,
+    "name": "RESO",
+    "osc": 3,
+    "text": "50"
+   },
+   {
+    "page": "DELAY",
+    "section": "TIME",
+    "knob": 8,
+    "name": "SEND",
+    "osc": 2,
+    "text": "35"
+   }
+  ],
+  "peak": 0.16721265017986298,
+  "rms": 0.016796095915888615
+ },
+ "dub": {
+  "rows": [
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 2,
+    "name": "LEVEL",
+    "osc": 2,
+    "text": "0"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 3,
+    "name": "LEVEL",
+    "osc": 3,
+    "text": "55"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 4,
+    "name": "ROOT",
+    "osc": 0,
+    "text": "G"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 6,
+    "name": "TEMPO",
+    "osc": 0,
+    "text": "90 BPM"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 1,
+    "name": "SHAPE",
+    "osc": 1,
+    "text": "50"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 3,
+    "name": "SHAPE",
+    "osc": 3,
+    "text": "0"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 4,
+    "name": "OCTAVE",
+    "osc": 1,
+    "text": "+1"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 6,
+    "name": "OCTAVE",
+    "osc": 3,
+    "text": "-1"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 9,
+    "name": "DEGREE",
+    "osc": 3,
+    "text": "+0"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 1,
+    "name": "MODE",
+    "osc": 1,
+    "text": "RANDOM"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 3,
+    "name": "MODE",
+    "osc": 3,
+    "text": "OFF"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 1,
+    "name": "DIVISION",
+    "osc": 1,
+    "text": "1/8"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 7,
+    "name": "GATE",
+    "osc": 1,
+    "text": "20"
+   },
+   {
+    "page": "ARP",
+    "section": "CHANCE",
+    "knob": 1,
+    "name": "DENSITY",
+    "osc": 1,
+    "text": "3/8"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 4,
+    "name": "DECAY",
+    "osc": 1,
+    "text": "197 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 7,
+    "name": "SUSTAIN",
+    "osc": 1,
+    "text": "0"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 1,
+    "name": "CUTOFF",
+    "osc": 1,
+    "text": "1.6 KHZ"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 4,
+    "name": "RESO",
+    "osc": 1,
+    "text": "55"
+   },
+   {
+    "page": "FILTER",
+    "section": "",
+    "knob": 7,
+    "name": "TYPE",
+    "osc": 1,
+    "text": "BP"
+   },
+   {
+    "page": "DELAY",
+    "section": "TIME",
+    "knob": 4,
+    "name": "FEEDBACK",
+    "osc": 1,
+    "text": "79"
+   },
+   {
+    "page": "DELAY",
+    "section": "TIME",
+    "knob": 7,
+    "name": "SEND",
+    "osc": 1,
+    "text": "60"
+   },
+   {
+    "page": "DELAY",
+    "section": "COLOR",
+    "knob": 1,
+    "name": "TONE",
+    "osc": 1,
+    "text": "1.5 KHZ"
+   },
+   {
+    "page": "DELAY",
+    "section": "COLOR",
+    "knob": 4,
+    "name": "WOBBLE",
+    "osc": 1,
+    "text": "2.1 MS"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 7,
+    "name": "REV SEND",
+    "osc": 1,
+    "text": "30"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 1,
+    "name": "PROG",
+    "osc": 0,
+    "text": "VAMP"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 2,
+    "name": "CHANGE",
+    "osc": 0,
+    "text": "2 BARS"
+   }
+  ],
+  "peak": 0.09599895030260086,
+  "rms": 0.016685925114907723
+ },
+ "jazz": {
+  "rows": [
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 4,
+    "name": "ROOT",
+    "osc": 0,
+    "text": "C"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 5,
+    "name": "SCALE",
+    "osc": 0,
+    "text": "MAJOR"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 6,
+    "name": "TEMPO",
+    "osc": 0,
+    "text": "96 BPM"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 10,
+    "name": "SWING",
+    "osc": 0,
+    "text": "50"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 1,
+    "name": "SHAPE",
+    "osc": 1,
+    "text": "0"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 2,
+    "name": "SHAPE",
+    "osc": 2,
+    "text": "30"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 3,
+    "name": "SHAPE",
+    "osc": 3,
+    "text": "20"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 8,
+    "name": "DEGREE",
+    "osc": 2,
+    "text": "+0"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 9,
+    "name": "DEGREE",
+    "osc": 3,
+    "text": "+0"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 1,
+    "name": "MODE",
+    "osc": 1,
+    "text": "OFF"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 2,
+    "name": "MODE",
+    "osc": 2,
+    "text": "UP"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 3,
+    "name": "MODE",
+    "osc": 3,
+    "text": "RANDOM"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 5,
+    "name": "POOL",
+    "osc": 2,
+    "text": "7TH"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 6,
+    "name": "POOL",
+    "osc": 3,
+    "text": "7TH"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 2,
+    "name": "DIVISION",
+    "osc": 2,
+    "text": "1/8"
+   },
+   {
+    "page": "ARP",
+    "section": "RHYTHM",
+    "knob": 3,
+    "name": "DIVISION",
+    "osc": 3,
+    "text": "1/4T"
+   },
+   {
+    "page": "ARP",
+    "section": "CHANCE",
+    "knob": 6,
+    "name": "VARY",
+    "osc": 3,
+    "text": "30"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 5,
+    "name": "DECAY",
+    "osc": 2,
+    "text": "295 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 8,
+    "name": "SUSTAIN",
+    "osc": 2,
+    "text": "20"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 8,
+    "name": "REV SEND",
+    "osc": 2,
+    "text": "35"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 9,
+    "name": "REV SEND",
+    "osc": 3,
+    "text": "35"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 1,
+    "name": "PROG",
+    "osc": 0,
+    "text": "JAZZ"
+   }
+  ],
+  "peak": 0.12911356985569,
+  "rms": 0.03709368267430215
+ },
+ "bells": {
+  "rows": [
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 4,
+    "name": "ROOT",
+    "osc": 0,
+    "text": "D"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 5,
+    "name": "SCALE",
+    "osc": 0,
+    "text": "MAJOR"
+   },
+   {
+    "page": "MAIN",
+    "section": "",
+    "knob": 6,
+    "name": "TEMPO",
+    "osc": 0,
+    "text": "80 BPM"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 1,
+    "name": "SHAPE",
+    "osc": 1,
+    "text": "30"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 2,
+    "name": "SHAPE",
+    "osc": 2,
+    "text": "0"
+   },
+   {
+    "page": "OSC",
+    "section": "",
+    "knob": 3,
+    "name": "SHAPE",
+    "osc": 3,
+    "text": "0"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 1,
+    "name": "MODE",
+    "osc": 1,
+    "text": "OFF"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 2,
+    "name": "MODE",
+    "osc": 2,
+    "text": "UP"
+   },
+   {
+    "page": "ARP",
+    "section": "NOTES",
+    "knob": 3,
+    "name": "MODE",
+    "osc": 3,
+    "text": "DOWN"
+   },
+   {
+    "page": "ARP",
+    "section": "CHANCE",
+    "knob": 3,
+    "name": "DENSITY",
+    "osc": 3,
+    "text": "5/6"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 5,
+    "name": "DECAY",
+    "osc": 2,
+    "text": "917 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "AMP",
+    "knob": 6,
+    "name": "DECAY",
+    "osc": 3,
+    "text": "917 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "PITCH",
+    "knob": 2,
+    "name": "AMOUNT",
+    "osc": 2,
+    "text": "+12 ST"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "PITCH",
+    "knob": 3,
+    "name": "AMOUNT",
+    "osc": 3,
+    "text": "+12 ST"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "PITCH",
+    "knob": 5,
+    "name": "DECAY",
+    "osc": 2,
+    "text": "8 MS"
+   },
+   {
+    "page": "ENVELOPE",
+    "section": "PITCH",
+    "knob": 6,
+    "name": "DECAY",
+    "osc": 3,
+    "text": "8 MS"
+   },
+   {
+    "page": "DELAY",
+    "section": "TIME",
+    "knob": 9,
+    "name": "SEND",
+    "osc": 3,
+    "text": "30"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 8,
+    "name": "REV SEND",
+    "osc": 2,
+    "text": "45"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 9,
+    "name": "REV SEND",
+    "osc": 3,
+    "text": "45"
+   },
+   {
+    "page": "MIX",
+    "section": "",
+    "knob": 10,
+    "name": "SIZE",
+    "osc": 0,
+    "text": "85"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 1,
+    "name": "PROG",
+    "osc": 0,
+    "text": "CANON"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 2,
+    "name": "CHANGE",
+    "osc": 0,
+    "text": "1/2 BAR"
+   },
+   {
+    "page": "KEY",
+    "section": "",
+    "knob": 4,
+    "name": "RESTART",
+    "osc": 0,
+    "text": "CHORD"
+   }
+  ],
+  "peak": 0.14812052249908447,
+  "rms": 0.04701956615938868
+ }
+}

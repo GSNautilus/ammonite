@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Drone Synth Wiring (rear view)</title>
+<style>
+  body { font-family: Segoe UI, Arial, sans-serif; background: #1b1d21; color: #e6e6ea; margin: 0; padding: 16px; }
+  h1 { font-size: 20px; margin: 0 0 6px; }
+  p  { max-width: 1100px; line-height: 1.4; }
+  .warn { background: #4a1e1e; border: 2px solid #ff5b5b; padding: 10px 14px; border-radius: 8px; max-width: 1070px; font-weight: 600; }
+  table { border-collapse: collapse; margin-top: 14px; }
+  th, td { border: 1px solid #444; padding: 5px 10px; text-align: left; font-size: 14px; }
+  th { background: #2b2e34; }
+  svg { display: block; margin-top: 14px; max-width: 100%; height: auto; }
+  .v { color: #ff6b6b; } .g { color: #9ad1ff; } .o { color: #ffd166; }
+</style>
+</head>
+<body>
+<h1>Drone synth panel &rarr; Daisy Seed3 wiring &mdash; VIEWED FROM BEHIND THE PANEL</h1><p><b>Mirror image of the front.</b> Knob 1 is at the top-right, knob 12 at the bottom-left. ONE RULE FOR EVERY POT, seen from behind: LEFT terminal = VCC, MIDDLE = output, RIGHT = ground. Rows mounted upside down turn the opposite way; the firmware invert table corrects that.</p>
+<div class="warn">FIRST WIRE, BEFORE ANYTHING ELSE: Seed pin 20 (AGND) to Seed pin 40 (DGND). The Seed3 does not bond them. Without this jumper every knob reads full scale.</div>
+
+<svg viewBox="0 0 1120 640" xmlns="http://www.w3.org/2000/svg" font-family="Segoe UI, Arial, sans-serif">
+<defs><g id="pot"><circle r="26" fill="#2c2f36" stroke="#8a919c" stroke-width="2"/><line x1="0" y1="0" x2="0" y2="-19" stroke="#e6e6ea" stroke-width="3"/></g></defs>
+<rect x="30" y="40" width="470" height="360" rx="12" fill="#23262c" stroke="#3a3e46"/>
+<rect x="540" y="40" width="470" height="360" rx="12" fill="#23262c" stroke="#3a3e46"/>
+<text x="265" y="66" fill="#8a919c" font-size="14" text-anchor="middle">KNOBS 7-12 (on your LEFT from behind), pins 28-32, 35</text>
+<text x="775" y="66" fill="#8a919c" font-size="14" text-anchor="middle">KNOBS 1-6 (on your RIGHT from behind), pins 22-27</text>
+<use href="#pot" x="920" y="130"/><text x="920" y="98" fill="#e6e6ea" font-size="13" text-anchor="middle">1 ROOT</text>
+<rect x="894" y="164" width="14" height="10" fill="#ff6b6b"/>
+<text x="901" y="190" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="913" y="164" width="14" height="10" fill="#ffd166"/>
+<text x="920" y="190" fill="#ffd166" font-size="12" text-anchor="middle">22</text>
+<rect x="932" y="164" width="14" height="10" fill="#9ad1ff"/>
+<text x="939" y="190" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="775" y="130"/><text x="775" y="98" fill="#e6e6ea" font-size="13" text-anchor="middle">2 SPREAD</text>
+<rect x="749" y="164" width="14" height="10" fill="#ff6b6b"/>
+<text x="756" y="190" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="768" y="164" width="14" height="10" fill="#ffd166"/>
+<text x="775" y="190" fill="#ffd166" font-size="12" text-anchor="middle">23</text>
+<rect x="787" y="164" width="14" height="10" fill="#9ad1ff"/>
+<text x="794" y="190" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="630" y="130"/><text x="630" y="98" fill="#e6e6ea" font-size="13" text-anchor="middle">3 DETUNE</text>
+<rect x="604" y="164" width="14" height="10" fill="#ff6b6b"/>
+<text x="611" y="190" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="623" y="164" width="14" height="10" fill="#ffd166"/>
+<text x="630" y="190" fill="#ffd166" font-size="12" text-anchor="middle">24</text>
+<rect x="642" y="164" width="14" height="10" fill="#9ad1ff"/>
+<text x="649" y="190" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="920" y="300"/><text x="920" y="268" fill="#e6e6ea" font-size="13" text-anchor="middle">4 CUTOFF (upside down)</text>
+<rect x="894" y="334" width="14" height="10" fill="#ff6b6b"/>
+<text x="901" y="360" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="913" y="334" width="14" height="10" fill="#ffd166"/>
+<text x="920" y="360" fill="#ffd166" font-size="12" text-anchor="middle">25</text>
+<rect x="932" y="334" width="14" height="10" fill="#9ad1ff"/>
+<text x="939" y="360" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="775" y="300"/><text x="775" y="268" fill="#e6e6ea" font-size="13" text-anchor="middle">5 RESO (upside down)</text>
+<rect x="749" y="334" width="14" height="10" fill="#ff6b6b"/>
+<text x="756" y="360" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="768" y="334" width="14" height="10" fill="#ffd166"/>
+<text x="775" y="360" fill="#ffd166" font-size="12" text-anchor="middle">26</text>
+<rect x="787" y="334" width="14" height="10" fill="#9ad1ff"/>
+<text x="794" y="360" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="630" y="300"/><text x="630" y="268" fill="#e6e6ea" font-size="13" text-anchor="middle">6 DRIVE (upside down)</text>
+<rect x="604" y="334" width="14" height="10" fill="#ff6b6b"/>
+<text x="611" y="360" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="623" y="334" width="14" height="10" fill="#ffd166"/>
+<text x="630" y="360" fill="#ffd166" font-size="12" text-anchor="middle">27</text>
+<rect x="642" y="334" width="14" height="10" fill="#9ad1ff"/>
+<text x="649" y="360" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="410" y="130"/><text x="410" y="98" fill="#e6e6ea" font-size="13" text-anchor="middle">7 RATE</text>
+<rect x="384" y="164" width="14" height="10" fill="#ff6b6b"/>
+<text x="391" y="190" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="403" y="164" width="14" height="10" fill="#ffd166"/>
+<text x="410" y="190" fill="#ffd166" font-size="12" text-anchor="middle">28</text>
+<rect x="422" y="164" width="14" height="10" fill="#9ad1ff"/>
+<text x="429" y="190" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="265" y="130"/><text x="265" y="98" fill="#e6e6ea" font-size="13" text-anchor="middle">8 DEPTH</text>
+<rect x="239" y="164" width="14" height="10" fill="#ff6b6b"/>
+<text x="246" y="190" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="258" y="164" width="14" height="10" fill="#ffd166"/>
+<text x="265" y="190" fill="#ffd166" font-size="12" text-anchor="middle">29</text>
+<rect x="277" y="164" width="14" height="10" fill="#9ad1ff"/>
+<text x="284" y="190" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="120" y="130"/><text x="120" y="98" fill="#e6e6ea" font-size="13" text-anchor="middle">9 DRIFT</text>
+<rect x="94" y="164" width="14" height="10" fill="#ff6b6b"/>
+<text x="101" y="190" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="113" y="164" width="14" height="10" fill="#ffd166"/>
+<text x="120" y="190" fill="#ffd166" font-size="12" text-anchor="middle">30</text>
+<rect x="132" y="164" width="14" height="10" fill="#9ad1ff"/>
+<text x="139" y="190" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="410" y="300"/><text x="410" y="268" fill="#e6e6ea" font-size="13" text-anchor="middle">10 SHIMMER (upside down)</text>
+<rect x="384" y="334" width="14" height="10" fill="#ff6b6b"/>
+<text x="391" y="360" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="403" y="334" width="14" height="10" fill="#ffd166"/>
+<text x="410" y="360" fill="#ffd166" font-size="12" text-anchor="middle">31</text>
+<rect x="422" y="334" width="14" height="10" fill="#9ad1ff"/>
+<text x="429" y="360" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="265" y="300"/><text x="265" y="268" fill="#e6e6ea" font-size="13" text-anchor="middle">11 REVERB (upside down)</text>
+<rect x="239" y="334" width="14" height="10" fill="#ff6b6b"/>
+<text x="246" y="360" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="258" y="334" width="14" height="10" fill="#ffd166"/>
+<text x="265" y="360" fill="#ffd166" font-size="12" text-anchor="middle">32</text>
+<rect x="277" y="334" width="14" height="10" fill="#9ad1ff"/>
+<text x="284" y="360" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<use href="#pot" x="120" y="300"/><text x="120" y="268" fill="#e6e6ea" font-size="13" text-anchor="middle">12 VOLUME (upside down)</text>
+<rect x="94" y="334" width="14" height="10" fill="#ff6b6b"/>
+<text x="101" y="360" fill="#ff6b6b" font-size="12" text-anchor="middle">V</text>
+<rect x="113" y="334" width="14" height="10" fill="#ffd166"/>
+<text x="120" y="360" fill="#ffd166" font-size="12" text-anchor="middle">35</text>
+<rect x="132" y="334" width="14" height="10" fill="#9ad1ff"/>
+<text x="139" y="360" fill="#9ad1ff" font-size="12" text-anchor="middle">G</text>
+<line x1="101" y1="174" x2="101" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="246" y1="174" x2="246" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="391" y1="174" x2="391" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="139" y1="174" x2="139" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="284" y1="174" x2="284" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="429" y1="174" x2="429" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="60" y1="204" x2="391" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="139" y1="214" x2="480" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="101" y1="344" x2="101" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="246" y1="344" x2="246" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="391" y1="344" x2="391" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="139" y1="344" x2="139" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="284" y1="344" x2="284" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="429" y1="344" x2="429" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="60" y1="374" x2="391" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="139" y1="384" x2="480" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="60" y1="204" x2="60" y2="404" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="480" y1="214" x2="480" y2="404" stroke="#9ad1ff" stroke-width="3"/>
+<text x="66" y="412" fill="#ff6b6b" font-size="12">to 21</text>
+<text x="474" y="412" fill="#9ad1ff" font-size="12" text-anchor="end">to 20</text>
+<line x1="611" y1="174" x2="611" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="756" y1="174" x2="756" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="901" y1="174" x2="901" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="649" y1="174" x2="649" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="794" y1="174" x2="794" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="939" y1="174" x2="939" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="570" y1="204" x2="901" y2="204" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="649" y1="214" x2="990" y2="214" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="611" y1="344" x2="611" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="756" y1="344" x2="756" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="901" y1="344" x2="901" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="649" y1="344" x2="649" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="794" y1="344" x2="794" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="939" y1="344" x2="939" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="570" y1="374" x2="901" y2="374" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="649" y1="384" x2="990" y2="384" stroke="#9ad1ff" stroke-width="3"/>
+<line x1="570" y1="204" x2="570" y2="404" stroke="#ff6b6b" stroke-width="3"/>
+<line x1="990" y1="214" x2="990" y2="404" stroke="#9ad1ff" stroke-width="3"/>
+<text x="576" y="412" fill="#ff6b6b" font-size="12">to 21</text>
+<text x="984" y="412" fill="#9ad1ff" font-size="12" text-anchor="end">to 20</text>
+<g font-size="13"><line x1="40" y1="440" x2="80" y2="440" stroke="#ff6b6b" stroke-width="4"/><text x="88" y="445" fill="#e6e6ea">VCC bus: every LEFT terminal &rarr; Seed pin 21 (+3V3A)</text><line x1="430" y1="440" x2="470" y2="440" stroke="#9ad1ff" stroke-width="4"/><text x="478" y="445" fill="#e6e6ea">GND bus: every RIGHT terminal &rarr; Seed pin 20 (AGND)</text><rect x="830" y="432" width="16" height="16" fill="#ffd166"/><text x="854" y="445" fill="#e6e6ea">middle terminal &rarr; printed Seed pin</text></g>
+<rect x="30" y="460" width="980" height="160" rx="12" fill="#23262c" stroke="#3a3e46"/>
+<text x="520" y="486" fill="#8a919c" font-size="14" text-anchor="middle">DAISY SEED3 (pin 1 = square pad by the USB-C; 1-20 up one side, 21-40 down the other)</text>
+<g font-size="13" fill="#e6e6ea"><text x="50" y="516"><tspan fill="#ff6b6b" font-weight="700">21 +3V3A</tspan> &larr; both red trunks</text><text x="50" y="540"><tspan fill="#9ad1ff" font-weight="700">20 AGND</tspan> &larr; both blue trunks, audio jack sleeve</text><text x="50" y="564"><tspan fill="#ff5b5b" font-weight="700">20 &harr; 40 JUMPER</tspan> (AGND to DGND, mandatory, do it first)</text><text x="50" y="588"><tspan fill="#ffd166" font-weight="700">22-32, 35</tspan> &larr; the twelve middle terminals, numbers as printed above</text><text x="560" y="516"><tspan font-weight="700">18</tspan> OUT L &rarr; jack tip &nbsp;&nbsp; <tspan font-weight="700">19</tspan> OUT R &rarr; jack ring</text><text x="560" y="540"><tspan font-weight="700">38</tspan> 3V3D &rarr; display VCC &nbsp;&nbsp; <tspan font-weight="700">40</tspan> DGND &rarr; display GND</text><text x="560" y="564"><tspan font-weight="700">9</tspan> SCL &nbsp; <tspan font-weight="700">11</tspan> SDA &nbsp; <tspan font-weight="700">7</tspan> DC &nbsp; <tspan font-weight="700">8</tspan> CS &nbsp; <tspan font-weight="700">6</tspan> RST (display)</text><text x="560" y="588">Knob turns backwards? flip its entry in kPotInvert (synth_main.cpp). Never rewire.</text></g>
+</svg>
+
+<h2 style="font-size:16px;margin-top:18px">Every wire, as a list</h2>
+<table>
+<tr><th>#</th><th>Knob</th><th>Row</th><th>Terminals left&rarr;right, seen from behind</th><th>Wiper &rarr; Seed pin</th><th>ADC</th></tr>
+<tr><td>1</td><td>ROOT</td><td>top</td><td>V &middot; OUT &middot; G</td><td>22</td><td>A0</td></tr>
+<tr><td>2</td><td>SPREAD</td><td>top</td><td>V &middot; OUT &middot; G</td><td>23</td><td>A1</td></tr>
+<tr><td>3</td><td>DETUNE</td><td>top</td><td>V &middot; OUT &middot; G</td><td>24</td><td>A2</td></tr>
+<tr><td>4</td><td>CUTOFF</td><td>bottom (flipped)</td><td>V &middot; OUT &middot; G (inverted in firmware)</td><td>25</td><td>A3</td></tr>
+<tr><td>5</td><td>RESO</td><td>bottom (flipped)</td><td>V &middot; OUT &middot; G (inverted in firmware)</td><td>26</td><td>A4</td></tr>
+<tr><td>6</td><td>DRIVE</td><td>bottom (flipped)</td><td>V &middot; OUT &middot; G (inverted in firmware)</td><td>27</td><td>A5</td></tr>
+<tr><td>7</td><td>RATE</td><td>top</td><td>V &middot; OUT &middot; G</td><td>28</td><td>A6</td></tr>
+<tr><td>8</td><td>DEPTH</td><td>top</td><td>V &middot; OUT &middot; G</td><td>29</td><td>A7</td></tr>
+<tr><td>9</td><td>DRIFT</td><td>top</td><td>V &middot; OUT &middot; G</td><td>30</td><td>A8</td></tr>
+<tr><td>10</td><td>SHIMMER</td><td>bottom (flipped)</td><td>V &middot; OUT &middot; G (inverted in firmware)</td><td>31</td><td>A9</td></tr>
+<tr><td>11</td><td>REVERB</td><td>bottom (flipped)</td><td>V &middot; OUT &middot; G (inverted in firmware)</td><td>32</td><td>A10</td></tr>
+<tr><td>12</td><td>VOLUME</td><td>bottom (flipped)</td><td>V &middot; OUT &middot; G (inverted in firmware)</td><td>35</td><td>A11</td></tr>
+</table>
+<p>Every pot is wired the same way. A row that turns the wrong way is fixed in kPotInvert in synth_main.cpp, never by rewiring. All V terminals join one red bus per group, all G terminals one black bus per group. Each group sends one red lead to pin 21 and one black lead to pin 20. Pin 20 is jumpered to pin 40. Pins 33 and 34 are skipped on purpose (no ADC there).</p>
+</body>
+</html>
