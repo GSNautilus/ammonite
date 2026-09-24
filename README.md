@@ -10,8 +10,8 @@
 </p>
 
 <p align="center">
-  <a href="media/audio/ammonite.mp3?raw=true"><b>&#9654; Listen: two minutes of Ammonite</b></a><br>
-  <a href="media/demo.mp4?raw=true">Watch the screen play (video with sound)</a> &middot;
+  <a href="https://gsnautilus.github.io/ammonite/#listen"><b>&#9654; Listen: two minutes of Ammonite</b></a><br>
+  <a href="https://gsnautilus.github.io/ammonite/#video">Watch the screen play (video with sound)</a> &middot;
   <a href="manual/Ammonite_Manual.pdf">Owner's manual (PDF)</a>
 </p>
 
@@ -38,7 +38,8 @@ fifths, so a chord has a look as well as a sound).
 
 ## Listen
 
-**[&#9654; Two minutes of Ammonite](media/audio/ammonite.mp3?raw=true)**
+**[&#9654; Two minutes of Ammonite](https://gsnautilus.github.io/ammonite/#listen)**, and every clip below, play on the
+[listening page](https://gsnautilus.github.io/ammonite/).
 
 And the recipes: rendered straight from the synth engine, 40 seconds each. Every one is a
 recipe from the [owner's manual](manual/Ammonite_Manual.pdf), so you can dial it in
@@ -46,12 +47,12 @@ yourself.
 
 | | |
 |---|---|
-| [Power-on](media/audio/power_on.mp3?raw=true) | what Ammonite plays the moment it has power: three arps in A minor |
-| [Slow tide](media/audio/tide.mp3?raw=true) | three drones sliding through a progression under a breathing filter |
-| [Clockwork](media/audio/clockwork.mp3?raw=true) | sixteenth-note patterns of 8, 7 and 5 steps turning against each other |
-| [Dub echoes](media/audio/dub.mp3?raw=true) | a sparse chord stab into a dark, wobbly ping-pong echo over a sine bass |
-| [Late set](media/audio/jazz.mp3?raw=true) | a swung ii-V-I in C with a gliding bass |
-| [Bells in D](media/audio/bells.mp3?raw=true) | Pachelbel's chords played by pitch-swept sine bells |
+| [Power-on](https://gsnautilus.github.io/ammonite/#power-on) | what Ammonite plays the moment it has power: three arps in A minor |
+| [Slow tide](https://gsnautilus.github.io/ammonite/#tide) | three drones sliding through a progression under a breathing filter |
+| [Clockwork](https://gsnautilus.github.io/ammonite/#clockwork) | sixteenth-note patterns of 8, 7 and 5 steps turning against each other |
+| [Dub echoes](https://gsnautilus.github.io/ammonite/#dub) | a sparse chord stab into a dark, wobbly ping-pong echo over a sine bass |
+| [Late set](https://gsnautilus.github.io/ammonite/#jazz) | a swung ii-V-I in C with a gliding bass |
+| [Bells in D](https://gsnautilus.github.io/ammonite/#bells) | Pachelbel's chords played by pitch-swept sine bells |
 
 ## The screen
 

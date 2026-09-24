@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ammonite</title>
+<meta name="description" content="Ammonite: a three-voice arpeggiator synthesizer on the Daisy Seed. Listen to it here.">
+<link rel="icon" href="manual/img/ammonite.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@300;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --panel: #17191c;
+    --line: #2a2d32;
+    --ink: #ece9e3;
+    --muted: #9a9ea6;
+    --accent: #d2733a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 400 17px/1.55 "Barlow", system-ui, sans-serif;
+  }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  main { max-width: 880px; margin: 0 auto; padding: 48px 16px 80px; }
+
+  header { text-align: center; }
+  header .logo { width: 56px; height: 56px; }
+  header h1 {
+    font: 300 clamp(40px, 9vw, 72px)/1 "Barlow Condensed", sans-serif;
+    letter-spacing: .28em; margin: 18px 0 8px .28em;
+  }
+  header p { color: var(--muted); margin: 0; font-size: 18px; }
+  .hero { display: block; width: min(400px, 90vw); margin: 36px auto 0; border-radius: 50%;
+          box-shadow: 0 0 0 6px #202226, 0 0 0 7px #3a3d43; }
+
+  .headline {
+    margin: 48px 0 0; padding: 26px 26px 22px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 14px;
+  }
+  .headline h2 { margin: 0 0 4px; font: 500 26px "Barlow Condensed", sans-serif; letter-spacing: .06em; }
+  .headline p { margin: 0 0 16px; color: var(--muted); }
+  audio { width: 100%; display: block; }
+
+  h2.section {
+    font: 500 15px "Barlow Condensed", sans-serif; letter-spacing: .3em; text-transform: uppercase;
+    color: var(--muted); margin: 64px 0 18px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
+  }
+  video { width: 100%; max-width: 560px; display: block; margin: 0 auto; border-radius: 12px; background: #000; }
+  .caption { text-align: center; color: var(--muted); font-size: 15px; margin-top: 10px; }
+
+  .clip { display: grid; grid-template-columns: 112px 1fr; gap: 20px; align-items: center;
+          padding: 18px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
+  .clip img { width: 112px; height: 112px; border-radius: 50%; box-shadow: 0 0 0 3px #202226; }
+  .clip h3 { margin: 0 0 2px; font: 600 19px "Barlow", sans-serif; }
+  .clip p { margin: 0 0 10px; color: var(--muted); font-size: 15.5px; }
+
+  .photo { width: 100%; border-radius: 12px; display: block; }
+  .links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 64px; }
+  .links a {
+    border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px; color: var(--ink);
+    background: var(--panel);
+  }
+  .links a:hover { border-color: var(--accent); text-decoration: none; }
+  footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 40px; }
+
+  @media (max-width: 520px) {
+    .clip { grid-template-columns: 72px 1fr; gap: 14px; }
+    .clip img { width: 72px; height: 72px; }
+  }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <img class="logo" src="manual/img/ammonite.svg" alt="">
+    <h1>AMMONITE</h1>
+    <p>A three-voice arpeggiator synthesizer on the Daisy Seed</p>
+    <img class="hero" src="media/screen.gif" alt="The Ammonite screen playing">
+  </header>
+
+  <section class="headline" id="listen">
+    <h2>Two minutes of Ammonite</h2>
+    <p>Put on headphones.</p>
+    <audio controls preload="metadata" src="media/audio/ammonite.mp3"></audio>
+  </section>
+
+  <h2 class="section" id="video">Watch the screen play</h2>
+  <video controls preload="metadata" poster="manual/img/screen_cover.png" src="media/demo.mp4"></video>
+  <p class="caption">One minute, straight from the engine: the chords start moving, echoes and
+  reverb arrive, the patterns get busier, the filter sweeps, and the screen changes view.</p>
+
+  <h2 class="section" id="recipes">Recipes</h2>
+  <p style="color:var(--muted);margin-top:0">Rendered from the synth engine, 40 seconds each. Every one
+  is a recipe in the <a href="manual/Ammonite_Manual.pdf">owner's manual</a>, with the exact knob settings.</p>
+
+  <div class="clip" id="power-on">
+    <img src="manual/img/screen_cover.png" alt="">
+    <div>
+      <h3>Power-on</h3>
+      <p>What Ammonite plays the moment it has power: three arps in A minor, no effects.</p>
+      <audio controls preload="none" src="media/audio/power_on.mp3"></audio>
+    </div>
+  </div>
+  <div class="clip" id="tide">
+    <img src="manual/img/screen_recipe_tide.png" alt="">
+    <div>
+      <h3>Slow tide</h3>
+      <p>Three drones that slide from chord to chord under a slow, breathing filter. No arps at all:
+      the progression does the moving.</p>
+      <audio controls preload="none" src="media/audio/tide.mp3"></audio>
+    </div>
+  </div>
+  <div class="clip" id="clockwork">
+    <img src="manual/img/screen_recipe_clockwork.png" alt="">
+    <div>
+      <h3>Clockwork</h3>
+      <p>Three sixteenth-note patterns of 8, 7 and 5 steps, each with a few steps left out. They line
+      up only once every 280 steps, so the groove keeps turning over.</p>
+      <audio controls preload="none" src="media/audio/clockwork.mp3"></audio>
+    </div>
+  </div>
+  <div class="clip" id="dub">
+    <img src="manual/img/screen_recipe_dub.png" alt="">
+    <div>
+      <h3>Dub echoes</h3>
+      <p>A sparse, resonant chord stab thrown into a long, darkening, wobbly ping-pong echo, over a
+      sine bass that follows the chords.</p>
+      <audio controls preload="none" src="media/audio/dub.mp3"></audio>
+    </div>
+  </div>
+  <div class="clip" id="jazz">
+    <img src="manual/img/screen_recipe_jazz.png" alt="">
+    <div>
+      <h3>Late set</h3>
+      <p>A swung ii-V-I in C: a gliding bass on the chord roots, an arp through each seventh chord,
+      and a looser triplet line on top.</p>
+      <audio controls preload="none" src="media/audio/jazz.mp3"></audio>
+    </div>
+  </div>
+  <div class="clip" id="bells">
+    <img src="manual/img/screen_recipe_bells.png" alt="">
+    <div>
+      <h3>Bells in D</h3>
+      <p>Pachelbel's chords in D major, played by sine bells: every note starts an octave high and
+      drops into place in a few milliseconds, which is what makes it ring.</p>
+      <audio controls preload="none" src="media/audio/bells.mp3"></audio>
+    </div>
+  </div>
+
+  <h2 class="section" id="hardware">The instrument</h2>
+  <img class="photo" src="media/photo_front.jpg" alt="The assembled front panel, the screen playing a Csus chord">
+
+  <nav class="links">
+    <a href="https://github.com/GSNautilus/ammonite">Code, build and flash on GitHub</a>
+    <a href="manual/Ammonite_Manual.pdf">Owner's manual (PDF)</a>
+    <a href="https://github.com/GSNautilus/ammonite/releases/latest">Download the firmware</a>
+  </nav>
+  <footer>Ammonite &middot; MIT license &middot; built on Electrosmith's libDaisy and DaisySP</footer>
+</main>
+</body>
+</html>
