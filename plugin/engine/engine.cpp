@@ -643,7 +643,7 @@ constexpr float kDelayToneLoHz = 500.f, kDelayToneOct = 4.585f; // 500 Hz .. 12 
 constexpr float kWobbleMs      = 3.f;
 constexpr float kWobbleRevertSec = 4.f, kWobbleSmoothSec = 0.3f;
 constexpr float kDelayMinSec   = 0.02f;
-constexpr float kDelayMaxSec   = (float)kDelayMaxSamples / 48000.f - 0.01f;
+constexpr float kDelayMaxSec   = (float)kDelayMaxSamples48 / 48000.f - 0.01f; // the hardware's
 struct Delay
 {
     float    logT;         // slewed log(delay seconds)
@@ -706,6 +706,7 @@ struct Engine::Impl
 
     // reverb
     Buffers  fx_;
+    bool     reverbOk_ = false; // Init fitted the tank at this rate
     float    preTime_       = 1.f;     // pre-delay read tap (samples), slewed
 
     // delays
@@ -1103,7 +1104,7 @@ void Engine::Impl::Init(float samplerate, const Buffers& buffers)
         }
     }
 
-    fx_.reverb->Init(samplerate);
+    reverbOk_ = fx_.reverb->Init(samplerate) == 0; // above 192 kHz: no reverb
     fx_.reverb->SetFeedback(kReverbFbMin);
     fx_.reverb->SetLpFreq(kReverbLpHiHz);
     fx_.preL->Init();
@@ -1748,8 +1749,9 @@ void Engine::Impl::ProcessAudio(float* out, int nframes)
         preTime_ += preStep;
         fx_.preL->Write(rl * kMixGain);
         fx_.preR->Write(rr * kMixGain);
-        float wl, wr;
-        fx_.reverb->Process(fx_.preL->Read(preTime_), fx_.preR->Read(preTime_), &wl, &wr);
+        float wl = 0.f, wr = 0.f;
+        if(reverbOk_)
+            fx_.reverb->Process(fx_.preL->Read(preTime_), fx_.preR->Read(preTime_), &wl, &wr);
         l += wl * kReverbReturn;
         r += wr * kReverbReturn;
 
@@ -2482,6 +2484,91 @@ void Engine::Impl::RenderScreen(uint16_t* fb)
 #if defined(__GNUC__) && !defined(__clang__)
 #pragma GCC pop_options
 #endif
+
+/* ------------------------------------------------------------------ host */
+static bool FuncOk(int f)
+{
+    return f >= 0 && f < kNumFuncs;
+}
+
+int Engine::NumFuncs()
+{
+    return kNumFuncs;
+}
+const char* Engine::FuncName(int func)
+{
+    return FuncOk(func) ? kFuncs[func].name : "";
+}
+bool Engine::FuncPerOsc(int func)
+{
+    return FuncOk(func) && kFuncs[func].perOsc;
+}
+int Engine::FuncSteps(int func)
+{
+    return FuncOk(func) ? kFuncs[func].steps : 0;
+}
+float Engine::FuncDefault(int func, int osc)
+{
+    if(!FuncOk(func) || osc < 0 || osc >= kOscs)
+        return 0.f;
+    return kFuncs[func].def[kFuncs[func].perOsc ? osc : 0];
+}
+void Engine::FuncPlace(int func, int* page, int* sub)
+{
+    *page = -1;
+    *sub  = 0;
+    for(int pg = 0; pg < kNumPages; pg++)
+    {
+        if(kPages[pg].knob10 == func)
+        {
+            *page = pg;
+            return;
+        }
+        for(int s = 0; s < kPages[pg].numSubs; s++)
+            for(int i = 0; i < 9; i++)
+                if(SlotFunc(kPages[pg].slots[s][i]) == func)
+                {
+                    *page = pg;
+                    *sub  = s;
+                    return;
+                }
+    }
+}
+const char* Engine::FuncStepText(int func, int step, char* buf, int size)
+{
+    char tmp[16];
+    tmp[0] = 0;
+    if(FuncOk(func) && step >= 0 && step < kFuncs[func].steps)
+    {
+        const FuncInfo& fi = kFuncs[func];
+        if(fi.names)
+            PutStr(tmp, fi.names[step]);
+        else
+            PutInt(tmp, fi.base + step, fi.sign);
+    }
+    int i = 0;
+    for(; i < size - 1 && tmp[i]; i++)
+        buf[i] = tmp[i];
+    if(size > 0)
+        buf[i] = 0;
+    return buf;
+}
+void Engine::SetParam(int func, int osc, float v)
+{
+    if(!FuncOk(func) || osc < 0 || osc >= kOscs)
+        return;
+    impl_->params_[func][osc].store(v < 0.f ? 0.f : (v > 1.f ? 1.f : v));
+}
+float Engine::GetParam(int func, int osc)
+{
+    if(!FuncOk(func) || osc < 0 || osc >= kOscs)
+        return 0.f;
+    return impl_->params_[func][osc].load();
+}
+bool Engine::ReverbOk()
+{
+    return impl_->reverbOk_;
+}
 
 /* ---------------------------------------------------------------- Engine */
 Engine::Engine() : impl_(new Impl()) {}

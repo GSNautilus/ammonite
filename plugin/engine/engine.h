@@ -20,6 +20,7 @@
  */
 #include <stdint.h>
 #include "daisysp.h"
+#include "reverbsc.h"
 
 namespace ammonite
 {
@@ -31,20 +32,25 @@ constexpr int kVolumePot = 11; // always VOLUME (knob 12)
 constexpr int kNumPages  = 9;  // MAIN OSC ARP ENVELOPE FILTER LFO DELAY MIX KEY
 constexpr int kOscs      = 3;
 
+/** Highest sample rate the buffers hold (the hardware runs at 48 kHz). */
+constexpr int kMaxSampleRate = 192000;
 /** Large DSP state the shell allocates (SDRAM on the Seed) and lends to the
- *  core. Each oscillator owns a stereo delay; a line holds 6 s at 48 kHz (a
- *  whole bar at 40 BPM plus the wobble margin), 1.15 MB each. */
-constexpr int kDelayMaxSamples = 288400;
+ *  core. Each oscillator owns a stereo delay. The longest delay time stays
+ *  the hardware's: kDelayMaxSamples48 at 48 kHz (6 s, a whole bar at 40 BPM
+ *  plus the wobble margin); the plugin's lines hold it at kMaxSampleRate,
+ *  4.6 MB each. */
+constexpr int kDelayMaxSamples48 = 288400;
+constexpr int kDelayMaxSamples   = kDelayMaxSamples48 * (kMaxSampleRate / 48000);
 using DelayLineT = daisysp::DelayLine<float, kDelayMaxSamples>;
-/** Reverb pre-delay line: 341 ms at 48 kHz (PREDELAY tops out at 250 ms). */
-constexpr int kPreLineSamples = 16384;
+/** Reverb pre-delay line: 341 ms at 192 kHz (PREDELAY tops out at 250 ms). */
+constexpr int kPreLineSamples = 16384 * (kMaxSampleRate / 48000);
 using PreLineT = daisysp::DelayLine<float, kPreLineSamples>;
 
 struct Buffers
 {
     DelayLineT*        delayL[kOscs];
     DelayLineT*        delayR[kOscs];
-    daisysp::ReverbSc* reverb;
+    ReverbSc*          reverb;
     PreLineT*          preL;
     PreLineT*          preR;
 };
@@ -114,6 +120,28 @@ class Engine
     /** Diagnostic view: the raw 0-100 reading of every pot, pot number beside
      *  each. For bring-up of the pots (no meter needed). */
     void RenderDiagnostics(uint16_t* fb);
+
+    /* --------------------------------------------- for a host (the plugin) */
+    /** The engine functions (enum Func in engine.cpp). New functions are
+     *  only ever added at the END of enum Func, so (func, osc) stays a
+     *  stable ID for host parameters and saved state. */
+    static int         NumFuncs();
+    static const char* FuncName(int func);   // "ATTACK" (not unique: see FuncPlace)
+    static bool        FuncPerOsc(int func); // three values, one per osc (else osc 0)
+    static int         FuncSteps(int func);  // 0 = continuous, else stepped positions
+    static float       FuncDefault(int func, int osc);
+    /** Where a function sits on the panel: page and sub-page (0 when the page
+     *  has none); page -1 for VOLUME, which is knob 12 on every page. */
+    static void        FuncPlace(int func, int* page, int* sub);
+    /** Text of step `step` of a stepped function ("UP", "+1", "1/8"), into buf. */
+    static const char* FuncStepText(int func, int step, char* buf, int size);
+    /** A parameter change from the host (automation): like a pot, the audio
+     *  thread smooths it over 20 ms. Any thread. */
+    void  SetParam(int func, int osc, float value01);
+    float GetParam(int func, int osc);
+    /** False when the last Init could not fit the reverb (above 192 kHz):
+     *  the engine then runs without it. */
+    bool  ReverbOk();
 
   private:
     struct Impl;

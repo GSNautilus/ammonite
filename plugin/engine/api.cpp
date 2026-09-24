@@ -15,13 +15,13 @@
 
 using ammonite::Engine;
 
-/** An engine with the big DSP buffers it borrows (~7.7 MB). */
+/** An engine with the big DSP buffers it borrows (~30 MB: sized for 192 kHz). */
 struct Instance
 {
     Engine                   engine;
     ammonite::DelayLineT     delayL[ammonite::kOscs];
     ammonite::DelayLineT     delayR[ammonite::kOscs];
-    daisysp::ReverbSc        reverb;
+    ammonite::ReverbSc       reverb;
     ammonite::PreLineT       preL, preR;
 
     void Init(float samplerate)
@@ -85,6 +85,9 @@ API void eng_process(void* h, float* interleaved_stereo, int nframes)
     E(h).ProcessAudio(interleaved_stereo, nframes);
 }
 API void eng_render(void* h, uint16_t* fb240x240) { E(h).RenderScreen(fb240x240); }
+API void eng_set_param(void* h, int func, int osc, float value) { E(h).SetParam(func, osc, value); }
+API float eng_get_param(void* h, int func, int osc) { return E(h).GetParam(func, osc); }
+API int eng_reverb_ok(void* h) { return E(h).ReverbOk() ? 1 : 0; }
 
 /* ------------------------------------- the simulator API, default instance */
 API void synth_init(float samplerate) { eng_init(Default(), samplerate); }

@@ -29,16 +29,17 @@ $dsp   = Join-Path $root 'lib\DaisySP\Source'
 $lgpl  = Join-Path $root 'lib\DaisySP\DaisySP-LGPL\Source'
 $build = Join-Path $PSScriptRoot 'build'
 
-# One zig build of an engine DLL, same flags as sim\build_dll.ps1. Output is
-# shown live and returned so a stale zig cache entry can be detected.
+# One zig build of an engine DLL, same flags as sim\build_dll.ps1 (core\
+# takes ReverbSc from DaisySP-LGPL, plugin\engine has its own copy). Output
+# is shown live and returned so a stale zig cache entry can be detected.
 function Invoke-Zig([string]$srcDir, [string[]]$files, [string]$out, [string[]]$extra) {
-    $sources = @($files | ForEach-Object { Join-Path $srcDir $_ }) + @(
+    $sources = @($files | ForEach-Object {
+            if ([IO.Path]::IsPathRooted($_)) { $_ } else { Join-Path $srcDir $_ } }) + @(
         (Join-Path $dsp  'Synthesis\oscillator.cpp'),
         (Join-Path $dsp  'Filters\svf.cpp'),
-        (Join-Path $lgpl 'Effects\reverbsc.cpp'),
         (Join-Path $dsp  'Control\phasor.cpp'))
     $log = New-Object System.Collections.Generic.List[string]
-    & $py -m ziglang c++ -shared -O2 -std=c++14 -w -DUSE_DAISYSP_LGPL `
+    & $py -m ziglang c++ -shared -O2 -std=c++14 -w `
         -I $srcDir -I $dsp -I "$dsp\Synthesis" -I "$dsp\Filters" -I "$dsp\Utility" `
         -I "$dsp\Control" -I $lgpl `
         @extra @sources -o $out 2>&1 | ForEach-Object {
@@ -49,14 +50,14 @@ function Invoke-Zig([string]$srcDir, [string[]]$files, [string]$out, [string[]]$
     return @{ Code = $LASTEXITCODE; Log = ($log -join "`n") }
 }
 
-function Build-EngineDll([string]$srcDir, [string[]]$files, [string]$out) {
+function Build-EngineDll([string]$srcDir, [string[]]$files, [string]$out, [string[]]$flags) {
     Write-Host "==> $out" -ForegroundColor Cyan
-    $r = Invoke-Zig $srcDir $files $out @()
+    $r = Invoke-Zig $srcDir $files $out $flags
     # A zig process killed mid-build leaves a manifest without its object
     # file; a one-off define changes the cache key (see sim\build_dll.ps1).
     if ($r.Code -ne 0 -and $r.Log -match "could not open '.*\\zig\\o\\") {
         Write-Host 'zig cache entry is missing its object file; rebuilding with a fresh cache key...' -ForegroundColor Yellow
-        $r = Invoke-Zig $srcDir $files $out @('-DSYNTH_CACHE_NONCE=' + [DateTime]::Now.Ticks)
+        $r = Invoke-Zig $srcDir $files $out (@($flags) + @('-DSYNTH_CACHE_NONCE=' + [DateTime]::Now.Ticks))
     }
     if ($r.Code -ne 0) { throw "build of $out failed" }
 }
@@ -67,8 +68,10 @@ switch ($Action) {
     'test' {
         $ref = Join-Path $build 'core_ref.dll'
         $eng = Join-Path $build 'ammonite_engine.dll'
-        Build-EngineDll (Join-Path $root 'core') @('synth_core.cpp', 'api.cpp') $ref
-        Build-EngineDll (Join-Path $PSScriptRoot 'engine') @('engine.cpp', 'api.cpp') $eng
+        Build-EngineDll (Join-Path $root 'core') @('synth_core.cpp', 'api.cpp',
+            (Join-Path $lgpl 'Effects\reverbsc.cpp')) $ref @('-DUSE_DAISYSP_LGPL')
+        Build-EngineDll (Join-Path $PSScriptRoot 'engine') @('engine.cpp', 'api.cpp',
+            'reverbsc.cpp') $eng @()
 
         $failed = @()
         $env:SYNTH_DLL = $eng # the hardware suite, run against the plugin engine
