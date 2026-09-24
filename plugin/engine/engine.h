@@ -150,6 +150,18 @@ class Engine
     /** The master clock after the last ProcessAudio, in quarter notes. */
     double GetBeat();
 
+    /* ------------------------------ for a mouse panel (the plugin's UI thread) */
+    /** Show this page and section. No pots, no pickup: a mouse knob always
+     *  edits the stored value (the host parameter) directly. */
+    void SetPanelPage(int page, int sub);
+    /** A knob was touched: its readout appears on the screen, as when a pot
+     *  moves on the hardware (the page map for 10 = PAGE, the section map for
+     *  9 on a page with sections). */
+    void ShowPot(int pot);
+    /** The function a knob drives on the current page and section; false for
+     *  PAGE and the section selector. VOLUME for knob 12. */
+    bool GetSlotFunc(int pot, int* func, int* osc);
+
   private:
     struct Impl;
     Impl* impl_;

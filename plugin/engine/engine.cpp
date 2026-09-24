@@ -702,6 +702,9 @@ struct Engine::Impl
     bool   hostPlaying_ = false;
     double hostBpm_     = 120.0;
     double hostBeat_    = 0.0;
+    // the tempo the clock ran at in the last block, when it was the host's
+    // (-1: TEMPO), for the TEMPO readout
+    std::atomic<float> dawBpm_;
 
     // lfo
     Lfo lfo_[kLfoTargets][kOscs];
@@ -1410,7 +1413,10 @@ void Engine::Impl::ProcessAudio(float* out, int nframes)
         bps             = hb / 60.0 / (double)samplerate_;
         if(hostPlaying_)
             beat_ = hostBeat_ > 0.0 ? hostBeat_ : 0.0;
+        dawBpm_.store(bpm);
     }
+    else
+        dawBpm_.store(-1.f);
     hostValid_         = false; // one call per block
     const double beat0 = beat_;
     const double lastBeat = beat0 + bps * (double)(nframes - 1);
@@ -1920,7 +1926,15 @@ const char* Engine::Impl::GetValueText(int pot)
     }
     switch(f)
     {
-        case TEMPO: PutStr(PutInt(p, (int)(40.f + v * 200.f + 0.5f)), " BPM"); break;
+        case TEMPO:
+        {
+            const float daw = dawBpm_.load(); // SYNC DAW: the host's tempo rules
+            if(daw > 0.f)
+                PutInt(PutStr(p, "DAW "), (int)(daw + 0.5f));
+            else
+                PutStr(PutInt(p, (int)(40.f + v * 200.f + 0.5f)), " BPM");
+            break;
+        }
         case MCUTOFF:
             PutStr(PutFixed(p, (v - 0.5f) * 2.f * kMasterCutOct, 1, true), " OCT");
             break;
@@ -2593,6 +2607,42 @@ float Engine::GetParam(int func, int osc)
 bool Engine::ReverbOk()
 {
     return impl_->reverbOk_;
+}
+void Engine::SetPanelPage(int page, int sub)
+{
+    Impl& m = *impl_;
+    if(page < 0 || page >= kNumPages)
+        return;
+    const int n = kPages[page].numSubs;
+    sub         = sub < 0 ? 0 : (sub >= n ? n - 1 : sub);
+    m.page_      = page;
+    m.sub_[page] = sub;
+    m.subSel_[page]      = St(sub, n);
+    m.pot_[kPagePot]     = St(page, kNumPages);
+    m.lastShown_[kPagePot] = m.pot_[kPagePot];
+}
+void Engine::ShowPot(int pot)
+{
+    if(pot < 0 || pot >= kNumPots)
+        return;
+    impl_->activePot_.store(pot);
+    impl_->moveCount_.fetch_add(1);
+}
+bool Engine::GetSlotFunc(int pot, int* func, int* osc)
+{
+    Impl& m = *impl_;
+    int   code;
+    if(pot == kVolumePot)
+        code = VOLUME;
+    else if(pot == kPagePot)
+        return false;
+    else
+        code = m.SlotCode(pot);
+    if(code < 0)
+        return false; // a selector, or no pot
+    *func = SlotFunc(code);
+    *osc  = SlotOsc(code);
+    return true;
 }
 void Engine::SetHostClock(bool playing, double bpm, double beat)
 {

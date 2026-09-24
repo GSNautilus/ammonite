@@ -1,18 +1,17 @@
 /** Ammonite as a VST3 / CLAP plugin (DPF): one engine (plugin/engine) per
  *  instance, every engine function as a host parameter.
  *
- *  Parameter IDs: one per (func, osc) in enum Func order, osc 1..3 for a
- *  per-oscillator function. New functions only go at the END of enum Func,
- *  so an ID never changes meaning (hosts store automation and state by ID).
+ *  Parameters: AmmoniteParams.hpp (IDs and values).
  *
- *  Values: a continuous function is 0..100 (the engine's 0..1), a stepped
- *  one is its step 0..n-1 with the step names the panel shows.
+ *  UI: the panel (AmmoniteUI.cpp) reaches this instance's engine directly
+ *  (DPF direct access): screen, page and readouts on the UI thread, the
+ *  audio on the audio thread, as on the hardware.
  *
  *  Clock: SYNC (DAW by default) hands the host's tempo and position to the
  *  engine each block; FREE runs on the TEMPO parameter, like the hardware. */
 #include "DistrhoPlugin.hpp"
 #include "DistrhoPluginUtils.hpp"
-#include "engine.h"
+#include "AmmoniteParams.hpp"
 
 #include <cmath>
 #include <cstdio>
@@ -24,27 +23,11 @@
 START_NAMESPACE_DISTRHO
 
 using ammonite::Engine;
+using ammonite::ParamRef;
+using ammonite::Params;
 
 namespace
 {
-struct ParamRef
-{
-    int func;
-    int osc;
-};
-
-const std::vector<ParamRef>& Params()
-{
-    static const std::vector<ParamRef> list = [] {
-        std::vector<ParamRef> v;
-        for(int f = 0; f < Engine::NumFuncs(); f++)
-            for(int o = 0; o < (Engine::FuncPerOsc(f) ? ammonite::kOscs : 1); o++)
-                v.push_back({f, o});
-        return v;
-    }();
-    return list;
-}
-
 /** The big DSP buffers an engine borrows (~30 MB, sized for 192 kHz). */
 struct Buffers
 {
@@ -79,6 +62,8 @@ class AmmonitePlugin : public Plugin
         clapBeats_ = std::strcmp(getPluginFormatName(), "CLAP") == 0;
         InitEngine(getSampleRate());
     }
+
+    Engine* GetEngine() { return engine_.get(); }
 
   protected:
     /* ---------------------------------------------------------- info */
@@ -146,7 +131,7 @@ class AmmonitePlugin : public Plugin
             p.hints |= kParameterIsInteger;
             p.ranges.min = 0.f;
             p.ranges.max = (float)(steps - 1);
-            p.ranges.def = (float)StepOf(value_[index], steps);
+            p.ranges.def = ammonite::EngineToHost(r.func, value_[index]);
             p.enumValues.count          = (uint8_t)steps;
             p.enumValues.restrictedMode = true;
             ParameterEnumerationValue* const ev = new ParameterEnumerationValue[steps];
@@ -168,24 +153,14 @@ class AmmonitePlugin : public Plugin
 
     float getParameterValue(uint32_t index) const override
     {
-        const int steps = Engine::FuncSteps(Params()[index].func);
-        return steps > 0 ? (float)StepOf(value_[index], steps) : value_[index] * 100.f;
+        return ammonite::EngineToHost(Params()[index].func, value_[index]);
     }
 
     void setParameterValue(uint32_t index, float value) override
     {
-        const ParamRef& r     = Params()[index];
-        const int       steps = Engine::FuncSteps(r.func);
-        float           v;
-        if(steps > 0)
-        {
-            int s = (int)std::lround(value);
-            s     = s < 0 ? 0 : (s > steps - 1 ? steps - 1 : s);
-            v     = ((float)s + 0.5f) / (float)steps; // the centre of the step
-        }
-        else
-            v = value * 0.01f;
-        value_[index] = v;
+        const ParamRef& r = Params()[index];
+        const float     v = ammonite::HostToEngine(r.func, value);
+        value_[index]     = v;
         engine_->SetParam(r.func, r.osc, v); // smoothed by the audio thread
     }
 
@@ -239,12 +214,6 @@ class AmmonitePlugin : public Plugin
         return clapBeats_ || b.beatType <= 0.f ? beats : beats * 4.0 / b.beatType;
     }
 
-    static int StepOf(float v, int steps)
-    {
-        int s = (int)(v * (float)steps);
-        return s < 0 ? 0 : (s > steps - 1 ? steps - 1 : s);
-    }
-
     /** Init resets every function to its default: put the host's values
      *  back, unsmoothed (nothing is playing yet). */
     void InitEngine(double sampleRate)
@@ -283,3 +252,8 @@ Plugin* createPlugin()
 }
 
 END_NAMESPACE_DISTRHO
+
+ammonite::Engine* ammonite::EngineOf(void* pluginInstance)
+{
+    return static_cast<DISTRHO_NAMESPACE::AmmonitePlugin*>(pluginInstance)->GetEngine();
+}

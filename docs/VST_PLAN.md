@@ -195,7 +195,41 @@ A first loadable plugin before the rest of step 2 and the UI of step 3.
   mid-beat, playhead jump, PROG on the DAW's bars, stopped, FREE, delays on
   the host tempo) and the CLAP host in `test_clap.py` (a CLAP transport
   through the built plugin: grid, jump, stop, FREE).
-- To check in FL Studio: tempo changes, play from different bars, loops.
+- **FL Studio (user, 2026-09-24): sync works.**
+- Other meters are not a design limit: "a bar = 4 quarter notes" is a
+  constant in RestartBeat (BAR), kChangeBeats, the LFO "BAR" divisions and
+  the screen's beat counter. A bar length (from the host's time signature
+  in DAW mode, a METER setting in FREE) would fix it; a song that changes
+  signature also needs the host's bar-start position. After the UI.
+
+### Panel UI: first version (2026-09-24)
+
+- `plugin/src/AmmoniteUI.cpp` (DPF, OpenGL + NanoVG): the simulator's
+  panel (1400 x 860 coordinates, window 1050 x 645, resizable with the
+  aspect kept): 12 knobs around the round screen, the page / section
+  header, a SYNC DAW / FREE button.
+- The screen is the engine's own `RenderScreen` on a ~38 ms timer (uiIdle),
+  RGB565 panel order -> an RGBA texture, masked round. Knob readouts are the
+  engine's `GetValueText` (units as on the hardware; TEMPO shows "DAW 120"
+  while the host sets the tempo).
+- Knobs edit their host parameter (begin / value / end: hosts record
+  automation); no pickup with a mouse. Knob 11 = page, knob 10 = section:
+  UI state held in the engine (`SetPanelPage`, `ShowPot` for the readout
+  and the maps), not host parameters. Drag (Shift: fine), scroll,
+  double-click = default.
+- DPF direct access: the UI reaches the engine through
+  `ammonite::EngineOf(getPluginInstancePointer())`; the parameter table is
+  shared (`AmmoniteParams.hpp`).
+- `plugin/tests/ui_check.py` (by hand): opens the real UI in a tkinter
+  window through `clap.gui`, plays in real time, screenshots
+  (`plugin/build/ui_*.png`), drags knobs with posted mouse messages and
+  checks the host sees begin / values / end and the new value, page change,
+  a stepped knob, the SYNC button. Not in `plugin.ps1 test`: the real mouse
+  over the window can disturb it.
+- A standalone `Ammonite.exe` (DPF's jack target) was tried and dropped:
+  DPF's native audio fallback on Windows needs MinGW, not MSVC.
+- Page and section are not saved with the project (the engine keeps them
+  while the plugin lives).
 
 
 

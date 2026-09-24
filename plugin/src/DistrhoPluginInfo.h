@@ -18,7 +18,12 @@
 #define DISTRHO_PLUGIN_NUM_INPUTS   0
 #define DISTRHO_PLUGIN_NUM_OUTPUTS  2
 #define DISTRHO_PLUGIN_IS_RT_SAFE   1
-#define DISTRHO_PLUGIN_HAS_UI       0
+#define DISTRHO_PLUGIN_HAS_UI       1
+#define DISTRHO_PLUGIN_WANT_DIRECT_ACCESS 1 // the UI draws the engine's screen
+#define DISTRHO_UI_USE_NANOVG       1
+#define DISTRHO_UI_USER_RESIZABLE   1
+#define DISTRHO_UI_DEFAULT_WIDTH    1050 // the simulator's 1400 x 860 panel at 75 %
+#define DISTRHO_UI_DEFAULT_HEIGHT   645
 #define DISTRHO_PLUGIN_WANT_TIMEPOS 1 // SYNC DAW: the host's tempo and position
 
 #define DISTRHO_PLUGIN_VST3_CATEGORIES "Instrument|Synth"

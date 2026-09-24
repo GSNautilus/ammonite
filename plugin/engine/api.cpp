@@ -93,6 +93,12 @@ API void eng_set_host_clock(void* h, int playing, double bpm, double beat)
     E(h).SetHostClock(playing != 0, bpm, beat);
 }
 API double eng_get_beat(void* h) { return E(h).GetBeat(); }
+API void eng_set_panel_page(void* h, int page, int sub) { E(h).SetPanelPage(page, sub); }
+API void eng_show_pot(void* h, int pot) { E(h).ShowPot(pot); }
+API int eng_get_slot_func(void* h, int pot, int* func, int* osc)
+{
+    return E(h).GetSlotFunc(pot, func, osc) ? 1 : 0;
+}
 
 /* ------------------------------------- the simulator API, default instance */
 API void synth_init(float samplerate) { eng_init(Default(), samplerate); }

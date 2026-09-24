@@ -22,7 +22,9 @@ dpf_add_plugin(Ammonite
     engine/reverbsc.cpp
     ${DAISYSP}/Synthesis/oscillator.cpp
     ${DAISYSP}/Filters/svf.cpp
-    ${DAISYSP}/Control/phasor.cpp)
+    ${DAISYSP}/Control/phasor.cpp
+  FILES_UI
+    src/AmmoniteUI.cpp)
 
 target_include_directories(Ammonite PUBLIC
   src
