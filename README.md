@@ -64,7 +64,11 @@ shows what every knob on the new page does:
 
 ## Hardware
 
-<p align="center"><img src="media/enclosure.png" width="640" alt="The printed enclosure"></p>
+<p align="center"><img src="media/photo_front.jpg" width="720" alt="The assembled front panel, the screen playing a Csus chord"></p>
+<p align="center"><i>The front panel, assembled and playing.</i></p>
+
+<p align="center"><img src="media/enclosure.png" width="560" alt="The printed enclosure"></p>
+<p align="center"><i>The printed enclosure, version 1.</i></p>
 
 Version 1 of the hardware is simple, and meant to be built with a soldering iron and a
 breadboard:
