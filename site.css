@@ -1,0 +1,58 @@
+/* The Ammonite family site: the look every page shares (family page, seed/,
+   desktop/, mini/). Page-only styles stay in each page's own <style>. */
+:root {
+  --bg: #0e0f11;
+  --panel: #17191c;
+  --line: #2a2d32;
+  --ink: #ece9e3;
+  --muted: #9a9ea6;
+  --accent: #d2733a;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 17px/1.55 "Barlow", system-ui, sans-serif;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+main { max-width: 880px; margin: 0 auto; padding: 48px 16px 80px; }
+img { max-width: 100%; }
+
+/* the small "back to the family" line at the top of an instrument page */
+.family { margin: -24px 0 28px; font: 500 14px "Barlow Condensed", sans-serif;
+          letter-spacing: .22em; text-transform: uppercase; }
+.family a { color: var(--muted); }
+.family a:hover { color: var(--accent); text-decoration: none; }
+
+header { text-align: center; }
+header .logo { width: 56px; height: 56px; }
+header h1 {
+  font: 300 clamp(40px, 9vw, 72px)/1 "Barlow Condensed", sans-serif;
+  letter-spacing: .28em; margin: 18px 0 8px .28em;
+}
+/* a longer name (AMMONITE-SEED): the same look, sized to fit a phone */
+header h1.long { font-size: clamp(28px, 7.4vw, 72px); letter-spacing: .22em; margin-left: .22em; }
+header p { color: var(--muted); margin: 0; font-size: 18px; }
+
+.panel {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 14px;
+}
+
+h2.section {
+  font: 500 15px "Barlow Condensed", sans-serif; letter-spacing: .3em; text-transform: uppercase;
+  color: var(--muted); margin: 64px 0 18px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
+}
+.lead { color: var(--muted); margin-top: 0; }
+
+/* pill links */
+.links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 64px; }
+.links a {
+  border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px; color: var(--ink);
+  background: var(--panel);
+}
+.links a:hover { border-color: var(--accent); text-decoration: none; }
+.links a.primary { border-color: var(--accent); }
+
+.nowrap { white-space: nowrap; }
+footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 40px; }

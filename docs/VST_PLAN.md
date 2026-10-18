@@ -2,7 +2,8 @@
 
 Written 2026-09-24 at the end of the session that published Ammonite
 (https://github.com/GSNautilus/ammonite, listening page
-https://gsnautilus.github.io/ammonite/). A new session builds the plugin from
+https://gsnautilus.github.io/ammonite/, since moved to
+https://gsnautilus.github.io/ammonite/seed/). A new session builds the plugin from
 here. Read this, then `docs/ENGINE_PLAN.md` ("Constraints & landmines" first).
 
 **Goal:** Ammonite as a **Windows x64 VST3 plugin, plus CLAP**, running the

@@ -334,7 +334,7 @@ def enclosure_render(out):
 
 
 def banner(out):
-    """The README header: banner.html (the listening page's header) screenshot
+    """The README header: banner.html (the Ammonite-Seed page's header) screenshot
     by headless Edge at 2x, transparent outside its rounded card."""
     import time
     edge = r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe"

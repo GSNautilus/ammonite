@@ -4,72 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ammonite</title>
-<meta name="description" content="Ammonite: a three-voice arpeggiator synthesizer on the Daisy Seed. Listen to it here.">
+<meta name="description" content="Ammonite: a family of generative synthesizers that play in key. Ammonite-Seed (hardware), Ammonite Desktop (VST3, CLAP, standalone) and Ammonite Mini (Android tablet).">
 <link rel="icon" href="manual/img/ammonite.svg" type="image/svg+xml">
+<script>
+  // The listening page used to live here; its anchors now live on seed/.
+  (function () {
+    var old = ["listen", "video", "recipes", "power-on", "tide", "clockwork", "dub", "jazz", "bells", "hardware"];
+    var id = location.hash.slice(1);
+    if (old.indexOf(id) >= 0) location.replace("seed/#" + id);
+  })();
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@300;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="site.css">
 <style>
-  :root {
-    --bg: #0e0f11;
-    --panel: #17191c;
-    --line: #2a2d32;
-    --ink: #ece9e3;
-    --muted: #9a9ea6;
-    --accent: #d2733a;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0; background: var(--bg); color: var(--ink);
-    font: 400 17px/1.55 "Barlow", system-ui, sans-serif;
-  }
-  a { color: var(--accent); text-decoration: none; }
-  a:hover { text-decoration: underline; }
-  main { max-width: 880px; margin: 0 auto; padding: 48px 16px 80px; }
+  header p.tag { max-width: 560px; margin: 0 auto; }
 
-  header { text-align: center; }
-  header .logo { width: 56px; height: 56px; }
-  header h1 {
-    font: 300 clamp(40px, 9vw, 72px)/1 "Barlow Condensed", sans-serif;
-    letter-spacing: .28em; margin: 18px 0 8px .28em;
-  }
-  header p { color: var(--muted); margin: 0; font-size: 18px; }
-  .hero { display: block; width: min(400px, 90vw); margin: 36px auto 0; border-radius: 50%;
-          box-shadow: 0 0 0 6px #202226, 0 0 0 7px #3a3d43; }
+  .shared { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .shared .panel { padding: 18px 20px; }
+  .shared h3 { margin: 0 0 4px; font: 600 18px "Barlow", sans-serif; }
+  .shared p { margin: 0; color: var(--muted); font-size: 15.5px; }
 
-  .headline {
-    margin: 48px 0 0; padding: 26px 26px 22px; background: var(--panel);
-    border: 1px solid var(--line); border-radius: 14px;
-  }
-  .headline h2 { margin: 0 0 4px; font: 500 26px "Barlow Condensed", sans-serif; letter-spacing: .06em; }
-  .headline p { margin: 0 0 16px; color: var(--muted); }
-  audio { width: 100%; display: block; }
+  .cards { display: grid; gap: 18px; }
+  .card { display: grid; grid-template-columns: 280px 1fr; overflow: hidden; color: var(--ink); }
+  .card:hover { border-color: var(--accent); text-decoration: none; }
+  .card .pic { aspect-ratio: 4 / 3; background: #0b0c0e; border-right: 1px solid var(--line);
+               display: flex; align-items: center; justify-content: center; }
+  .card .pic img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .card .pic img.disc { width: auto; height: 84%; aspect-ratio: 1; border-radius: 50%;
+                        box-shadow: 0 0 0 4px #202226, 0 0 0 5px #3a3d43; }
+  /* until a page has its own picture */
+  .card .pic.empty { color: #4a4e55; font: 500 13px "Barlow Condensed", sans-serif;
+                     letter-spacing: .3em; text-transform: uppercase; }
+  .card .body { padding: 20px 24px 22px; }
+  .card h3 { margin: 0 0 2px; font: 500 28px/1.1 "Barlow Condensed", sans-serif; letter-spacing: .06em; }
+  .card .kind { margin: 0 0 10px; color: var(--accent); font: 500 14px "Barlow Condensed", sans-serif;
+                letter-spacing: .2em; text-transform: uppercase; }
+  .card p { margin: 0 0 8px; color: var(--muted); font-size: 15.5px; }
+  .card .more { color: var(--accent); font-size: 15.5px; margin: 12px 0 0; }
 
-  h2.section {
-    font: 500 15px "Barlow Condensed", sans-serif; letter-spacing: .3em; text-transform: uppercase;
-    color: var(--muted); margin: 64px 0 18px; padding-bottom: 10px; border-bottom: 1px solid var(--line);
-  }
-  video { width: 100%; max-width: 560px; display: block; margin: 0 auto; border-radius: 12px; background: #000; }
-  .caption { text-align: center; color: var(--muted); font-size: 15px; margin-top: 10px; }
-
-  .clip { display: grid; grid-template-columns: 112px 1fr; gap: 20px; align-items: center;
-          padding: 18px 0; border-bottom: 1px solid var(--line); scroll-margin-top: 20px; }
-  .clip img { width: 112px; height: 112px; border-radius: 50%; box-shadow: 0 0 0 3px #202226; }
-  .clip h3 { margin: 0 0 2px; font: 600 19px "Barlow", sans-serif; }
-  .clip p { margin: 0 0 10px; color: var(--muted); font-size: 15.5px; }
-
-  .photo { width: 100%; border-radius: 12px; display: block; }
-  .links { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 64px; }
-  .links a {
-    border: 1px solid var(--line); border-radius: 999px; padding: 9px 18px; color: var(--ink);
-    background: var(--panel);
-  }
-  .links a:hover { border-color: var(--accent); text-decoration: none; }
-  footer { text-align: center; color: var(--muted); font-size: 14px; margin-top: 40px; }
-
-  @media (max-width: 520px) {
-    .clip { grid-template-columns: 72px 1fr; gap: 14px; }
-    .clip img { width: 72px; height: 72px; }
+  @media (max-width: 640px) {
+    .shared { grid-template-columns: 1fr; }
+    .card { grid-template-columns: 1fr; }
+    .card .pic { border-right: 0; border-bottom: 1px solid var(--line); aspect-ratio: 16 / 10; }
   }
 </style>
 </head>
@@ -78,88 +56,73 @@
   <header>
     <img class="logo" src="manual/img/ammonite.svg" alt="">
     <h1>AMMONITE</h1>
-    <p>A three-voice arpeggiator synthesizer on the Daisy Seed</p>
-    <img class="hero" src="media/screen.gif" alt="The Ammonite screen playing">
+    <p class="tag">A family of synthesizers that play themselves, in key</p>
   </header>
 
-  <section class="headline" id="listen">
-    <h2>Two minutes of Ammonite</h2>
-    <p>Put on headphones.</p>
-    <audio controls preload="metadata" src="media/audio/ammonite.mp3"></audio>
-  </section>
-
-  <h2 class="section" id="video">Watch the screen play</h2>
-  <video controls preload="metadata" poster="manual/img/screen_cover.png" src="media/demo.mp4"></video>
-  <p class="caption">One minute, straight from the engine: the chords start moving, echoes and
-  reverb arrive, the patterns get busier, the filter sweeps, and the screen changes view.</p>
-
-  <h2 class="section" id="recipes">Recipes</h2>
-  <p style="color:var(--muted);margin-top:0">Rendered from the synth engine, 40 seconds each. Every one
-  is a recipe in the <a href="manual/Ammonite_Manual.pdf">owner's manual</a>, with the exact knob settings.</p>
-
-  <div class="clip" id="power-on">
-    <img src="manual/img/screen_cover.png" alt="">
-    <div>
-      <h3>Power-on</h3>
-      <p>What Ammonite plays the moment it has power: three arps in A minor, no effects.</p>
-      <audio controls preload="none" src="media/audio/power_on.mp3"></audio>
+  <h2 class="section" id="idea">What they share</h2>
+  <div class="shared">
+    <div class="panel">
+      <h3>You choose the harmony</h3>
+      <p>Pick a key and a chord progression. You never pick notes: each part chooses from the
+      chord, in its own order and rhythm.</p>
     </div>
-  </div>
-  <div class="clip" id="tide">
-    <img src="manual/img/screen_recipe_tide.png" alt="">
-    <div>
-      <h3>Slow tide</h3>
-      <p>Three drones that slide from chord to chord under a slow, breathing filter. No arps at all:
-      the progression does the moving.</p>
-      <audio controls preload="none" src="media/audio/tide.mp3"></audio>
+    <div class="panel">
+      <h3>Everything stays in key</h3>
+      <p>Every arp, bass line and pad follows the progression, so nothing can play a wrong note.</p>
     </div>
-  </div>
-  <div class="clip" id="clockwork">
-    <img src="manual/img/screen_recipe_clockwork.png" alt="">
-    <div>
-      <h3>Clockwork</h3>
-      <p>Three sixteenth-note patterns of 8, 7 and 5 steps, each with a few steps left out. They line
-      up only once every 280 steps, so the groove keeps turning over.</p>
-      <audio controls preload="none" src="media/audio/clockwork.mp3"></audio>
+    <div class="panel">
+      <h3>Patterns drift, the beat holds</h3>
+      <p>Patterns of different lengths turn against each other and line up again, all on one
+      clock, without ever losing the beat.</p>
     </div>
-  </div>
-  <div class="clip" id="dub">
-    <img src="manual/img/screen_recipe_dub.png" alt="">
-    <div>
-      <h3>Dub echoes</h3>
-      <p>A sparse, resonant chord stab thrown into a long, darkening, wobbly ping-pong echo, over a
-      sine bass that follows the chords.</p>
-      <audio controls preload="none" src="media/audio/dub.mp3"></audio>
-    </div>
-  </div>
-  <div class="clip" id="jazz">
-    <img src="manual/img/screen_recipe_jazz.png" alt="">
-    <div>
-      <h3>Late set</h3>
-      <p>A swung ii-V-I in C: a gliding bass on the chord roots, an arp through each seventh chord,
-      and a looser triplet line on top.</p>
-      <audio controls preload="none" src="media/audio/jazz.mp3"></audio>
-    </div>
-  </div>
-  <div class="clip" id="bells">
-    <img src="manual/img/screen_recipe_bells.png" alt="">
-    <div>
-      <h3>Bells in D</h3>
-      <p>Pachelbel's chords in D major, played by sine bells: every note starts an octave high and
-      drops into place in a few milliseconds, which is what makes it ring.</p>
-      <audio controls preload="none" src="media/audio/bells.mp3"></audio>
+    <div class="panel">
+      <h3>Colour follows pitch</h3>
+      <p>Every note has its colour from the circle of fifths, so a chord has a look as well as a
+      sound.</p>
     </div>
   </div>
 
-  <h2 class="section" id="hardware">The instrument</h2>
-  <img class="photo" src="media/photo_front.jpg" alt="The assembled front panel, the screen playing a Csus chord">
+  <h2 class="section" id="instruments">The instruments</h2>
+  <div class="cards">
+    <a class="card panel" href="seed/">
+      <div class="pic"><img class="disc" src="media/screen.gif" alt="The Ammonite-Seed screen playing"></div>
+      <div class="body">
+        <h3>Ammonite-Seed</h3>
+        <p class="kind">Hardware &middot; Daisy Seed</p>
+        <p>The original: a three-voice arpeggiator synthesizer in a small printed box, with
+        12 knobs and a round screen that draws the music.</p>
+        <p class="more">Listen, watch it play, get the firmware &rarr;</p>
+      </div>
+    </a>
+    <a class="card panel" href="desktop/">
+      <!-- session 2: replace with <div class="pic"><img src="desktop/card.png" alt="..."></div> -->
+      <div class="pic empty">Picture coming</div>
+      <div class="body">
+        <h3>Ammonite Desktop</h3>
+        <p class="kind">Windows &middot; VST3 &middot; CLAP &middot; standalone</p>
+        <p>The idea without the hardware's limits: up to 16 channels, synthesized drums that
+        follow the harmony, FX channels played like notes, modulation, and a stage where every
+        channel is a glowing shell drawn from its own waveform.</p>
+        <p class="more">See Ammonite Desktop &rarr;</p>
+      </div>
+    </a>
+    <a class="card panel" href="mini/">
+      <!-- session 3: replace with <div class="pic"><img src="mini/card.png" alt="..."></div> -->
+      <div class="pic empty">Picture coming</div>
+      <div class="body">
+        <h3>Ammonite Mini</h3>
+        <p class="kind">Android tablet</p>
+        <p>Ammonite Desktop made lean for a tablet: a native app with no stage, all the
+        music. It opens the same patches as Desktop.</p>
+        <p class="more">See Ammonite Mini &rarr;</p>
+      </div>
+    </a>
+  </div>
 
   <nav class="links">
-    <a href="https://github.com/GSNautilus/ammonite">Code, build and flash on GitHub</a>
-    <a href="manual/Ammonite_Manual.pdf">Owner's manual (PDF)</a>
-    <a href="https://github.com/GSNautilus/ammonite/releases/latest">Download the firmware</a>
+    <a href="https://github.com/GSNautilus/ammonite">Ammonite on GitHub</a>
   </nav>
-  <footer>Ammonite &middot; MIT license &middot; built on Electrosmith's libDaisy and DaisySP</footer>
+  <footer>Ammonite &middot; made by GSNautilus</footer>
 </main>
 </body>
 </html>
