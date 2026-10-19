@@ -4,7 +4,7 @@
  * No hardware anywhere in here - the Daisy firmware and the PC simulator
  * are both thin shells around this one interface.
  *
- * Panel model (arp synth, ENGINE_PLAN.md "Panel"): 12 pots. Pot 10 (PAGE,
+ * Panel model (arp synth): 12 pots. Pot 10 (PAGE,
  * knob 11) picks one of kNumPages pages; pot 11 is always VOLUME. On a
  * COLUMN page the three columns are the three oscillators: pots 0/3/6 drive
  * osc 1, 1/4/7 osc 2, 2/5/8 osc 3, one function per row. Pot 9 (knob 10) is

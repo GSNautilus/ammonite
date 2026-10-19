@@ -34,8 +34,6 @@
  *     in the notes' fifths hues), WHEEL (the chord on the circle of
  *     fifths) or SCOPE; the chord in the centre; readouts and page maps.
  *
- * Build steps 1-7 of ENGINE_PLAN.md are in; step 8 (hardware) is the user's.
- *
  * PLUGIN COPY: this file started as a verbatim copy of core/synth_core.cpp
  * (v1.0). The firmware never uses it. Here all mutable state lives in
  * Engine::Impl, so a host can run any number of engines side by side.

@@ -5,7 +5,7 @@
  * SEED3: AGND (pin 20) is NOT bonded to DGND (pin 40) on the board. They
  *   MUST be jumpered together (datasheet v2.1 p.12, fig 1.5) or the ADC
  *   reference floats and every channel reads full scale with random dips.
- * Pots: pot i (panel order, see ENGINE_PLAN.md) -> ADC Ai. Pot 10 (knob
+ * Pots: pot i (panel order) -> ADC Ai. Pot 10 (knob
  *   11, PAGE) selects the page, pots 0..9 are that page's functions (on a
  *   column page one column per oscillator), pot 11 is VOLUME.
  *   A0..A10 = physical pins 22..32, A11 = physical pin 35.
