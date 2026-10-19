@@ -33,8 +33,6 @@
  *   screen (KEY VIEW): RINGS (each osc's waveform as a ring of step arcs
  *     in the notes' fifths hues), WHEEL (the chord on the circle of
  *     fifths) or SCOPE; the chord in the centre; readouts and page maps.
- *
- * Build steps 1-7 of ENGINE_PLAN.md are in; step 8 (hardware) is the user's.
  */
 #include <atomic>
 #include <math.h>
