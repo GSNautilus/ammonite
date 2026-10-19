@@ -4,19 +4,50 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ammonite Mini</title>
-<meta name="description" content="Ammonite Mini: the Ammonite synthesizer as a native Android tablet app. Part of the Ammonite family.">
+<meta name="description" content="Ammonite Mini: Ammonite Desktop's synthesizer as an Android tablet app, with the same engine and patches, laid out for touch. Download version 0.1.0.">
 <link rel="icon" href="../manual/img/ammonite.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@300;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../site.css">
-<!-- A stub. Keep this page's own pictures inside mini/ (e.g. mini/card.png,
-     which the family page's card can show). Download link when the release exists:
-     https://github.com/GSNautilus/ammonite-mini/releases -->
 <style>
-  .coming { margin: 48px 0 0; padding: 40px 26px; text-align: center; }
-  .coming h2 { margin: 0 0 6px; font: 500 26px "Barlow Condensed", sans-serif; letter-spacing: .06em; }
-  .coming p { margin: 0; color: var(--muted); }
+  /* a screenshot in a thin tablet bezel */
+  .shot { display: block; width: 100%; height: auto; border-radius: 12px; background: #000;
+          box-shadow: 0 0 0 6px #202226, 0 0 0 7px #3a3d43; }
+  .hero { width: calc(100% - 14px); margin: 40px 7px 0; }
+
+  .get { margin: 48px 0 0; padding: 26px 26px 24px; display: grid; grid-template-columns: 1fr auto;
+         gap: 10px 24px; align-items: center; }
+  .get h2 { margin: 0 0 4px; font: 500 26px "Barlow Condensed", sans-serif; letter-spacing: .06em; }
+  .get p { margin: 0; color: var(--muted); font-size: 15.5px; }
+  .button { display: inline-block; background: var(--accent); color: #111; font-weight: 600;
+            border-radius: 999px; padding: 12px 24px; white-space: nowrap; text-align: center; }
+  .button:hover { text-decoration: none; filter: brightness(1.1); }
+
+  .same { margin: 0; padding-left: 20px; }
+  .same li { margin: 0 0 8px; }
+  .same b { font-weight: 600; }
+
+  .shots { display: grid; gap: 40px; margin: 0 7px; }
+  .shots figure { margin: 0; }
+  .shots figcaption { color: var(--muted); font-size: 15.5px; margin-top: 16px; }
+  .shots figcaption b { color: var(--ink); font-weight: 600; }
+
+  .req { display: grid; grid-template-columns: max-content 1fr; gap: 6px 20px; margin: 0; }
+  .req dt { color: var(--muted); }
+  .req dd { margin: 0; }
+
+  ol.steps { margin: 0; padding-left: 22px; }
+  ol.steps li { margin: 0 0 10px; }
+  .note { color: var(--muted); font-size: 15.5px; }
+  code { font: 14.5px ui-monospace, Consolas, monospace; background: var(--panel);
+         border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; }
+
+  @media (max-width: 640px) {
+    .get { grid-template-columns: 1fr; }
+    .req { grid-template-columns: 1fr; gap: 0; }
+    .req dd { margin-bottom: 10px; }
+  }
 </style>
 </head>
 <body>
@@ -25,18 +56,89 @@
   <header>
     <img class="logo" src="../manual/img/ammonite.svg" alt="">
     <h1 class="long">AMMONITE MINI</h1>
-    <p>The Ammonite synthesizer as a native Android tablet app</p>
+    <p>Ammonite Desktop's synthesizer on an Android tablet</p>
   </header>
+  <img class="shot hero" src="img/channels.webp" width="2000" height="1200"
+       alt="Ammonite Mini on the tablet playing Night groove: six channels of drums, bass and chords, each drawing its waveform">
 
-  <section class="coming panel">
-    <h2>Page coming</h2>
-    <p>Screenshots, sounds and the download arrive here with the first release.</p>
+  <section class="get panel" id="download">
+    <div>
+      <h2>Ammonite Mini 0.1.0</h2>
+      <p>Free and open source (MIT). Android 13 or later, for tablets. Installed by hand, not from the
+      Play Store: see <a href="#install">how</a>.</p>
+    </div>
+    <a class="button" href="https://github.com/GSNautilus/ammonite-mini/releases/tag/v0.1.0">Download the APK</a>
   </section>
 
+  <h2 class="section" id="what">What it is</h2>
+  <p>Ammonite Mini is <a href="../desktop/">Ammonite Desktop</a> made lean for a tablet: a native
+  Android app with the whole instrument and no 3D stage. You pick a key and a chord progression; up to
+  16 channels of arps, chords, bass and drums choose their notes from the chords, each in its own
+  rhythm, so everything stays in key.</p>
+  <ul class="same">
+    <li><b>The same engine</b> as Desktop, unchanged: the channels, the Conductor, the modulation
+    (32 LFOs, 16 macros, 128 routes) and the effects.</li>
+    <li><b>The same patches.</b> A patch saved on Desktop opens on Mini and back again; Desktop's
+    stage settings ride along inside it, untouched.</li>
+    <li><b>The same panel, made for fingers.</b> Every control is big enough to touch; double-tap
+    to reset one, hold a second finger down for fine moves, long-press for menus. Your pinned
+    controls sit in a drawer along the bottom.</li>
+    <li><b>What it leaves out:</b> the 3D stage, syncing to other gear (it runs on its own clock),
+    and the plugin formats. It plays through the tablet's own audio output.</li>
+  </ul>
+
+  <h2 class="section" id="screens">On the tablet</h2>
+  <p class="lead">Screenshots from a Galaxy Tab S6 Lite, playing the Night groove preset.</p>
+  <div class="shots">
+    <figure>
+      <img class="shot" src="img/conductor.webp" width="2000" height="1200" loading="lazy"
+           alt="The Conductor tab: the circle of fifths in A minor, the chord progression Am F C G, tempo and the master section">
+      <figcaption><b>The Conductor.</b> The key on the circle of fifths, the chord progression, the
+      tempo, and the master that every channel plays into.</figcaption>
+    </figure>
+    <figure>
+      <img class="shot" src="img/channel.webp" width="2000" height="1200" loading="lazy"
+           alt="The Channels tab with the chord channel open: its Generator, Instrument, Effects and Modulation sections">
+      <figcaption><b>A channel, opened.</b> What it plays (arp, chord, bass or rhythm), the sound it
+      plays it with, its effects, and what modulates it.</figcaption>
+    </figure>
+    <figure>
+      <img class="shot" src="img/modulation.webp" width="2000" height="1200" loading="lazy"
+           alt="The Modulation tab: an LFO's shape, rate and phase, the knob it moves, and two macros">
+      <figcaption><b>Modulation.</b> LFOs and macros, each with the knobs it moves and by how much.</figcaption>
+    </figure>
+  </div>
+
+  <h2 class="section" id="requirements">Requirements</h2>
+  <dl class="req">
+    <dt>Android</dt><dd>13 or later</dd>
+    <dt>Processor</dt><dd>64-bit ARM (arm64-v8a), as nearly every recent tablet</dd>
+    <dt>Screen</dt><dd>A tablet in landscape; a phone is too small for the panel</dd>
+    <dt>Tested on</dt><dd>Samsung Galaxy Tab S6 Lite (2024), SM-P620, Android 16. Other tablets should work but have not been tried.</dd>
+  </dl>
+
+  <h2 class="section" id="install">Install it</h2>
+  <p class="lead">Ammonite Mini is not on the Play Store, so Android asks you once to allow the install.</p>
+  <ol class="steps">
+    <li>On the tablet, open the <a href="https://github.com/GSNautilus/ammonite-mini/releases/tag/v0.1.0">release
+    page</a> and download <code>Ammonite-Mini-0.1.0.apk</code>.</li>
+    <li>Open the downloaded file, from the browser's downloads or the My Files app.</li>
+    <li>Android says it can't install apps from this source: tap <b>Settings</b>, switch on
+    <b>Allow from this source</b>, go back and tap <b>Install</b>.</li>
+    <li>If Play Protect warns about an unknown app, tap <b>More details</b>, then <b>Install anyway</b>.</li>
+    <li>Open <b>Ammonite Mini</b>. It starts playing straight away.</li>
+  </ol>
+  <p class="note">On a Samsung tablet the switch is also under Settings &rsaquo; Security and privacy
+  &rsaquo; More security settings &rsaquo; Install unknown apps. Later versions install over this one
+  the same way, keeping your settings.</p>
+
   <nav class="links">
+    <a class="primary" href="https://github.com/GSNautilus/ammonite-mini/releases/tag/v0.1.0">Download Ammonite Mini 0.1.0</a>
+    <a href="https://github.com/GSNautilus/ammonite-mini">Code and build on GitHub</a>
+    <a href="../desktop/">Ammonite Desktop</a>
     <a href="../">The Ammonite family</a>
   </nav>
-  <footer>Ammonite Mini &middot; part of the Ammonite family</footer>
+  <footer>Ammonite Mini &middot; MIT license &middot; sound through Google's Oboe</footer>
 </main>
 </body>
 </html>
