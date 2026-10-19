@@ -4,19 +4,60 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Ammonite Desktop</title>
-<meta name="description" content="Ammonite Desktop: a generative synthesizer for Windows, VST3, CLAP and standalone. Part of the Ammonite family.">
+<meta name="description" content="Ammonite Desktop: a generative synthesizer for Windows that plays itself, in key. Up to 16 channels, synthesized drums, modulation, and a stage where every channel is a glowing shell. Standalone, VST3 and CLAP.">
 <link rel="icon" href="../manual/img/ammonite.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600&family=Barlow+Condensed:wght@300;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../site.css">
-<!-- A stub. Keep this page's own pictures inside desktop/ (e.g. desktop/card.png,
-     which the family page's card can show). Download link when the release exists:
-     https://github.com/GSNautilus/ammonite/releases/tag/desktop-v0.1.0 -->
 <style>
-  .coming { margin: 48px 0 0; padding: 40px 26px; text-align: center; }
-  .coming h2 { margin: 0 0 6px; font: 500 26px "Barlow Condensed", sans-serif; letter-spacing: .06em; }
-  .coming p { margin: 0; color: var(--muted); }
+  .hero { display: block; width: 100%; margin: 36px auto 0; border-radius: 14px; background: #0e0e10;
+          border: 1px solid var(--line); aspect-ratio: 16 / 9; object-fit: cover; }
+  .caption { text-align: center; color: var(--muted); font-size: 15px; margin-top: 10px; }
+
+  .get { margin: 40px 0 0; padding: 26px 26px 22px; display: grid; grid-template-columns: 1fr auto;
+         gap: 10px 24px; align-items: center; }
+  .get h2 { margin: 0; font: 500 26px "Barlow Condensed", sans-serif; letter-spacing: .06em; }
+  .get p { margin: 0; color: var(--muted); }
+  .get .btn { grid-row: 1 / span 2; grid-column: 2; }
+  .btn { display: inline-block; border: 1px solid var(--accent); border-radius: 999px; padding: 11px 24px;
+         color: var(--ink); background: #2a1a10; font-weight: 600; white-space: nowrap; }
+  .btn:hover { background: #3a2314; text-decoration: none; }
+
+  .feats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .feats .panel { padding: 18px 20px; }
+  .feats h3 { margin: 0 0 4px; font: 600 18px "Barlow", sans-serif; }
+  .feats p { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+  figure { margin: 0 0 34px; }
+  figure img { width: 100%; display: block; border-radius: 12px; border: 1px solid var(--line); aspect-ratio: 16 / 9; }
+  figcaption { color: var(--muted); font-size: 15px; margin-top: 10px; }
+  figcaption b { color: var(--ink); font-weight: 600; }
+
+  .steps { padding: 6px 24px 8px; }
+  .steps h3 { margin: 18px 0 4px; font: 600 18px "Barlow", sans-serif; }
+  .steps p, .steps li { color: var(--muted); font-size: 15.5px; }
+  .steps p { margin: 0 0 12px; }
+  .steps ul { margin: 0 0 12px; padding-left: 20px; }
+  code { font: 14.5px Consolas, "Cascadia Mono", monospace; color: var(--ink); background: #0e0f11;
+         border: 1px solid var(--line); border-radius: 5px; padding: 1px 5px; overflow-wrap: anywhere; }
+  .note { border-left: 3px solid var(--accent); padding: 14px 18px; margin-top: 18px; }
+  .note h3 { margin: 0 0 4px; font: 600 18px "Barlow", sans-serif; }
+  .note p { margin: 0; color: var(--muted); font-size: 15.5px; }
+
+  dl.req { display: grid; grid-template-columns: max-content 1fr; gap: 8px 22px; margin: 0; padding: 20px 24px; }
+  dl.req dt { color: var(--muted); font: 500 14px "Barlow Condensed", sans-serif; letter-spacing: .2em;
+              text-transform: uppercase; padding-top: 3px; }
+  dl.req dd { margin: 0; }
+
+  @media (max-width: 640px) {
+    .get { grid-template-columns: 1fr; padding: 22px 20px; }
+    .get .btn { grid-row: auto; grid-column: auto; justify-self: start; margin-top: 8px; }
+    .feats { grid-template-columns: 1fr; }
+    dl.req { grid-template-columns: 1fr; gap: 2px; }
+    dl.req dd { margin-bottom: 10px; }
+    .steps { padding: 4px 18px 6px; }
+  }
 </style>
 </head>
 <body>
@@ -25,18 +66,154 @@
   <header>
     <img class="logo" src="../manual/img/ammonite.svg" alt="">
     <h1 class="long">AMMONITE DESKTOP</h1>
-    <p>A generative synthesizer for Windows: VST3, CLAP and standalone</p>
+    <p>A generative synthesizer for Windows that plays itself, in key</p>
   </header>
 
-  <section class="coming panel">
-    <h2>Page coming</h2>
-    <p>Screenshots, sounds and the download arrive here with the first release.</p>
+  <video class="hero" autoplay muted loop playsinline preload="auto" poster="img/stage.webp"
+         src="img/stage.mp4" aria-label="The stage playing the Night groove preset: six channels drawn as glowing shells, one inside the other"></video>
+  <p class="caption">The stage, recorded from the running app (no sound): Night groove's six channels, each
+  a shell turned from its own waveform, coloured by the note it plays.</p>
+
+  <section class="get panel" id="download">
+    <h2>Ammonite Desktop 0.1.0</h2>
+    <p>Free, for Windows 10 and 11 (64-bit): a standalone app, a VST3 and a CLAP plugin in one zip.</p>
+    <a class="btn" href="https://github.com/GSNautilus/ammonite/releases/tag/desktop-v0.1.0">Download 0.1.0</a>
+    <p>The first release. It is not signed, so Windows will warn you once:
+    <a href="#install">how to install it</a>.</p>
   </section>
 
+  <h2 class="section" id="idea">What it is</h2>
+  <p class="lead">The Ammonite idea, free of the hardware's limits. You choose a key, a chord
+  progression and, for each part, which notes of the chord it may play and in what rhythm; Ammonite
+  plays it. Everything stays in key, and patterns of different lengths drift against each other
+  without ever losing the beat. Where <a href="../seed/">Ammonite-Seed</a> has three voices and
+  twelve knobs, Desktop has room for a whole band.</p>
+
+  <div class="feats">
+    <div class="panel">
+      <h3>Up to 16 channels</h3>
+      <p>Each channel is a generator (Arp, Chord, Bass or Rhythm) driving an instrument (a synth
+      voice or a drum), with its own effects, pan and level. Any generator can play any instrument.</p>
+    </div>
+    <div class="panel">
+      <h3>Synthesized drums</h3>
+      <p>Kick, snare, hat, open hat, clap, tom, rim and noise, made from scratch, no samples. The
+      Rhythm generator places the hits on the same clock as the harmony, with Euclidean patterns,
+      chance and rolls.</p>
+    </div>
+    <div class="panel">
+      <h3>Effects and a mix bus</h3>
+      <p>Drive, chorus and a tempo delay on every channel, a shared reverb with a send from each,
+      ducking from another channel (the kick, say), and a master bus with gentle glue and a limiter.</p>
+    </div>
+    <div class="panel">
+      <h3>Modulation and macros</h3>
+      <p>Up to 32 LFOs and 16 macros (Bloom, Motion, Space and Grit to start), routed onto any
+      knob, the stage's visual knobs included. Every route shows on the knob it moves.</p>
+    </div>
+    <div class="panel">
+      <h3>The conductor</h3>
+      <p>Key and scale on a circle of fifths, a library of progressions or your own, tempo and
+      swing. In a DAW it follows the host's tempo and transport.</p>
+    </div>
+    <div class="panel">
+      <h3>Presets and patches</h3>
+      <p>Ten factory presets, the Seed's recipes among them. Save and open whole patches as
+      <code>.ammo</code> files, and record the output straight to WAV.</p>
+    </div>
+  </div>
+
+  <h2 class="section" id="stage">The stage</h2>
+  <p class="lead">Half of Ammonite Desktop is something to watch. The stage fills the window and is
+  driven by the real audio of each channel: its waveform, turned around an axis, becomes a glass
+  shell, louder means bigger, and every note brings its colour from the circle of fifths. The
+  controls sit on a glass panel that folds to a slim rail, so the stage can have the whole screen.</p>
+
+  <figure>
+    <a href="img/looks.webp"><img src="img/looks.webp" alt="The Visual tab with a look chosen per channel, beside the stage" loading="lazy"></a>
+    <figcaption><b>A look per channel.</b> Shell for arps and pads, Ripple for drums (each hit sends
+    a crest across the surface), Breath for a bass that swells the whole form, Glow for soft light
+    inside the glass. Nested or merged, with a camera, and Mirror, Feedback, Tracer and Bloom on top.</figcaption>
+  </figure>
+
+  <h2 class="section" id="screens">Inside</h2>
+
+  <figure>
+    <a href="img/channels.webp"><img src="img/channels.webp" alt="Night groove's channels: kick, clap, hats, bass and chords, with the kick's drum voice open" loading="lazy"></a>
+    <figcaption><b>Channels.</b> Night groove: four drum channels, a bass and chord stabs. Each row
+    shows its channel's live waveform; open one and its generator, instrument, effects, modulation
+    and visual settings fold out. Here, the kick's drum voice.</figcaption>
+  </figure>
+
+  <figure>
+    <a href="img/dock.webp"><img src="img/dock.webp" alt="Evening band with the panel docked on the right, an arp channel's pattern open" loading="lazy"></a>
+    <figcaption><b>An arp, docked right.</b> Evening band: a held seventh-chord pad, a walking bass and
+    an arp whose pattern, note pool and density you see as steps. The panel docks on either side.</figcaption>
+  </figure>
+
+  <figure>
+    <a href="img/conductor.webp"><img src="img/conductor.webp" alt="The Conductor tab: key on a circle of fifths, the progression, time, master bus and reverb" loading="lazy"></a>
+    <figcaption><b>The conductor.</b> The key on the circle of fifths with the chord playing now, the
+    progression, tempo and swing, the master bus and the shared reverb. The knobs' faces draw what
+    they do.</figcaption>
+  </figure>
+
+  <figure>
+    <a href="img/modulation.webp"><img src="img/modulation.webp" alt="The Modulation tab: an LFO and the four macros with their routes" loading="lazy"></a>
+    <figcaption><b>Modulation.</b> An LFO on the hats' tone and the four macros, each with the routes
+    it moves and by how much.</figcaption>
+  </figure>
+
+  <h2 class="section" id="install">Install</h2>
+  <div class="steps panel">
+    <h3>Standalone</h3>
+    <p>Unzip <code>Ammonite-Desktop-0.1.0-win64.zip</code> anywhere, for example into your Documents,
+    and double-click <code>Ammonite Desktop.exe</code>. It plays through Windows' default output
+    (choose another in the top bar); the play button or Space starts and stops it.</p>
+
+    <h3>VST3</h3>
+    <p>Copy the folder <code>VST3\AmmoniteDesktop.vst3</code> into
+    <code>C:\Program Files\Common Files\VST3</code>, then rescan plugins in your DAW. Ammonite
+    Desktop shows up as an instrument by GSNautilus.</p>
+
+    <h3>CLAP</h3>
+    <p>Copy <code>CLAP\AmmoniteDesktop.clap</code> into
+    <code>C:\Program Files\Common Files\CLAP</code> (create the folder if it is not there), then
+    rescan.</p>
+
+    <div class="note panel">
+      <h3>&ldquo;Windows protected your PC&rdquo;</h3>
+      <p>Ammonite Desktop is not signed with a paid certificate, so the first time you start it,
+      Windows SmartScreen warns about an unrecognized app. Click <b>More info</b>, then
+      <b>Run anyway</b>. Windows remembers the choice.</p>
+    </div>
+    <p style="margin-top:16px">Patches are saved to <code>Documents\Ammonite\Patches</code> and recordings
+    to <code>Documents\Ammonite\Recordings</code>.</p>
+  </div>
+
+  <h2 class="section" id="requirements">Requirements</h2>
+  <dl class="req panel">
+    <dt>Windows</dt>
+    <dd>Windows 10 or 11, 64-bit (x64).</dd>
+    <dt>WebView2</dt>
+    <dd>The Microsoft Edge WebView2 Runtime draws the interface. Windows 11 has it, and so do most
+    up-to-date Windows 10 PCs; if the window stays empty, install it from
+    <a href="https://developer.microsoft.com/microsoft-edge/webview2/">Microsoft</a> (the
+    Evergreen Runtime).</dd>
+    <dt>Graphics</dt>
+    <dd>Any graphics card or integrated graphics that runs WebGL in a browser.</dd>
+    <dt>Plugin hosts</dt>
+    <dd>Any 64-bit DAW that loads VST3 or CLAP instruments.</dd>
+    <dt>MIDI</dt>
+    <dd>None. Ammonite plays itself; there is no MIDI in or out.</dd>
+  </dl>
+
   <nav class="links">
+    <a class="primary" href="https://github.com/GSNautilus/ammonite/releases/tag/desktop-v0.1.0">Download 0.1.0</a>
     <a href="../">The Ammonite family</a>
+    <a href="https://github.com/GSNautilus/ammonite">Ammonite on GitHub</a>
   </nav>
-  <footer>Ammonite Desktop &middot; part of the Ammonite family</footer>
+  <footer>Ammonite Desktop &middot; part of the Ammonite family &middot; made by GSNautilus</footer>
 </main>
 </body>
 </html>
