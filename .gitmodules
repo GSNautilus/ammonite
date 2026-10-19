@@ -7,3 +7,6 @@
 [submodule "plugin/lib/DPF"]
 	path = plugin/lib/DPF
 	url = https://github.com/DISTRHO/DPF.git
+[submodule "desktop/lib/DPF"]
+	path = desktop/lib/DPF
+	url = https://github.com/DISTRHO/DPF

@@ -11,3 +11,7 @@ manual/_pass1.pdf
 media/_video.mp4
 media/_audio.wav
 media/audio/*.wav
+
+# desktop (Ammonite Desktop) build
+desktop/build/
+desktop/lib/DPF/khronos/

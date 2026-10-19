@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ammonite Test Web</title>
+<style>
+  html, body { margin: 0; width: 100%; height: 100%; background: #0e0e10; overflow: hidden;
+               font-family: "Segoe UI", sans-serif; color: #ddd; user-select: none; -webkit-user-select: none; }
+  #stage { position: absolute; left: 0; top: 0; width: 100%; height: 100%; display: block; }
+  canvas.knob { position: absolute; display: block; touch-action: none; }
+  #ov { position: absolute; left: 12px; top: 10px; font: 11px Consolas, "Cascadia Mono", monospace;
+        color: rgba(220,220,228,0.75); white-space: pre; pointer-events: none; text-shadow: 0 0 4px #000; line-height: 14px; }
+  #err { position: absolute; left: 0; right: 0; top: 45%; text-align: center; color: #f98; font-size: 16px; display: none; }
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<canvas class="knob" data-id="0" data-glyph="wave" data-name="Shape"></canvas>
+<canvas class="knob" data-id="1" data-glyph="level" data-name="Level"></canvas>
+<div id="ov">starting</div>
+<div id="err"></div>
+<script>
+/* Ammonite Test Web: the page side: drawKnob, glyph,
+   ORB_VS / ORB_FS, meshFor, orbInit and drawOrbStage, reduced to one
+   knob of each kind and one shell whose wave is the plugin's real audio.
+
+   Host <-> page: C++ calls ammo.tick(frame) every idle (~60 Hz), ammo.param(i, v),
+   ammo.info(o). The page posts one-line strings: ready | edit <id> <0|1> |
+   set <id> <v> | gl ok <renderer> | gl fail <why> | log <text>. */
+(function () {
+  'use strict';
+  var TAU = Math.PI * 2, MONO = 'Consolas, "Cascadia Mono", monospace';
+  var LAYOUT_W = 720, LAYOUT_H = 480;
+  // The same knob geometry as the native variant (TestUICommon.hpp), in layout units.
+  var KNOBS = [{ id: 0, cx: 70, cy: 410, r: 37, def: 0.25, name: 'Shape', glyph: 'wave' },
+               { id: 1, cx: 160, cy: 422, r: 25, def: 0.5, name: 'Level', glyph: 'level' }];
+  var DRAG_SPAN = 180, FINE_SPAN = 720;
+
+  function clamp(x, a, b) { return x < a ? a : x > b ? b : x; }
+  function hsla(h, s, l, a) { return 'hsla(' + h.toFixed(1) + ',' + s + '%,' + l + '%,' + clamp(a, 0, 1).toFixed(3) + ')'; }
+  function hslRgb(h, s, l) {
+    h = ((h % 360) + 360) % 360 / 360; s /= 100; l /= 100;
+    var q = l < 0.5 ? l * (1 + s) : l + s - l * s, p = 2 * l - q, out = [0, 0, 0];
+    for (var i = 0; i < 3; i++) {
+      var t = h + (1 - i) / 3; t -= Math.floor(t);
+      out[i] = t < 1 / 6 ? p + (q - p) * 6 * t : t < 0.5 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p;
+    }
+    return out;
+  }
+  function hueOfShape(shape) { return 20 + shape * 300; }
+
+  var bridge = window.chrome && window.chrome.webview;
+  function send(m) { if (bridge) bridge.postMessage(m); }
+
+  /* ------------------------------------------------------------- state */
+  // F is what gets drawn: the telemetry as it was `LAT` ms ago, blended between
+  // the two frames around that instant. Frames arrive in bursts (the audio
+  // device's period); each burst is spread back over its blocks' duration.
+  var F = { seq: 0, shape: 0.25, level: 0.5, rms: 0, peak: 0, env: 0, beat: 0, bpm: 0, playing: false, hostClock: false,
+            inst: 0, sr: 0, block: 0, idleMs: 0, idleMax: 0, evalMs: 0, wave: new Float32Array(256) };
+  var Q = [];               // {t, f} frames with their display times, oldest first
+  var LAT = 20;             // ms of smoothing delay; follows the observed burst interval
+  var lastBurstAt = 0, burstGap = 10;
+  var P = [0.25, 0.5], INFO = { fmt: '?', variant: 'Web', createMs: 0 };
+  var stats = { tickMs: 0, ticks: 0, frames: 0, tickT: [], blends: 0 };
+  var glStatus = 'init', t0 = performance.now(), T = 0;
+
+  window.ammo = {
+    tick: function (list, host) {
+      var a = performance.now(), n = list.length, i, k;
+      if (host) { F.idleMs = host.idleMs; F.idleMax = host.idleMax; F.evalMs = host.evalMs; }
+      if (lastBurstAt) burstGap = burstGap * 0.9 + Math.min(50, a - lastBurstAt) * 0.1;
+      lastBurstAt = a;
+      LAT = Math.max(8, Math.min(60, burstGap * 1.5));
+      for (i = 0; i < n; i++) {
+        var f = list[i], blockMs = f.sr > 0 ? 1000 * f.block / f.sr : 2.7;
+        f.wave = new Float32Array(f.wave);
+        // the burst's blocks ended at `a`, one block apart
+        Q.push({ t: a - (n - 1 - i) * blockMs, f: f });
+      }
+      while (Q.length > 64) Q.shift();
+      stats.ticks++; stats.frames += n; stats.tickT.push(a); if (stats.tickT.length > 2400) stats.tickT.shift();
+      stats.tickMs = stats.tickMs * 0.9 + (performance.now() - a) * 0.1;
+    },
+    param: function (i, v) { if (i >= 0 && i < 2) P[i] = v; },
+    info: function (o) { INFO = o; if (o.params) { P[0] = o.params[0]; P[1] = o.params[1]; } }
+  };
+
+  /* the frame to draw now: the queue read `LAT` ms behind arrival, neighbours blended */
+  function sampleTelemetry(now) {
+    if (!Q.length) return;
+    var td = now - LAT, i, a, b, u;
+    // drop frames older than the two we need
+    while (Q.length > 2 && Q[1].t <= td) Q.shift();
+    a = Q[0]; b = Q.length > 1 ? Q[1] : null;
+    if (b && td > a.t) { u = Math.min(1, (td - a.t) / Math.max(0.1, b.t - a.t)); } else { u = 0; b = null; }
+    var fa = a.f, fb = b ? b.f : fa, wa = fa.wave, wb = fb.wave;
+    for (i = 0; i < 256; i++) F.wave[i] = wa[i] + (wb[i] - wa[i]) * u;
+    F.shape = fa.shape + (fb.shape - fa.shape) * u; F.level = fa.level + (fb.level - fa.level) * u;
+    F.env = fa.env + (fb.env - fa.env) * u; F.rms = fa.rms + (fb.rms - fa.rms) * u; F.peak = Math.max(fa.peak, fb.peak);
+    F.beat = fa.beat + (fb.beat - fa.beat) * u;
+    F.seq = fb.seq; F.bpm = fb.bpm; F.playing = fb.playing; F.hostClock = fb.hostClock; F.inst = fb.inst; F.sr = fb.sr; F.block = fb.block;
+    if (u > 0 && u < 1) stats.blends++;
+  }
+
+  /* -------------------------------------------------------------- knobs */
+  function arc(ctx, x, y, r, a, b, col, lw) {
+    if (b - a < 0.002 || r <= 0) return;
+    ctx.beginPath(); ctx.arc(x, y, r, a, b); ctx.strokeStyle = col; ctx.lineWidth = lw; ctx.stroke();
+  }
+  function dot(ctx, x, y, r, col) { ctx.beginPath(); ctx.arc(x, y, Math.max(0.1, r), 0, TAU); ctx.fillStyle = col; ctx.fill(); }
+  function text(ctx, s, x, y, font, col, align) {
+    ctx.font = font; ctx.fillStyle = col; ctx.textAlign = align || 'left'; ctx.textBaseline = 'middle'; ctx.fillText(s, x, y);
+  }
+  function neon(ctx, path, h, s, w, k) {
+    if (k <= 0.01) return;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+    ctx.strokeStyle = hsla(h, s, 55, 0.06 * k); ctx.lineWidth = w * 7; ctx.stroke(path);
+    ctx.strokeStyle = hsla(h, s, 58, 0.32 * k); ctx.lineWidth = w * 2.4; ctx.stroke(path);
+    ctx.strokeStyle = hsla(h, Math.min(s, 60), 88, 0.85 * k); ctx.lineWidth = w * 0.75; ctx.stroke(path);
+    ctx.restore();
+  }
+  function glowDot(ctx, x, y, r, h, s, k) {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    dot(ctx, x, y, r * 3, hsla(h, s, 55, 0.12 * k));
+    dot(ctx, x, y, r * 1.6, hsla(h, s, 60, 0.4 * k));
+    dot(ctx, x, y, r * 0.7, hsla(h, Math.min(s, 50), 92, 0.95 * k));
+    ctx.restore();
+  }
+
+  var drag = null, hover = null;
+  function drawKnob(cv, kb, S) {
+    var W = kb.r * 2, cssW = W + 16, cssH = W + 30;
+    var dpr = Math.min(2, window.devicePixelRatio || 1);
+    var PW = Math.round(cssW * S * dpr), PH = Math.round(cssH * S * dpr);
+    if (cv.width !== PW || cv.height !== PH) { cv.width = PW; cv.height = PH; }
+    cv.style.width = (cssW * S) + 'px'; cv.style.height = (cssH * S) + 'px';
+    cv.style.left = ((kb.cx - cssW / 2) * S) + 'px'; cv.style.top = ((kb.cy - W / 2) * S) + 'px';
+    var ctx = cv.getContext('2d');
+    ctx.setTransform(S * dpr, 0, 0, S * dpr, 0, 0);
+    ctx.clearRect(0, 0, cssW, cssH);
+    var cx = cssW / 2, cy = W / 2, R = W / 2 - 1.5, base = P[kb.id];
+    var h = hueOfShape(F.shape), s = 90, amp = Math.min(1, F.env);
+    var A0 = Math.PI * 0.75, SW = Math.PI * 1.5;
+    var big = W >= 70, tw = Math.max(2, W * 0.036), rv = R - (big ? 7 : 5.5), rf = rv - tw / 2 - (big ? 5 : 3.5);
+    var dragging = drag && drag.kb === kb, hov = hover === kb;
+    ctx.lineCap = 'round';
+    arc(ctx, cx, cy, rv, A0, A0 + SW, 'rgba(255,255,255,0.07)', tw);
+    if (base > 0.003) {
+      var hot = hsla(h, s, 66, 1), dim = hsla(h - 28, s, 42, 0.55), stroke = hot;
+      if (ctx.createConicGradient) {
+        var gr = ctx.createConicGradient(A0, cx, cy), oB = SW * base / TAU;
+        gr.addColorStop(0, dim); gr.addColorStop(oB, hot); stroke = gr;
+      }
+      ctx.save(); ctx.globalCompositeOperation = 'lighter';
+      arc(ctx, cx, cy, rv, A0, A0 + SW * base, hsla(h, s, 58, 0.16 + (dragging ? 0.12 : 0)), tw * 3.2);
+      ctx.restore();
+      arc(ctx, cx, cy, rv, A0, A0 + SW * base, stroke, tw);
+    }
+    var ab = A0 + SW * base;
+    glowDot(ctx, cx + Math.cos(ab) * rv, cy + Math.sin(ab) * rv, tw * 0.75, h, s, 1);
+    var fg = ctx.createRadialGradient(cx - rf * 0.3, cy - rf * 0.4, rf * 0.1, cx, cy, rf);
+    fg.addColorStop(0, '#222226'); fg.addColorStop(1, '#09090b');
+    dot(ctx, cx, cy, rf, fg);
+    var ig = ctx.createRadialGradient(cx, cy, 0, cx, cy, rf);
+    ig.addColorStop(0, hsla(h, s, 50, 0.05 + 0.13 * amp)); ig.addColorStop(1, hsla(h, s, 50, 0));
+    dot(ctx, cx, cy, rf, ig);
+    arc(ctx, cx, cy, rf, Math.PI * 1.1, Math.PI * 1.9, 'rgba(255,255,255,0.09)', 1);
+    ctx.save(); ctx.beginPath(); ctx.arc(cx, cy, rf * 0.94, 0, TAU); ctx.clip();
+    glyph(ctx, kb.glyph, cx, cy, rf * 0.8, base, h, s, amp);
+    ctx.restore();
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(ab) * rf * 0.8, cy + Math.sin(ab) * rf * 0.8);
+    ctx.lineTo(cx + Math.cos(ab) * rf * 0.98, cy + Math.sin(ab) * rf * 0.98);
+    ctx.strokeStyle = 'rgba(255,255,255,0.85)'; ctx.lineWidth = 1.6; ctx.stroke();
+    text(ctx, Math.round(base * 100) + '%', cx, W + 9, (dragging ? '600 ' : '500 ') + (big ? 12 : 11) + 'px ' + MONO,
+      dragging ? hsla(h, Math.min(s, 80), 74, 1) : hov ? 'rgba(236,236,240,0.92)' : 'rgba(220,220,228,0.55)', 'center');
+    text(ctx, kb.name, cx, W + 22, '500 10px ' + MONO, 'rgba(160,160,168,0.8)', 'center');
+  }
+
+  function glyph(ctx, kind, cx, cy, r, x, h, s, amp) {
+    var lw = Math.max(1, r / 20), k = 0.55 + 0.45 * amp, p, i, t;
+    if (kind === 'wave') {
+      // the face shows the live wave: 1.5 periods of the telemetry, slowly scrolling
+      p = new Path2D();
+      for (i = 0; i <= 96; i++) {
+        var u = i / 96, ph = (u * 1.5 + T * 0.3) % 1, idx = Math.floor(ph * 256) & 255;
+        var y = cy - F.wave[idx] * 4 * r * 0.55;
+        if (i) p.lineTo(cx - r + 2 * r * u, y); else p.moveTo(cx - r + 2 * r * u, y);
+      }
+      neon(ctx, p, h, s, lw, k);
+    } else {
+      var top = cy + r - 2 * r * x * (0.85 + 0.15 * amp);
+      p = new Path2D();
+      for (i = 0; i <= 30; i++) { t = i / 30; var yy = top + Math.sin(t * TAU * 1.5 + T * 2.5) * r * 0.05; if (i) p.lineTo(cx - r + 2 * r * t, yy); else p.moveTo(cx - r, yy); }
+      var fl = new Path2D(p); fl.lineTo(cx + r, cy + r); fl.lineTo(cx - r, cy + r); fl.closePath();
+      var lg = ctx.createLinearGradient(0, top, 0, cy + r);
+      lg.addColorStop(0, hsla(h, s, 60, 0.45 * k)); lg.addColorStop(1, hsla(h - 30, s, 40, 0.1));
+      ctx.fillStyle = lg; ctx.fill(fl); neon(ctx, p, h, s, lw * 0.8, k);
+    }
+  }
+
+  /* -------------------------------------------------------------- shell */
+  var ORB_VS = [
+    'attribute vec2 aUV;',
+    'uniform float uRad, uAspect, uScale, uCyc, uDepth, uPhase, uBreath;',
+    'uniform mat3 uRot;',
+    'uniform vec4 uWave[64];',
+    'varying vec3 vN; varying float vW;',
+    'const float PI = 3.14159265;',
+    'float wv(float f) {',
+    '  float x = fract(f) * 256.0;',
+    '  float i0 = floor(x), t = x - i0;',
+    '  float i1 = i0 + 1.0; if (i1 >= 256.0) i1 = 0.0;',
+    '  int q0 = int(floor(i0 / 4.0)); float r0 = i0 - 4.0 * float(q0);',
+    '  int q1 = int(floor(i1 / 4.0)); float r1 = i1 - 4.0 * float(q1);',
+    '  vec4 a = uWave[q0]; vec4 b = uWave[q1];',
+    '  float s0 = r0 < 0.5 ? a.x : (r0 < 1.5 ? a.y : (r0 < 2.5 ? a.z : a.w));',
+    '  float s1 = r1 < 0.5 ? b.x : (r1 < 1.5 ? b.y : (r1 < 2.5 ? b.z : b.w));',
+    '  return mix(s0, s1, t); }',
+    'vec3 pos(float u, float v, out float wn) {',
+    '  float phi = -PI * 0.5 + PI * u, lam = 2.0 * PI * v, c = cos(phi);',
+    '  vec3 n0 = vec3(c * sin(lam), -sin(phi), c * cos(lam));',
+    '  float d = wv(u * uCyc + uPhase) * uDepth;',
+    '  wn = clamp(d / max(uDepth * 0.25, 1e-4), -1.0, 1.0);',
+    '  vec3 p = n0 * uRad * (1.0 + d);',
+    '  p.y *= 1.0 + uBreath; p.xz *= 1.0 + 0.5 * uBreath;',
+    '  return p; }',
+    'void main() {',
+    '  float u = aUV.x, v = aUV.y, e = 0.003, w0, wd;',
+    '  vec3 p = pos(u, v, w0);',
+    '  vec3 pu = pos(clamp(u + e, 0.0, 1.0), v, wd) - pos(clamp(u - e, 0.0, 1.0), v, wd);',
+    '  vec3 pv = pos(u, v + e, wd) - pos(u, v - e, wd);',
+    '  vec3 n = cross(pu, pv); n = length(n) > 1e-7 ? normalize(n) : normalize(p + 1e-6);',
+    '  p = uRot * p; vN = uRot * n; vW = w0;',
+    '  float w = 1.0 - p.z * 0.22;',
+    '  gl_Position = vec4(p.x * uScale / uAspect, p.y * uScale, 0.0, w); }'
+  ].join('\n');
+  var ORB_FS = [
+    'precision mediump float;',
+    'uniform float uInt, uSat; uniform vec3 uCol;',
+    'varying vec3 vN; varying float vW;',
+    'void main() {',
+    '  vec3 n = normalize(vN); float fres = pow(1.0 - abs(n.z), 2.2);',
+    '  vec3 c = uCol; float g = dot(c, vec3(0.333)); c = clamp(mix(vec3(g), c, uSat), 0.0, 1.0);',
+    '  float crest = 0.6 + 0.5 * vW, front = gl_FrontFacing ? 1.0 : 0.55;',
+    '  vec3 col = c * (0.08 + 1.35 * fres) * crest + vec3(1.0) * pow(fres, 7.0) * 0.4;',
+    '  gl_FragColor = vec4(col, uInt * (0.08 + 0.8 * fres) * front); }'
+  ].join('\n');
+
+  function meshFor(gl) {
+    var NL = 220, NO = 72, uv = [], idx = [], i, j;
+    for (i = 0; i <= NL; i++) for (j = 0; j <= NO; j++) uv.push(i / NL, j / NO);
+    for (i = 0; i < NL; i++) for (j = 0; j < NO; j++) { var a = i * (NO + 1) + j, b = a + NO + 1; idx.push(a, b, a + 1, a + 1, b, b + 1); }
+    var vb = gl.createBuffer(); gl.bindBuffer(gl.ARRAY_BUFFER, vb); gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(uv), gl.STATIC_DRAW);
+    var ib = gl.createBuffer(); gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, ib); gl.bufferData(gl.ELEMENT_ARRAY_BUFFER, new Uint16Array(idx), gl.STATIC_DRAW);
+    return { vb: vb, ib: ib, n: idx.length };
+  }
+  function orbInit(cv) {
+    var gl = cv.getContext('webgl', { antialias: true, alpha: false, preserveDrawingBuffer: false });
+    if (!gl) return { failed: 'no webgl context' };
+    function sh(type, src) {
+      var s = gl.createShader(type); gl.shaderSource(s, src); gl.compileShader(s);
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) throw new Error(gl.getShaderInfoLog(s));
+      return s;
+    }
+    try {
+      var pr = gl.createProgram();
+      gl.attachShader(pr, sh(gl.VERTEX_SHADER, ORB_VS)); gl.attachShader(pr, sh(gl.FRAGMENT_SHADER, ORB_FS));
+      gl.linkProgram(pr);
+      if (!gl.getProgramParameter(pr, gl.LINK_STATUS)) throw new Error(gl.getProgramInfoLog(pr));
+    } catch (e) { return { failed: 'shader: ' + e.message }; }
+    var m = meshFor(gl), U = {};
+    ['uRad', 'uAspect', 'uScale', 'uCyc', 'uDepth', 'uPhase', 'uBreath', 'uRot', 'uWave', 'uInt', 'uSat', 'uCol']
+      .forEach(function (n) { U[n] = gl.getUniformLocation(pr, n); });
+    var dbg = gl.getExtension('WEBGL_debug_renderer_info');
+    var renderer = dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER);
+    return { gl: gl, pr: pr, vb: m.vb, ib: m.ib, n: m.n, aUV: gl.getAttribLocation(pr, 'aUV'), U: U, renderer: renderer };
+  }
+  function rotation(ax, ay) { // column-major Rx(ax) * Ry(ay)
+    var cx = Math.cos(ax), sx = Math.sin(ax), cy = Math.cos(ay), sy = Math.sin(ay);
+    var m = [[cy, 0, sy], [sx * sy, cx, -sx * cy], [-cx * sy, sx, cx * cy]], out = new Float32Array(9);
+    for (var c = 0; c < 3; c++) for (var r = 0; r < 3; r++) out[c * 3 + r] = m[r][c];
+    return out;
+  }
+  var stage = document.getElementById('stage'), orb = null;
+  function drawShell() {
+    var w = stage.clientWidth, h = stage.clientHeight;
+    if (!w || !h || !orb || orb.failed) return;
+    var dpr = Math.min(2, window.devicePixelRatio || 1), W = Math.round(w * dpr), H = Math.round(h * dpr);
+    if (stage.width !== W || stage.height !== H) { stage.width = W; stage.height = H; }
+    var gl = orb.gl, U = orb.U, env = Math.min(1, F.env), col = hslRgb(hueOfShape(F.shape), 95, 58);
+    gl.viewport(0, 0, W, H);
+    gl.clearColor(14 / 255, 14 / 255, 16 / 255, 1); gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.disable(gl.DEPTH_TEST); gl.disable(gl.CULL_FACE);
+    gl.enable(gl.BLEND); gl.blendFunc(gl.SRC_ALPHA, gl.ONE);
+    gl.useProgram(orb.pr);
+    gl.bindBuffer(gl.ARRAY_BUFFER, orb.vb); gl.enableVertexAttribArray(orb.aUV); gl.vertexAttribPointer(orb.aUV, 2, gl.FLOAT, false, 0, 0);
+    gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, orb.ib);
+    gl.uniform1f(U.uRad, 0.5 * (0.9 + 0.15 * env)); gl.uniform1f(U.uAspect, w / h); gl.uniform1f(U.uScale, 1.0);
+    gl.uniform1f(U.uCyc, 4); gl.uniform1f(U.uDepth, 1.5); gl.uniform1f(U.uPhase, -T * 0.25); gl.uniform1f(U.uBreath, 0.06 * env);
+    gl.uniformMatrix3fv(U.uRot, false, rotation(-0.3, T * 0.1));
+    gl.uniform4fv(U.uWave, F.wave);
+    gl.uniform1f(U.uInt, 0.5 + 0.5 * env); gl.uniform1f(U.uSat, 1.15); gl.uniform3f(U.uCol, col[0], col[1], col[2]);
+    gl.drawElements(gl.TRIANGLES, orb.n, gl.UNSIGNED_SHORT, 0);
+  }
+
+  /* ------------------------------------------------------------ overlay */
+  var ov = document.getElementById('ov'), ovAt = 0;
+  function window10s(arr, now) { var n = 0, slow = 0, mx = 0, i; for (i = arr.length - 1; i >= 0 && now - arr[i].t <= 10000; i--) { n++; if (arr[i].dt > 20) slow++; if (arr[i].dt > mx) mx = arr[i].dt; } return { n: n, slow: slow, max: mx }; }
+  var frames = [];
+  function overlay(now) {
+    if (now - ovAt < 250) return;
+    ovAt = now;
+    var fr = window10s(frames, now), tk = 0, i;
+    for (i = stats.tickT.length - 1; i >= 0 && now - stats.tickT[i] <= 10000; i--) tk++;
+    var fps = fr.n ? (fr.n / Math.min(10, (now - frames[Math.max(0, frames.length - fr.n)].t + 1) / 1000)) : 0;
+    ov.textContent =
+      'Ammonite Test Web   #' + F.inst + '   ' + INFO.fmt + '   ' + F.sr + ' Hz   block ' + F.block + '\n' +
+      F.bpm.toFixed(1) + ' BPM ' + (F.playing ? 'playing' : 'stopped') + '   beat ' + F.beat.toFixed(2) + '   ' + (F.hostClock ? 'host clock' : 'free clock') + '\n' +
+      'page: ' + fps.toFixed(0) + ' fps (' + fr.n + ' frames / 10 s, >20 ms: ' + fr.slow + ', max ' + fr.max.toFixed(1) + ' ms)   tick ' + stats.tickMs.toFixed(3) + ' ms\n' +
+      'telemetry: ' + (tk / 10).toFixed(0) + ' pushes/s, ' + (stats.frames / Math.max(1, stats.ticks)).toFixed(1) + ' frames each, smoothing ' + LAT.toFixed(0) + ' ms, queue ' + Q.length + '   host idle ' + F.idleMs.toFixed(1) + ' ms   eval ' + F.evalMs.toFixed(3) + ' ms\n' +
+      'webgl: ' + glStatus + '   webview up in ' + INFO.createMs.toFixed(0) + ' ms   dpr ' + (window.devicePixelRatio || 1).toFixed(2) + '\n' +
+      'rms ' + F.rms.toFixed(3) + '  peak ' + F.peak.toFixed(3) + '  env ' + F.env.toFixed(2) + '  shape ' + F.shape.toFixed(2) + '  level ' + F.level.toFixed(2);
+  }
+
+  /* --------------------------------------------------------------- loop */
+  var knobEls = Array.prototype.slice.call(document.querySelectorAll('canvas.knob'));
+  var last = 0;
+  function frame(now) {
+    var dt = last ? now - last : 0; last = now;
+    if (dt) { frames.push({ t: now, dt: dt }); if (frames.length > 1200) frames.shift(); }
+    T = (now - t0) / 1000;
+    sampleTelemetry(now);
+    var S = Math.min(window.innerWidth / LAYOUT_W, window.innerHeight / LAYOUT_H);
+    for (var i = 0; i < knobEls.length; i++) {
+      var kb = KNOBS[+knobEls[i].dataset.id];
+      try { drawKnob(knobEls[i], kb, S); } catch (e) { /* keep going */ }
+    }
+    try { drawShell(); } catch (e) { glStatus = 'draw error ' + e.message; }
+    overlay(now);
+    requestAnimationFrame(frame);
+  }
+
+  /* -------------------------------------------------------------- input */
+  function knobOf(e) { var t = e.target; return t && t.classList && t.classList.contains('knob') ? KNOBS[+t.dataset.id] : null; }
+  function setParam(kb, v, gesture) {
+    v = clamp(v, 0, 1);
+    if (gesture) send('edit ' + kb.id + ' 1');
+    P[kb.id] = v; send('set ' + kb.id + ' ' + v.toFixed(5));
+    if (gesture) send('edit ' + kb.id + ' 0');
+  }
+  document.addEventListener('pointerdown', function (e) {
+    var kb = knobOf(e); if (!kb || e.button !== 0) return;
+    e.preventDefault();
+    drag = { kb: kb, y: e.clientY, v: P[kb.id], el: e.target };
+    send('edit ' + kb.id + ' 1');
+    try { e.target.setPointerCapture(e.pointerId); } catch (err) { /* fine */ }
+  });
+  document.addEventListener('pointermove', function (e) {
+    if (!drag) { var kb = knobOf(e); hover = kb; return; }
+    var S = Math.min(window.innerWidth / LAYOUT_W, window.innerHeight / LAYOUT_H);
+    var span = (e.shiftKey ? FINE_SPAN : DRAG_SPAN) * S;
+    drag.v = clamp(drag.v + (drag.y - e.clientY) / span, 0, 1); drag.y = e.clientY;
+    P[drag.kb.id] = drag.v; send('set ' + drag.kb.id + ' ' + drag.v.toFixed(5));
+  });
+  function endDrag() { if (!drag) return; send('edit ' + drag.kb.id + ' 0'); drag = null; }
+  document.addEventListener('pointerup', endDrag);
+  document.addEventListener('pointercancel', endDrag);
+  document.addEventListener('dblclick', function (e) { var kb = knobOf(e); if (kb) setParam(kb, kb.def, true); });
+  document.addEventListener('wheel', function (e) {
+    var kb = knobOf(e); if (!kb || !e.deltaY) return;
+    e.preventDefault();
+    setParam(kb, P[kb.id] + (e.deltaY < 0 ? 1 : -1) * (e.shiftKey ? 0.005 : 0.02), true);
+  }, { passive: false });
+  document.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+  /* keys: this page has no text fields, so every key belongs to the host
+     (Space = transport). The C++ side posts them to the window that embeds us. */
+  function fwdKey(e, down) {
+    if (e.keyCode === 123) return; // F12: leave the dev tools to the browser
+    send('key ' + (down ? 1 : 0) + ' ' + e.keyCode + ' ' + (e.repeat ? 1 : 0));
+    e.preventDefault();
+  }
+  window.addEventListener('keydown', function (e) { fwdKey(e, true); });
+  window.addEventListener('keyup', function (e) { fwdKey(e, false); });
+
+  /* -------------------------------------------------------------- start */
+  orb = orbInit(stage);
+  if (orb.failed) {
+    glStatus = 'FAILED: ' + orb.failed;
+    document.getElementById('err').style.display = 'block';
+    document.getElementById('err').textContent = 'WebGL unavailable: ' + orb.failed;
+    send('gl fail ' + orb.failed);
+  } else {
+    glStatus = 'ok (' + orb.renderer + ')';
+    send('gl ok ' + orb.renderer);
+  }
+  requestAnimationFrame(frame);
+  send('ready');
+})();
+</script>
+</body>
+</html>

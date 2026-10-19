@@ -1,0 +1,397 @@
+/* Ammonite Desktop: the stage and one panel of glass docked on the left or
+   the right (app.js). The layout is 1440 high and as wide as the window,
+   scaled to it by a transform on #ui; the stage canvas fills the window and
+   centres in the room the panel leaves. Neutral greys; only sound glows. */
+html, body { margin: 0; width: 100%; height: 100%; background: #0e0e10; overflow: hidden;
+             font-family: "Barlow Semi Condensed", "Segoe UI", sans-serif; color: #ececf0;
+             user-select: none; -webkit-user-select: none; }
+button { font-family: inherit; cursor: pointer; }
+canvas { display: block; }
+select { font-family: inherit; }
+#stage { position: absolute; left: 0; top: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+#stage.grab { cursor: grabbing; } /* orbiting the camera */
+#ui { position: absolute; left: 0; top: 0; width: 3440px; height: 1440px; transform-origin: 0 0; pointer-events: none; }
+#ui > * { pointer-events: auto; }
+.grow { flex-grow: 1; }
+.lab { font-size: 12px; letter-spacing: 0.18em; color: #8a8a94; }
+.lab.w64 { width: 64px; flex-shrink: 0; }
+.row { display: flex; gap: 6px; align-items: flex-start; }
+.row.center { align-items: center; }
+.row.between { justify-content: space-between; }
+
+/* ---- the panel */
+.glass { position: absolute; box-sizing: border-box; border-radius: 18px; background: rgba(24,24,27,0.78);
+         backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.07); overflow: hidden;
+         display: flex; flex-direction: column; }
+#panel { top: 12px; bottom: 12px; width: 1336px; }
+#panel.dock-left { left: 12px; }
+#panel.dock-right { right: 12px; }
+#panel.rail { width: 64px; align-items: center; gap: 10px; padding: 12px 0; }
+
+.ptop { height: 64px; flex-shrink: 0; display: flex; align-items: center; gap: 12px; padding: 0 14px 0 18px; }
+.ptop canvas.hfader.master { width: 150px; } /* the master volume, as the Conductor's */
+/* the CPU meter: the engine's render time over real time, the last second's mean (number, bar) and peak (tick, small);
+   warm from a 70% peak, hot from 90% */
+.cpu { display: grid; grid-template-columns: auto auto; align-items: center; gap: 3px 7px; flex-shrink: 0; margin-right: 4px; }
+.cpu .lab { font-size: 10px; letter-spacing: 0.16em; color: #7c7c86; }
+.cpu .cpun { font: 600 13px "JetBrains Mono", Consolas, monospace; color: #c9c9d1; min-width: 46px; }
+.cpu .cpubar { position: relative; width: 30px; height: 4px; border-radius: 2px; background: rgba(255,255,255,0.1); overflow: hidden; }
+.cpu .cpubar i { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 2px; background: rgba(239,230,216,0.6); }
+.cpu .cpubar b { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; background: #efe6d8; }
+.cpu .cpupk { font: 11px "JetBrains Mono", Consolas, monospace; color: #7c7c86; }
+.cpu.warm .cpun, .cpu.warm .cpupk { color: #f0b860; }
+.cpu.warm .cpubar i, .cpu.warm .cpubar b { background: #f0b860; }
+.cpu.hot .cpun, .cpu.hot .cpupk { color: #ff6a6f; }
+.cpu.hot .cpubar i, .cpu.hot .cpubar b { background: #ff6a6f; }
+.outpick { display: flex; align-items: center; gap: 6px; color: #9a9aa3; flex-shrink: 1; min-width: 0; }
+.outpick .outsel { width: 200px; min-width: 90px; }
+.ptop .brand { font-size: 15px; font-weight: 600; letter-spacing: 0.32em; color: #efe6d8; margin-right: 10px; }
+.preset { display: flex; align-items: center; gap: 2px; height: 40px; padding: 0 4px; border-radius: 9px; background: #1b1b1e; border: 1px solid #26262b; }
+.preset button { width: 30px; height: 30px; border: 0; border-radius: 6px; background: transparent; color: #a4a4ad; font-size: 18px; }
+.preset button:hover { background: rgba(255,255,255,0.06); color: #ececf0; }
+.preset .name { width: 250px; text-align: center; font-size: 17px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.playbtn { width: 40px; height: 40px; flex-shrink: 0; border-radius: 50%; border: 1px solid #2c2c32; background: #1b1b1e; color: #efe6d8;
+           display: flex; align-items: center; justify-content: center; padding: 0; }
+.playbtn:hover { background: #26262b; }
+.iconbtn { width: 28px; height: 28px; flex-shrink: 0; border-radius: 6px; border: 0; background: rgba(255,255,255,0.05); color: #c9c9d1; padding: 0; font-size: 14px;
+           display: flex; align-items: center; justify-content: center; }
+.iconbtn.lg { width: 38px; height: 38px; border-radius: 9px; font-size: 18px; }
+.iconbtn.txt { width: auto; padding: 0 13px; font-size: 14px; font-weight: 600; letter-spacing: 0.02em; }
+.iconbtn:hover { background: rgba(255,255,255,0.1); color: #efe6d8; }
+/* record: a red dot; while recording it pulses and the time runs beside it */
+.recbtn { height: 40px; min-width: 40px; flex-shrink: 0; box-sizing: border-box; border-radius: 20px; border: 1px solid #2c2c32; background: #1b1b1e;
+          color: #efe6d8; display: flex; align-items: center; justify-content: center; gap: 9px; padding: 0 13px; }
+.recbtn:hover { background: #26262b; }
+.recbtn .rdot { width: 12px; height: 12px; border-radius: 50%; background: #c8464c; flex-shrink: 0; }
+.recbtn .rtime { display: none; font: 600 15px Consolas, "Cascadia Mono", monospace; min-width: 38px; text-align: left; }
+.recbtn.on { border-color: rgba(232,78,84,0.65); background: rgba(232,78,84,0.13); }
+.recbtn.on .rdot { background: #ff5a60; animation: recpulse 1.2s ease-in-out infinite; }
+.recbtn.on .rtime { display: inline; }
+#panel.rail .recbtn.on .rtime { display: none; }
+@keyframes recpulse { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,90,96,0.55); } 50% { opacity: 0.5; box-shadow: 0 0 12px 4px rgba(255,90,96,0.45); } }
+/* a line of news at the bottom of the stage (saved, opened, recorded) */
+#toast { position: absolute; bottom: 32px; transform: translateX(-50%); max-width: 1500px; box-sizing: border-box; padding: 12px 20px; border-radius: 12px;
+         background: rgba(24,24,27,0.9); border: 1px solid rgba(255,255,255,0.1); color: #ececf0; font-size: 17px; white-space: nowrap;
+         overflow: hidden; text-overflow: ellipsis; opacity: 0; transition: opacity 0.35s; pointer-events: none !important; }
+#toast.show { opacity: 1; }
+
+.tabs { display: flex; flex-shrink: 0; padding: 0 14px; border-bottom: 1px solid rgba(255,255,255,0.07); }
+.tab { flex: 1 1 0; height: 46px; border: 0; border-bottom: 2px solid transparent; margin-bottom: -1px; background: none; color: #8a8a94;
+       font-size: 13px; font-weight: 600; letter-spacing: 0.24em; }
+.tab b { font-family: "JetBrains Mono", Consolas, monospace; font-weight: 400; letter-spacing: 0; color: #6c6c76; margin-left: 4px; }
+.tab:hover { color: #c9c9d1; }
+.tab[aria-selected="true"] { color: #efe6d8; border-bottom-color: #efe6d8; }
+.pbody { flex-grow: 1; min-height: 0; overflow-y: auto; padding: 12px 12px 14px; }
+.pbody::-webkit-scrollbar { width: 6px; }
+.pbody::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+
+/* groups: the conductor's and the visual tab's blocks */
+.group { border-radius: 14px; background: rgba(255,255,255,0.025); border: 1px solid rgba(255,255,255,0.05); padding: 12px 16px 14px; margin-bottom: 10px;
+         display: flex; flex-direction: column; gap: 10px; }
+.gtitle { display: flex; align-items: center; gap: 10px; font-size: 12px; font-weight: 600; letter-spacing: 0.24em; color: #a4a4ad; }
+.empty { padding: 18px 8px; font-size: 14px; color: #7c7c86; }
+.hint { font-size: 12px; color: #8a8a94; padding: 6px 2px 2px; }
+.hint.flush { padding: 0 0 0 4px; }
+.small { height: 30px; padding: 0 12px; border-radius: 7px; border: 1px solid #2c2c32; background: transparent; color: #8a8a94; font-size: 13px; flex-shrink: 0; }
+.small[aria-pressed="true"] { border-color: rgba(239,230,216,0.45); color: #efe6d8; }
+.seg { display: flex; gap: 2px; padding: 2px; border-radius: 9px; background: #1b1b1e; border: 1px solid #26262b; }
+.seg button { height: 32px; padding: 0 16px; border: 0; border-radius: 7px; background: transparent; color: #a4a4ad;
+              font-size: 13px; font-weight: 600; letter-spacing: 0.14em; }
+.seg button[aria-pressed="true"] { background: #efe6d8; color: #141414; }
+
+/* conductor */
+.cgrid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; align-items: start; }
+.cgrid .group { margin-bottom: 0; }
+.cgrid .group.wide { grid-column: 1 / -1; } /* SPACE: a view beside six knobs; the Modulation tab's MACROS, CHANNELS */
+.wheelrow { display: flex; gap: 22px; align-items: center; }
+canvas.wheel { width: 380px; height: 380px; flex-shrink: 0; }
+.keybox { display: flex; flex-direction: column; gap: 10px; flex-grow: 1; min-width: 0; }
+.big { font-size: 34px; font-weight: 600; line-height: 1.05; }
+.big.tempo { font-size: 40px; }
+span.big.tempo { cursor: text; }
+span.big.tempo:hover { color: #fff; text-decoration: underline dotted rgba(255,255,255,0.35); text-underline-offset: 6px; }
+input.tempoin { width: 3.4em; padding: 0 4px; background: #1b1b1e; color: #ececf0; border: 1px solid #4a4a52; border-radius: 6px; font-family: inherit; outline: none; }
+.keybox .chordnow { font-size: 16px; color: #c9c9d1; }
+.keybox .chordnow b { color: #efe6d8; font-weight: 600; }
+canvas.prog { width: 100%; height: 60px; }
+.tbtn { height: 30px; margin-left: 8px; padding: 0 10px; border-radius: 6px; border: 1px solid #2c2c32; background: none; color: #c9c9d1;
+        font-size: 12px; letter-spacing: 0.06em; white-space: nowrap; }
+.tbtn:hover { border-color: rgba(255,255,255,0.3); color: #ececf0; }
+.sel { background: #1b1b1e; color: #ececf0; border: 1px solid #2c2c32; border-radius: 6px; height: 30px; font-size: 14px; padding: 0 6px; max-width: 100%; }
+.pill { font-size: 10px; letter-spacing: 0.12em; padding: 2px 6px; border-radius: 4px; background: #23332a; color: #9ff0c0; }
+.pill.int { background: #2b2b33; color: #c9c9d1; }
+
+/* channels: the accordion */
+.ch { border-radius: 12px; border: 1px solid transparent; margin-bottom: 3px; }
+.ch:not(.open):hover { background: rgba(255,255,255,0.03); }
+.ch.open { background: rgba(255,255,255,0.045); border-color: rgba(239,230,216,0.24); margin: 6px 0 9px; }
+.chrow { height: 64px; display: flex; align-items: center; gap: 8px; padding-right: 10px; }
+.chpick { width: 270px; flex-shrink: 0; height: 100%; display: flex; align-items: center; gap: 10px; border: 0; background: none;
+          padding: 0 0 0 10px; color: inherit; text-align: left; }
+.chev { width: 12px; flex-shrink: 0; color: #8a8a94; font-size: 11px; }
+canvas.bar { width: 4px; height: 32px; flex-shrink: 0; }
+.chpick .names { min-width: 0; }
+.chpick .nm, .vrow .nm { font-size: 16px; font-weight: 600; display: block; line-height: 1.15; }
+.chpick .nm { font-size: 20px; } /* a channel's name above its groups' headings */
+.chpick .sub { font-size: 11px; letter-spacing: 0.12em; color: #8a8a94; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: block; text-transform: uppercase; }
+.ch.open .chpick .nm { color: #efe6d8; }
+canvas.scope { flex: 1 1 0; min-width: 0; height: 54px; cursor: pointer; }
+.note { font-family: "JetBrains Mono", Consolas, monospace; font-size: 13px; color: #9a9aa3; width: 40px; flex-shrink: 0; text-align: right; }
+canvas.hfader { width: 176px; height: 30px; flex-shrink: 0; cursor: ew-resize; touch-action: none; }
+canvas.hfader.pan { width: 110px; }
+.tog { width: 28px; height: 28px; flex-shrink: 0; border-radius: 6px; border: 0; background: rgba(255,255,255,0.06); color: #9a9aa3;
+       padding: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+.tog.eye[aria-pressed="true"] { background: rgba(239,230,216,0.12); color: #efe6d8; }
+.tog.eye[aria-pressed="false"] { color: #6c6c76; }
+.tog.mute[aria-pressed="true"] { background: #e5484d; color: #fff; }
+.addbtn { width: 100%; margin-top: 6px; height: 40px; border-radius: 10px; border: 1px dashed rgba(255,255,255,0.14); background: none; color: #c9c9d1; font-size: 14px; }
+.addbtn:hover { border-color: rgba(255,255,255,0.3); }
+
+/* what a channel contains */
+.chbody { padding: 0 12px 8px 14px; border-top: 1px solid rgba(255,255,255,0.06); }
+.sec { border-bottom: 1px solid rgba(255,255,255,0.05); }
+.sec:last-child { border-bottom: 0; }
+.sechead { width: 100%; height: 36px; display: flex; align-items: center; gap: 8px; padding: 0 4px; border: 0; background: none; color: inherit; text-align: left; }
+.sechead .t { font-size: 12px; font-weight: 600; letter-spacing: 0.22em; color: #d6d6dc; }
+.sec.open .sechead .t { color: #efe6d8; }
+.sechead .sum { margin-left: auto; font-size: 12px; color: #7c7c86; }
+.secbody { display: flex; flex-direction: column; gap: 10px; padding: 2px 4px 12px 24px; }
+.chips { display: flex; flex-wrap: wrap; gap: 4px; align-items: center; }
+.chips .lab { margin-right: 4px; width: 76px; font-size: 11px; letter-spacing: 0.16em; color: #7c7c86; }
+.chip { height: 28px; display: flex; align-items: center; padding: 0 11px; border-radius: 6px; border: 0; font-size: 13px; font-weight: 600;
+        letter-spacing: 0.08em; background: rgba(255,255,255,0.06); color: #c9c9d1; }
+.chip:hover { background: rgba(255,255,255,0.12); }
+.chip[aria-pressed="true"] { background: #efe6d8; color: #141414; }
+/* a group (GENERATOR, INSTRUMENT, EFFECTS, VISUAL): a band of its own; its sections set in under it, smaller */
+.cgrp { margin-top: 8px; }
+.cgrp:first-child { margin-top: 10px; }
+.cgroup { display: flex; align-items: center; gap: 14px; min-height: 44px; padding: 0 12px 0 8px; border-radius: 9px;
+          background: rgba(255,255,255,0.045); border: 1px solid rgba(255,255,255,0.06); }
+.cgrp.open > .cgroup { background: rgba(239,230,216,0.07); border-color: rgba(239,230,216,0.16); }
+.cglab { font-size: 12px; font-weight: 700; letter-spacing: 0.22em; color: #c9c9d1; }
+.cgrp.open .cglab { color: #efe6d8; }
+.cghead { display: flex; align-items: center; gap: 10px; height: 44px; padding: 0 4px; border: 0; background: none; color: #9a9aa3; flex-shrink: 0; }
+.cghead .chev { font-size: 13px; width: 14px; color: inherit; }
+.cghead:hover .cglab, .cghead:hover .chev { color: #ffffff; }
+.cgsum { margin-left: auto; font-size: 12px; color: #8a8a94; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-width: 0; }
+.grpbody { margin: 4px 0 6px 15px; padding-left: 12px; border-left: 2px solid rgba(239,230,216,0.14); }
+.tabgrp > .grpbody { display: flex; flex-direction: column; gap: 10px; padding: 8px 4px 8px 16px; } /* the Visual tab's */
+.tabgrp:first-of-type { margin-top: 2px; }
+.grpbody .sechead { height: 32px; }
+.grpbody .sechead .t { font-size: 11px; font-weight: 600; letter-spacing: 0.18em; color: #a4a4ad; }
+.grpbody .sec.open .sechead .t { color: #efe6d8; }
+.chopts { display: flex; align-items: center; gap: 14px; padding: 2px 4px 10px; }
+.cgsub { font-size: 11px; letter-spacing: 0.16em; color: #8a8a94; }
+.srow { display: flex; align-items: center; gap: 22px; }
+canvas.viz { width: 460px; height: 136px; flex-shrink: 0; }
+/* PATTERN's second row (app.js noteRow): COUNT's chips under the step view, Rotate / Shift / Seed under the first row's knobs */
+.notel { width: 460px; flex-shrink: 0; display: flex; align-items: center; }
+.chipline { display: flex; flex-wrap: wrap; gap: 6px 36px; }
+.knobs { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 4px 0; flex-grow: 1; }
+.kcell { display: flex; flex-direction: column; align-items: center; gap: 0; }
+.kcell canvas { width: 100px; height: 120px; cursor: ns-resize; touch-action: none; }
+.kcell.compact canvas { width: 88px; height: 106px; }
+.kcell .klab { font-size: 13px; letter-spacing: 0.12em; color: #9a9aa3; text-transform: uppercase; margin-top: -2px; }
+/* a modulated knob's tags under its name, one per route in its source's colour (--c, --cb, --ce: app.js srcVars):
+   short name and amount; drag one up / down, double-click, right-click. Each is 26 px tall to grab (48 by touch, for
+   Mini), stacked, so a row of six knobs keeps its columns and grows only as tall as its most modulated knob. */
+.mtags { display: flex; flex-direction: column; align-items: center; margin-top: 2px; }
+.mtags:empty { display: none; }
+.mtag { display: flex; align-items: center; justify-content: center; min-height: 26px; padding: 0 2px; cursor: ns-resize; touch-action: none; }
+.mtag b { display: block; height: 21px; line-height: 19px; box-sizing: border-box; padding: 0 8px; border-radius: 11px; border: 1px solid var(--ce); background: var(--cb);
+          color: var(--c); font: 600 12px "JetBrains Mono", Consolas, monospace; letter-spacing: 0; white-space: nowrap; pointer-events: none; }
+.mtag:hover b { border-color: var(--c); }
+.mtag.hot b { background: var(--c); border-color: var(--c); color: #141414; }
+@media (pointer: coarse) { .mtag { min-height: 48px; } }
+/* modulation: the LFO sections, the routes, the assign bar */
+.knobs.two { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.knobs.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+/* the Modulation tab: a section each for the LFOs and the macros, a group per source (its head: colour, name, what it
+   moves, Assign, remove), its targets below */
+.modsec { margin-bottom: 18px; }
+.modhead { display: flex; align-items: baseline; gap: 12px; padding: 2px 4px 8px; font-size: 13px; font-weight: 600; letter-spacing: 0.16em; color: #9a9aa3; }
+.modcount { font: 500 12px "JetBrains Mono", Consolas, monospace; letter-spacing: 0; color: #c9a86a; }
+.srcgrp { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.srchead { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.srcdot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; background: var(--c); }
+.srcname { font-size: 15px; font-weight: 600; letter-spacing: 0.06em; color: #ececf0; flex-shrink: 0; }
+.srcname.rename { cursor: text; }
+.srcname.rename:hover { color: #fff; text-decoration: underline dotted rgba(255,255,255,0.35); text-underline-offset: 4px; }
+input.renamein { width: 150px; height: 26px; padding: 0 6px; background: #1b1b1e; color: #ececf0; border: 1px solid #4a4a52; border-radius: 6px;
+                 font-family: inherit; font-size: 15px; font-weight: 600; letter-spacing: 0.06em; outline: none; flex-shrink: 0; }
+.srcsum { flex-grow: 1; min-width: 0; font-size: 12px; color: #8a8a94; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.srchead .tbtn.assign { margin-left: 0; }
+.srcgrp .row.center { gap: 10px; }
+.srcgrp .sel { width: 130px; }
+canvas.viz.narrow { width: 300px; }
+/* a channel card's pointer to the Modulation tab */
+.cgroup.chmod { margin-top: 8px; gap: 12px; padding: 0 12px 0 36px; }
+.cgroup.chmod .cgsum { flex-grow: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tbtn.assign { margin-left: auto; }
+.tbtn.assign.on, .assignbar .tbtn { border-color: rgba(239,230,216,0.6); color: #efe6d8; background: rgba(239,230,216,0.1); }
+.routes { display: flex; flex-direction: column; gap: 6px; }
+/* a target row: where, Bipolar / Unipolar, the amount (fader, typed %, in units), remove; lit while its tag is hovered */
+.route { display: flex; align-items: center; gap: 7px; height: 36px; border-radius: 7px; margin: 0 -4px; padding: 0 4px; }
+.route.hot { background: var(--cb); }
+.route .tname { width: 160px; flex-shrink: 0; font-size: 13px; color: #c9c9d1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.route canvas.hfader.amt { flex-grow: 1; min-width: 70px; width: 120px; }
+.pol { width: 90px; height: 28px; flex-shrink: 0; padding: 0; border-radius: 6px; border: 1px solid #34343a; background: none; color: #c9c9d1; font-size: 12px; font-weight: 600; }
+.pol:hover:not(:disabled) { border-color: #5a5a62; color: #ececf0; }
+.pol:disabled { opacity: 0.45; cursor: default; }
+input.num { width: 46px; height: 28px; flex-shrink: 0; box-sizing: border-box; padding: 0 6px; background: #1b1b1e; color: #ececf0; border: 1px solid #2c2c32;
+            border-radius: 6px; font: 13px "JetBrains Mono", Consolas, monospace; text-align: right; outline: none; }
+input.num:focus { border-color: var(--c, #5a5a62); }
+.pctu { font-size: 12px; color: #7c7c86; margin-left: -4px; }
+.amtu { width: 76px; flex-shrink: 0; font: 600 12px "JetBrains Mono", Consolas, monospace; color: var(--c); white-space: nowrap; }
+/* a tag's menu (right-click, long-press) */
+.modmenu { position: absolute; z-index: 30; min-width: 280px; box-sizing: border-box; padding: 10px 12px 12px; border-radius: 12px; background: rgba(30,30,34,0.97);
+           border: 1px solid var(--ce); box-shadow: 0 12px 32px rgba(0,0,0,0.55); display: flex; flex-direction: column; gap: 10px; font-size: 13px; }
+.modmenu .mmhead { display: flex; align-items: center; gap: 8px; color: #a4a4ad; white-space: nowrap; }
+.modmenu .mmhead b { color: var(--c); font-weight: 600; }
+.modmenu .mmrow { display: flex; align-items: center; gap: 8px; }
+.modmenu .mmrow .lab { font-size: 11px; letter-spacing: 0.16em; color: #7c7c86; width: 70px; }
+.modmenu .amtu { width: auto; }
+.modmenu .tbtn.mmrm { margin-left: 0; align-self: flex-start; color: #ff8a8e; border-color: rgba(255,106,111,0.35); }
+.modmenu .tbtn.mmrm:hover { border-color: rgba(255,106,111,0.7); color: #ffb0b3; }
+.assignbar { display: flex; align-items: center; gap: 10px; flex-shrink: 0; margin: 10px 14px 0; padding: 8px 12px; border-radius: 10px;
+             background: var(--cb); border: 1px solid var(--ce); font-size: 14px; color: #d6d6dc; }
+.assignbar b { color: var(--c); }
+.assignbar .adot { width: 10px; height: 10px; border-radius: 50%; background: var(--c); flex-shrink: 0; animation: apulse 1.4s ease-in-out infinite; }
+.assignbar .tbtn { border-color: var(--ce); color: var(--c); background: none; }
+@keyframes apulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.lookrow { display: flex; align-items: center; gap: 8px; }
+.lookrow .lab { width: 76px; font-size: 11px; letter-spacing: 0.16em; color: #7c7c86; }
+.lookseg { display: flex; gap: 2px; padding: 2px; border-radius: 8px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.06); flex-grow: 1; }
+.lookseg button { flex: 1 1 0; height: 28px; padding: 0 6px; border: 0; border-radius: 6px; background: transparent; color: #b4b4bd; font-size: 11px; font-weight: 600; letter-spacing: 0.1em; }
+.lookseg button[aria-pressed="true"] { background: #efe6d8; color: #141414; }
+
+/* visual tab: one line per channel */
+.vrow { display: flex; align-items: center; gap: 12px; height: 44px; }
+.vrow .nm { width: 130px; flex-shrink: 0; }
+
+/* the rail */
+.raildiv { width: 28px; border-top: 1px solid rgba(255,255,255,0.08); margin: 4px 0; }
+.raildot { width: 40px; height: 32px; border: 0; border-radius: 8px; background: transparent; padding: 0; display: flex; align-items: center; justify-content: center; }
+.raildot:hover { background: rgba(255,255,255,0.07); }
+.raildot canvas { width: 24px; height: 24px; }
+
+/* the pin bar (app.js buildBar): along the bottom of the stage beside the panel (or its rail), glass as the panel;
+   each pin a copy of its knob or fader, labelled where it lives in its channel's (or source's) colour, --c */
+#pinbar { position: absolute; bottom: 12px; box-sizing: border-box; display: flex; align-items: stretch; gap: 6px; min-height: 76px; padding: 8px 10px 6px 8px;
+          border-radius: 18px; background: rgba(24,24,27,0.78); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid rgba(255,255,255,0.07); }
+.pinhead { display: flex; flex-direction: column; align-items: center; gap: 6px; width: 44px; flex-shrink: 0; padding-top: 4px; }
+.pinhead .lab { font-size: 10px; letter-spacing: 0.18em; }
+.pincount { font: 11px "JetBrains Mono", Consolas, monospace; color: #6c6c76; }
+.pinempty { align-self: center; padding: 0 12px; font-size: 14px; color: #8a8a94; }
+.pinempty b { color: #c9c9d1; font-weight: 600; }
+.pins { display: flex; gap: 2px; align-items: flex-start; min-width: 0; flex-grow: 1; overflow-x: auto; overflow-y: hidden; }
+.pins::-webkit-scrollbar { height: 5px; }
+.pins::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+.pin { position: relative; display: flex; flex-direction: column; align-items: center; width: 112px; flex-shrink: 0; padding: 2px 0 2px; border-radius: 10px; --c: #c9c9d1; }
+.pin:hover { background: rgba(255,255,255,0.035); }
+.pin.fader { width: 186px; }
+.pin.off { opacity: 0.38; } /* its channel off (its LFO, its macro not in use): kept, dim */
+.pin.moving { z-index: 2; opacity: 0.85; background: rgba(255,255,255,0.07); }
+.pinlab { max-width: 104px; height: 20px; line-height: 20px; font-size: 13px; font-weight: 600; letter-spacing: 0.05em; color: var(--c); white-space: nowrap;
+          overflow: hidden; text-overflow: ellipsis; cursor: grab; touch-action: none; }
+.pin.fader .pinlab { max-width: 176px; }
+.pin canvas.knob { width: 96px; height: 114px; cursor: ns-resize; touch-action: none; }
+.pin canvas.hfader { width: 170px; margin-top: 38px; }
+.pin canvas.hfader.pan { width: 140px; }
+.pinx { position: absolute; top: 0; right: 0; width: 20px; height: 20px; border: 0; border-radius: 5px; padding: 0; background: rgba(255,255,255,0.08); color: #c9c9d1;
+        font-size: 13px; line-height: 20px; opacity: 0; }
+.pin:hover .pinx { opacity: 1; }
+.pinx:hover { background: rgba(255,106,111,0.25); color: #fff; }
+.iconbtn.barbtn[aria-pressed="true"] { color: #efe6d8; background: rgba(239,230,216,0.14); }
+/* a knob's pin, top right, on hover (shown, dim, while it is pinned); by touch a long press instead */
+.kcell { position: relative; }
+.pinbtn { position: absolute; top: 2px; left: calc(50% + 36px); width: 20px; height: 20px; padding: 0; border: 0; border-radius: 5px; background: rgba(255,255,255,0.08);
+          color: #c9c9d1; display: flex; align-items: center; justify-content: center; opacity: 0; }
+.kcell:hover .pinbtn { opacity: 0.8; }
+.pinbtn[aria-pressed="true"] { opacity: 0.5; color: #efe6d8; background: rgba(239,230,216,0.16); }
+.pinbtn:hover { opacity: 1 !important; background: rgba(255,255,255,0.18); }
+@media (pointer: coarse) { .pinbtn:not([aria-pressed="true"]) { display: none; } }
+.modmenu.pinmenu { min-width: 220px; border-color: var(--ce, rgba(255,255,255,0.18)); }
+.modmenu.pinmenu .srcdot { background: var(--c, #c9c9d1); }
+.modmenu .tbtn.mmpin { margin-left: 0; align-self: flex-start; display: flex; align-items: center; gap: 7px; height: 32px; padding: 0 12px; font-size: 13px; }
+
+/* the scope's lane labels (app.js scopeLabels): the channel's name and note, top left of its lane, in its colour;
+   under the panel, never in the way of the mouse */
+#stage.scopemode { cursor: default; }
+#ui > #scopelab { position: absolute; left: 0; top: 0; width: 0; height: 0; pointer-events: none; }
+.sclab { position: absolute; display: flex; gap: 8px; align-items: baseline; white-space: nowrap; text-shadow: 0 0 4px #0e0e10, 0 0 2px #0e0e10; }
+.sclab b { font-size: 12px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; }
+.sclab i { font: 12px "JetBrains Mono", Consolas, monospace; font-style: normal; opacity: 0.8; }
+
+#stats { position: absolute; top: 12px; font: 12px Consolas, "Cascadia Mono", monospace; color: rgba(220,220,228,0.8);
+         white-space: pre; pointer-events: none; text-shadow: 0 0 4px #000; display: none; }
+#fail { position: absolute; left: 0; right: 0; top: 45%; text-align: center; color: #f98; font-size: 16px; display: none; }
+
+/* ---- Mini mode (app.js MINI, set by Ammonite Mini's index.html: html.mini): one panel of glass filling the tablet's
+   screen, no stage, made for touch. The layout is 900 high (0.89 on the tablet's 1333x800 CSS px). No page zoom,
+   scrolling or selection but the panel's own; controls take the pointer whole. Every target is at least 54 px of the
+   layout (48 CSS px, about 9 mm); a chip draws smaller and its ::after makes up the rest. Hover looks only with a
+   mouse (app.js hoverOnlyWithMouse). Only these rules know Mini; desktop never has the class. */
+html.mini, html.mini body { overscroll-behavior: none; touch-action: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+.mini #ui { width: 1500px; height: 900px; }
+.mini #panel { top: 10px; bottom: 10px; left: 10px; right: 10px; width: auto; }
+.mini .row { gap: 8px; }
+.mini .ptop { height: 76px; }
+.mini .ptop canvas.hfader.master { width: 150px; }
+.mini .preset { height: 58px; box-sizing: border-box; }
+.mini .preset button { width: 54px; height: 54px; border-radius: 7px; font-size: 24px; }
+.mini .preset .name { width: 280px; font-size: 18px; }
+.mini .playbtn { width: 56px; height: 56px; }
+.mini .iconbtn, .mini .iconbtn.lg { width: 56px; height: 56px; border-radius: 10px; font-size: 18px; }
+.mini .iconbtn.txt { width: auto; min-width: 56px; padding: 0 16px; font-size: 16px; }
+.mini .recbtn { height: 56px; min-width: 56px; border-radius: 28px; }
+.mini #toast { left: 50%; }
+.mini .tab { height: 56px; font-size: 14px; }
+.mini .pbody { touch-action: pan-y; overscroll-behavior: contain; }
+.mini .sel { height: 54px; border-radius: 8px; font-size: 16px; padding: 0 10px; }
+.mini .tbtn { height: 54px; padding: 0 16px; border-radius: 8px; font-size: 14px; }
+.mini span.big.tempo { display: inline-block; line-height: 54px; } /* tap to type */
+.mini input.tempoin { height: 54px; box-sizing: border-box; }
+.mini canvas.prog { height: 66px; } /* Custom: tap a step */
+.mini .chrow { height: 72px; }
+.mini canvas.hfader { height: 54px; } /* app.js drawFader: the bar 34 high across the middle */
+.mini .tog { width: 54px; height: 54px; border-radius: 9px; font-size: 15px; }
+.mini .addbtn { height: 56px; font-size: 16px; }
+.mini .sechead, .mini .grpbody .sechead { height: 54px; }
+.mini .chips { gap: 10px 6px; }
+.mini .chip { position: relative; height: 44px; min-width: 50px; justify-content: center; padding: 0 14px; border-radius: 7px; font-size: 15px; letter-spacing: 0.06em; }
+.mini .chip::after { content: ""; position: absolute; left: -3px; right: -3px; top: -5px; bottom: -5px; } /* the target: 54 high, the gap shared */
+.mini .cgroup { min-height: 58px; }
+.mini .cghead { height: 56px; }
+.mini .chipline { gap: 10px 36px; }
+/* modulation: tags, the source heads, the target rows, the menus */
+.mini .mtag { min-height: 54px; }
+.mini .mtag b { height: 26px; line-height: 24px; font-size: 13px; padding: 0 10px; border-radius: 13px; }
+.mini .srchead { min-height: 56px; }
+.mini .srcname { font-size: 17px; line-height: 54px; }
+.mini input.renamein { height: 54px; width: 180px; font-size: 17px; }
+.mini .srcgrp .sel { width: 150px; }
+.mini .route { height: 60px; }
+.mini .route .tname { font-size: 14px; }
+.mini .pol { width: 104px; height: 54px; border-radius: 8px; font-size: 13px; }
+.mini input.num { width: 64px; height: 54px; font-size: 16px; border-radius: 8px; }
+.mini .amtu { font-size: 13px; }
+.mini .modmenu { min-width: 340px; padding: 12px 14px 14px; font-size: 15px; gap: 12px; }
+.mini .modmenu.pinmenu { min-width: 260px; }
+.mini .modmenu .tbtn.mmpin { height: 54px; padding: 0 16px; font-size: 15px; }
+.mini .assignbar { font-size: 15px; }
+/* the pin bar: a drawer along the bottom of the screen (the panel ends above it: app.js placeDrawer). Pins come and go
+   by a long press on a knob or fader (its menu); a pin's label is its handle to move it along the drawer; no ×, no
+   pin buttons (by touch they would be small targets that cannot be seen) */
+.mini #pinbar { left: 10px; right: 10px; bottom: 10px; animation: drawer 0.18s ease-out; }
+@keyframes drawer { from { transform: translateY(40px); opacity: 0; } to { transform: none; opacity: 1; } }
+.mini .pinhead { width: 60px; }
+.mini .pins { touch-action: pan-x; overscroll-behavior: contain; }
+.mini .pinlab { height: 54px; line-height: 54px; font-size: 14px; max-width: 108px; }
+.mini .pin.fader .pinlab { max-width: 176px; }
+.mini .pin canvas.hfader { margin-top: 30px; }
+.mini .pinx { display: none; }
+.mini .pin .mtags { display: none; } /* the drawer stays one knob high: its rings show the modulation, the panel's tags set it */
+.mini .pinbtn { pointer-events: none; } /* only the mark that a knob is pinned */
+.mini .pinbtn:not([aria-pressed="true"]) { display: none; }
+.mini #stats { left: 50%; transform: translateX(-50%); }
