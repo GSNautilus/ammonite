@@ -27,6 +27,3 @@ first (`simulator.bat` or `sim\build_dll.ps1`), then from PowerShell:
 - test_prog.py    chord progression: every preset in major, minor and a chord key,
                   chord names / numerals, CHANGE lengths, changes on bar lines,
                   RESTART FREE / BAR / CHORD, the chord in the centre of the screen
-
-Measurement lessons that cost time are noted in docs\ENGINE_PLAN.md
-("Measurement traps").

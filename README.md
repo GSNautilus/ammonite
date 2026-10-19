@@ -187,8 +187,6 @@ CMake). In PowerShell, from the repository:
 | `manual/` | the owner's manual: its screen captures are made by driving the engine |
 | `hardware/` | enclosure STLs and wiring diagrams |
 | `media/` | everything on this page, rendered by `media/make_media.py` |
-| `docs/ENGINE_PLAN.md` | the design and build notes |
-| `docs/VST_PLAN.md` | how the plugin was built, decisions and limits |
 | `lib/` | libDaisy and DaisySP (git submodules; `plugin/lib/DPF` for the plugin) |
 
 ## License
