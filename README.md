@@ -1,8 +1,7 @@
 <h1 align="center">Ammonite</h1>
 
 <p align="center">
-  <b>A family of synthesizers that play themselves, in key</b><br>
-  you choose a key, a chord progression and a rhythm for each part &middot; Ammonite chooses the notes
+  <b>A family of arpeggiators that stay in rhythm and key, with strong visuals</b>
 </p>
 
 <p align="center">
@@ -14,10 +13,11 @@
   <a href="https://gsnautilus.github.io/ammonite/seed/">&#9654; Listen to Ammonite-Seed</a>
 </p>
 
-You never pick notes. You pick a key and a chord progression, and for each part you pick
-which notes of the chord it may play and in what rhythm. Everything stays in key, and
-patterns of different lengths turn against each other without ever losing the beat.
-The idea started as a small hardware synth and grew into a desktop instrument and a tablet app:
+Ammonite is a family of arpeggiator synthesizers. You set a key, a chord progression
+and a rhythm for each part, and everything it plays stays in key and in time. Each version
+draws the music as it plays. There are three: a Windows app and plugin (VST3 and CLAP) with up
+to 16 channels and a 3D display, the original hardware synth with twelve knobs and a round
+screen, and an Android tablet app.
 
 | | | |
 |---|---|---|
@@ -29,8 +29,8 @@ The idea started as a small hardware synth and grew into a desktop instrument an
 
 <p align="center"><img src="desktop/img/channels.webp" width="720" alt="Ammonite Desktop's channel list: four drum channels, a bass and chord stabs, each row showing its live waveform"></p>
 
-The Ammonite idea without the hardware's limits: where the Seed has three voices and twelve
-knobs, Desktop has room for a band.
+Ammonite Desktop is the Windows version. Where the Seed has three voices and twelve knobs,
+Desktop has up to 16 channels, each with its own generator, instrument and effects.
 
 - **Up to 16 channels**, each a generator (Arp, Chord, Bass or Rhythm) driving an instrument
   (a synth voice or one of eight synthesized drums, no samples), with its own drive, chorus and delay
@@ -38,7 +38,8 @@ knobs, Desktop has room for a band.
   own, tempo and swing; in a DAW it follows the host's tempo and transport
 - **Modulation**: 32 LFOs and 16 macros routed onto any knob, every route shown on the knob it moves
 - **A mix bus**: a shared reverb, ducking, glue and a limiter; record straight to WAV
-- **The stage**: each channel's real waveform, turned into a glass shell coloured by the note it plays
+- **The stage**: a 3D display that turns each channel's waveform around an axis into a shell,
+  sized by its level and coloured by the note it plays
 - **Ten factory presets**, and patches saved as `.ammo` files that also open on Ammonite Mini
 
 **Get it:** [Ammonite Desktop 0.1.0](https://github.com/GSNautilus/ammonite/releases/tag/desktop-v0.1.0),
@@ -71,7 +72,7 @@ own (`desktop/host/`, WASAPI output) that runs that same plugin.
 
 <p align="center">
   <b>A three-voice arpeggiator synthesizer on the Daisy Seed</b><br>
-  12 knobs &middot; a round screen that draws the music &middot; chords, polyrhythms and echoes in one small box
+  12 knobs &middot; a 240x240 round screen that draws the music &middot; chords, polyrhythms and stereo echo
 </p>
 
 <p align="center">
@@ -82,14 +83,13 @@ own (`desktop/host/`, WASAPI output) that runs that same plugin.
 </p>
 
 Ammonite-Seed is three monophonic synth voices, each with its own arpeggiator, envelopes,
-filter, five LFOs and stereo echo, all locked to one master clock and one key. You never
-pick notes: you pick a key, a chord progression and, for each voice, which notes of the
-chord it may play and in what rhythm. Everything it plays is in key, and the three
-patterns can run at different lengths and speeds without ever drifting apart.
+filter, five LFOs and stereo echo, all on one master clock and in one key. You set a key,
+a chord progression and, for each voice, which notes of the chord it may play and in what
+rhythm. Everything it plays is in key, and the three patterns can run at different lengths
+and speeds while staying on the same clock.
 
-The round screen shows the three arps as rings: each ring is that voice's real waveform,
-cut into its steps, with every note in its own color (the colors follow the circle of
-fifths, so a chord has a look as well as a sound).
+The round screen shows the three arps as rings: each ring is that voice's waveform, cut
+into its steps, with every note in its own color (the colors follow the circle of fifths).
 
 - **Three voices**, each two detuned oscillators morphing sine / square / saw
 - **Three arpeggiators**: 6 modes, 5 note pools, 1-3 octaves, 9 divisions incl. triplets,
